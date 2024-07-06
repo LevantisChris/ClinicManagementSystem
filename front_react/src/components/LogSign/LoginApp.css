@@ -1,0 +1,138 @@
+body, html {
+    overflow-x: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 50px;
+    background: #fff;
+    padding-bottom: 30px;
+    width: 100%;
+    max-width: 600px;
+}
+
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    margin-top: -50px;
+}
+
+.text {
+    color: #0037ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+
+.underline {
+    width: 100%;
+    height: 6px;
+    background: #0037ff;
+    border-radius: 9px;
+}
+
+.inputs {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+    margin: auto;
+    width: 350px;
+    height: 60px;
+    background: #eaeaea;
+    border-radius: 6px;
+}
+
+.input img {
+    margin: 0px 30px;
+}
+
+.input input {
+    height: 60px;
+    width: 350px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #797979;
+    font-size: 19px;
+}
+
+.submit-container {
+    display: flex;
+    gap: 30px;
+    margin: 5px auto;
+}
+
+.submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 60px;
+    color: #fff;
+    background: #0037ff;
+    border-radius: 50px;
+    font-size: 19px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.gray {
+    background: #EAEAEA;
+    color: #676767;
+}
+
+.role-select select {
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* LogSignHeader CSS */
+.log-sign-header {
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    margin-right: 0.5rem;
+    width: 100px;
+    height: 100px;
+}
+
+.header-text {
+    margin-right: 2.5rem;
+    font-size: 40px;
+    color: #0037ff;
+    font-weight: bold;
+}
+/*--*/
+@media (max-width: 768px) {
+    .text {
+        font-size: 2rem;
+    }
+
+    .input {
+        max-width: 300px;
+    }
+
+    .submit {
+        max-width: 150px;
+    }
+}

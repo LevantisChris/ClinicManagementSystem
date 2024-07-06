@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DoctorApp from "./components/doctor/DoctorApp";
+import LogInApp  from "./components/LogSign/LogInApp";
 import './App.css';
 
 const App = () => {
@@ -12,6 +13,8 @@ const App = () => {
                     element do the job itself */
                     <Route path={"/doctor"}
                            element={<DoctorApp/>}/>
+                    <Route path={"/login"}
+                           element={<LogInApp/>}/>
                 </Routes>
             </div>
         </BrowserRouter>
