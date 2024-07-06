@@ -1,7 +1,7 @@
 import React, {useContext} from 'react'
 
 
-import logo from '../assets/logo.png';
+import logo from '../../../assets/logo.png';
 import GlobalContext from "../context/GlobalContext";
 import dayjs from "dayjs";
 

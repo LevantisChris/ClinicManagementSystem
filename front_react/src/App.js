@@ -1,34 +1,21 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DoctorApp from "./components/doctor/DoctorApp";
 import './App.css';
-import { getMonth } from './util'
-import CalendarHeader from "./components/CalendarHeader";
-import SideBar from "./components/SideBar";
-import Month from "./components/Month";
-import GlobalContext from "./context/GlobalContext";
-import EventModal from "./components/EventModal";
-import InsertModal from "./components/InsertModal";
 
-function App() {
-    const [currentMonth, setCurrentMonth] = useState(getMonth());
-    const {monthIndex, showEventModal, showInsertModal} = useContext(GlobalContext);
-
-    useEffect(() => {
-        setCurrentMonth(getMonth(monthIndex));
-    }, [monthIndex])
-
-  return (
-    <React.Fragment>
-        {showEventModal === true && <EventModal/>}
-        {showInsertModal === true && <InsertModal/>}
-        <div className={'h-screen flex flex-col'}>
-            <CalendarHeader />
-            <div className={'flex flex-1'}>
-                <SideBar />
-                <Month month={currentMonth}/>
+const App = () => {
+    return (
+        <BrowserRouter>
+            <div className={""}>
+                <Routes>
+                    /* NOTE: In v6 the render approach dont need to be implemented
+                    element do the job itself */
+                    <Route path={"/doctor"}
+                           element={<DoctorApp/>}/>
+                </Routes>
             </div>
-        </div>
-    </React.Fragment>
-  );
+        </BrowserRouter>
+    );
 }
 
 export default App;
