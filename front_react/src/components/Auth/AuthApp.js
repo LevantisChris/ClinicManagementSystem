@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import LoginAppCSS from './LoginApp.css';
+import AuthAppCSS from './AuthAppCSS.css';
 
 import nameIMG from '../../assets/user_32.png';
 import doctorTypeIMG from '../../assets/doctor-type.png';
@@ -8,7 +8,7 @@ import emailIMG from '../../assets/email_32.png';
 import idNumberIMG from '../../assets/id_number.png';
 import checkIMG from '../../assets/check.png';
 import generalUserIMG from '../../assets/user.png';
-import LogSignHeader from "./logSignComp/LogSignHeader";
+import LogSignHeader from "./logSignComp/AuthHeader";
 
 /*
 *   Patient: ID-Number, Name, Surname, email, password, ||AMKA||
@@ -16,7 +16,7 @@ import LogSignHeader from "./logSignComp/LogSignHeader";
 *   Secretary: ID-Number, Name, Surname, email, password
 */
 
-const LogInApp = () => {
+const AuthApp = () => {
     const [action, setAction] = useState('Log in');
 
     const [AMKA, setAMKA] = useState('');
@@ -110,14 +110,29 @@ const LogInApp = () => {
             <div className={'inputs'}>
 
                 <div className={'text'}>
-                    {action}
+                    Welcome, {action}
                 </div>
 
 
-                {action === "Visitor" ?
+                {action === "Visitor" ? (
+                    <div className="grid grid-cols-2 grid-rows-2 rounded-3xl bg-blue-200 p-5 shadow-xl">
+                        <div className="flex flex-col items-center">
+                            <div className="flex items-center justify-center w-80 h-80 rounded-full bg-blue-600 text-white text-9xl shadow-xl">
+                                5
+                            </div>
+                            <div className="mt-2 text-4xl text-center">Specialized doctors</div>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <div className="flex items-center justify-center w-80 h-80 rounded-full bg-blue-600 text-white text-9xl  shadow-xl">
+                                +150
+                            </div>
+                            <div className="mt-2 text-4xl text-center">Happy Patients</div>
+                        </div>
+                    </div>
+                ) : (
                     <></>
-                    : <></>
-                }
+                )}
+
 
                 {(role === 'Patient' || role === 'Doctor' || role === 'Secretary' ) && action === "Sign up" && (
                     <React.Fragment>
@@ -243,4 +258,4 @@ const LogInApp = () => {
     );
 }
 
-export default LogInApp;
+export default AuthApp;

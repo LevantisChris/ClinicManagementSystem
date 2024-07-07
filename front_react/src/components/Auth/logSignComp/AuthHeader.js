@@ -1,5 +1,5 @@
 import React from 'react'
-import LoginAppCSS from '../LoginApp.css';
+import AuthAppCSS from '../AuthAppCSS.css';
 
 
 import logo from '../../../assets/health.png';

@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DoctorApp from "./components/doctor/DoctorApp";
-import LogInApp  from "./components/LogSign/LogInApp";
+import AuthApp  from "./components/Auth/AuthApp";
 import './App.css';
 
 const App = () => {
@@ -13,8 +13,8 @@ const App = () => {
                     element do the job itself */
                     <Route path={"/doctor"}
                            element={<DoctorApp/>}/>
-                    <Route path={"/login"}
-                           element={<LogInApp/>}/>
+                    <Route path={"/auth"}
+                           element={<AuthApp/>}/>
                 </Routes>
             </div>
         </BrowserRouter>
