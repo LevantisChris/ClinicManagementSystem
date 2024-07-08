@@ -36,3 +36,13 @@
         transform: rotate(360deg);
     }
 }
+
+.userButton {
+    display: inline-block;
+    padding: 0.25rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.userButton:hover {
+    transform: scale(1.1);
+}

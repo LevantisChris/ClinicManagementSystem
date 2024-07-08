@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
 import {animate , motion} from 'framer-motion'
+/*-*/
 
 export default function DescriptionInsertModal({ props }) {
 
@@ -13,7 +14,7 @@ export default function DescriptionInsertModal({ props }) {
     setShowDescriptionInsertModal,
   } = useContext(GlobalContext);
 
-  /* In this function we will desctruct from the selectedOption list
+  /* In this function we will destruct from the selectedOption list
        the hours that the user has selected */
   function findTime() {
     const start =
@@ -48,74 +49,90 @@ export default function DescriptionInsertModal({ props }) {
     >
       <div className={"p-3"}>
         <div className={"grid grid-cols-1/5 gap-y-7 items-center"}>
-          <div></div>
-          <input
-            type={"text"}
-            name={"title"}
-            placeholder={"Add title"}
-            className={
-              "pt-3 border-0 text-gray-600 text-xl font-semibold pd-2 w-full border-b-2 border-gray-200 focus: outline-none focus:ring-0 focus:border-blue-500"
-            }
-          />
-          <span className={"text-center material-icons-outlined text-gray-400"}>
+
+          <span className={"text-center material-icons-outlined text-gray-400 text-5xl"}>
             schedule
           </span>
-          <p>
+          <p className={"text-4xl"}>
             {daySelected.format("dddd MMMM DD")},{" "}
             <React.Fragment>
-              <span className={"font-bold"}>{selectedOptions[0] !== undefined ? findTime() : console.log("EMPTY")}</span>
+              <span
+                  className={"font-bold"}>{selectedOptions[0] !== undefined ? findTime() : console.log("EMPTY")}</span>
             </React.Fragment>
           </p>
 
-          <span class="text-center material-icons-outlined text-gray-400">
-            pin_drop
+          <span className="text-center material-icons-outlined text-gray-400">
+            person
           </span>
           <input
-            type={"text"}
-            name={"location"}
-            placeholder={"Add the location"}
-            className={
-              "pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus: outline-none focus:ring-0 focus:border-blue-500"
-            }
+              type={"text"}
+              name={"patient_name"}
+              placeholder={"Patient name"}
+              className={
+                "pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus: outline-none focus:ring-0 focus:border-blue-500"
+              }
           />
-          <span class="text-center material-icons-outlined text-gray-400">
-            group_add
+          <span className="text-center material-icons-outlined text-gray-400">
+            person
           </span>
           <input
-            type={"text"}
-            name={"invited_guests"}
-            placeholder={"Invited guests"}
-            className={
-              "pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus: outline-none focus:ring-0 focus:border-blue-500"
-            }
+              type={"text"}
+              name={"patient_surname"}
+              placeholder={"Patient surname"}
+              className={
+                "pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus: outline-none focus:ring-0 focus:border-blue-500"
+              }
           />
-          <span className={"text-center material-icons-outlined text-gray-400"}>
-            segment
+
+          <span className="text-center material-icons-outlined text-gray-400">
+            medical_information
+          </span>
+          <input
+              type={"text"}
+              name={"patient_amka"}
+              placeholder={"AMKA"}
+              className={
+                "pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus: outline-none focus:ring-0 focus:border-blue-500"
+              }
+          />
+
+
+          <span className="text-center material-icons-outlined text-gray-400">
+            description
           </span>
           <textarea
-            name={"description"}
-            placeholder={"Add a description"}
-            style={{ height: "200px", resize: "none" }} // Adjust the height as per your requirement
-            className={
-              "pt-3 border-0 text-gray-600 bg-gray-200 pd-2 w-full border-b-2 rounded border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
-            }
+              name={"description"}
+              placeholder={"Reason for the appointment"}
+              style={{height: "200px", resize: "none"}} // Adjust the height as per your requirement
+              className={
+                "pt-3 border-0 text-gray-600 bg-gray-200 pd-2 w-full border-b-2 rounded border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
+              }
           />
+          <span className="text-center material-icons-outlined text-gray-400">
+            check_circle
+        </span>
+          {/* This must change  */}
+          <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg">
+            Status
+          </button>
         </div>
+
+
         <div className="flex mt-5">
           <button
-            type="button"
-            className={
-              "bg-blue-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
-            }
+              type="button"
+              className={
+                "bg-blue-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
+              }
           >
             Save
           </button>
           <button
-            type="button"
-            onClick={handleClickCancel}
-            className={
-              "bg-red-500 w-2/4 hover:bg-red-600 px-6 py-2 ml-2 transition duration-500 ease-in-outs rounded text-white"
-            }
+              type="button"
+              onClick={handleClickCancel}
+              className={
+                "bg-red-500 w-2/4 hover:bg-red-600 px-6 py-2 ml-2 transition duration-500 ease-in-outs rounded text-white"
+              }
           >
             Cancel
           </button>
