@@ -9,6 +9,7 @@ import idNumberIMG from '../../assets/id_number.png';
 import checkIMG from '../../assets/check.png';
 import generalUserIMG from '../../assets/user.png';
 import LogSignHeader from "./logSignComp/AuthHeader";
+import {color} from "framer-motion";
 
 /*
 *   Patient: ID-Number, Name, Surname, email, password, ||AMKA||
@@ -34,6 +35,8 @@ const AuthApp = () => {
     const [role, setRole] = useState('Doctor');
 
     const [apiResponse, setApiResponse] = useState('');
+
+    const [loading, setLoading] = useState(false);
 
     /* When the components mount make a GET request to /auth */
     useEffect(() => {
@@ -82,6 +85,14 @@ const AuthApp = () => {
         setRole(event.target.value);
     };
 
+    const handleActionChange = (newAction) => {
+        setLoading(true);
+        setTimeout(() => {
+            setAction(newAction);
+            setLoading(false);
+        }, 500); // delay for transition effect
+    };
+
     const handleSubmit = () => {
         const credentials = {
             AMKA: AMKA,
@@ -107,26 +118,47 @@ const AuthApp = () => {
                 <LogSignHeader/>
                 <div className={'underline'}></div>
             </div>
-            <div className={'inputs'}>
-
+            <div className={`inputs text-center ${loading ? 'hidden' : ''}`}>
                 <div className={'text'}>
-                    Welcome, {action}
+                    Welcome, {action === "Visitor" ? "about us" : action}
                 </div>
 
+                {loading && <div className="loading-spinner"></div>}
 
                 {action === "Visitor" ? (
-                    <div className="grid grid-cols-2 grid-rows-2 rounded-3xl bg-blue-200 p-5 shadow-xl">
+                    <div className="grid grid-cols-1 md:grid-cols-2 rounded-3xl bg-blue-200 p-5 shadow-xl gap-4">
                         <div className="flex flex-col items-center">
-                            <div className="flex items-center justify-center w-80 h-80 rounded-full bg-blue-600 text-white text-9xl shadow-xl">
+                            <div
+                                className="flex items-center justify-center w-40 h-40 md:w-80 md:h-80 rounded-full text-white text-4xl md:text-9xl shadow-xl bg-blue-500">
                                 5
                             </div>
-                            <div className="mt-2 text-4xl text-center">Specialized doctors</div>
+                            <div className="mt-2 text-2xl md:text-4xl text-center text-blue-500">
+                                Specialized doctors
+                            </div>
                         </div>
                         <div className="flex flex-col items-center">
-                            <div className="flex items-center justify-center w-80 h-80 rounded-full bg-blue-600 text-white text-9xl  shadow-xl">
+                            <div
+                                className="flex items-center justify-center w-40 h-40 md:w-80 md:h-80 rounded-full text-white text-4xl md:text-9xl shadow-xl bg-blue-500">
                                 +150
                             </div>
-                            <div className="mt-2 text-4xl text-center">Happy Patients</div>
+                            <div className="mt-2 text-2xl md:text-4xl text-center text-blue-500">
+                                Happy Patients
+                            </div>
+                        </div>
+                        <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center">
+                            <div className="text-2xl md:text-4xl mb-4 text-blue-500">
+                                You can find us
+                            </div>
+                            <div className="w-full h-60 md:h-80 bg-gray-300 rounded-xl shadow-xl">
+                                <iframe
+                                    className="w-full h-full rounded-xl shadow-xl"
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d196.54487515085663!2d23.759763974933495!3d37.98370987626771!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a1bd557f467fd1%3A0x61f97fa3f099b4c6!2zwqvOmc-Az4DOv866z4HOrM-EzrXOuc6_wrsgzpPOtc69zrnOus-MIM6dzr_Pg86_zrrOv868zrXOr86_IM6RzrjOt869z47OvQ!5e0!3m2!1sel!2sgr!4v1720444210514!5m2!1sel!2sgr"
+                                    frameBorder="0"
+                                    allowFullScreen=""
+                                    aria-hidden="false"
+                                    tabIndex="0">
+                                </iframe>
+                            </div>
                         </div>
                     </div>
                 ) : (
@@ -134,7 +166,7 @@ const AuthApp = () => {
                 )}
 
 
-                {(role === 'Patient' || role === 'Doctor' || role === 'Secretary' ) && action === "Sign up" && (
+                {(role === 'Patient' || role === 'Doctor' || role === 'Secretary') && action === "Sign up" && (
                     <React.Fragment>
                         <div className='input'>
                             <img src={generalUserIMG} alt={' '}></img>
@@ -212,16 +244,18 @@ const AuthApp = () => {
                         <input type={'email'} placeholder={"email"} value={email} onChange={handleEmailChange}></input>
                     </div>
                     <div className={'input'}>
-                    <img src={passwdIMG} alt={' '}></img>
-                    <input type={'password'} placeholder={"password"} value={password}
-                           onChange={handlePasswordChange}></input>
-                </div>
-                    </React.Fragment> : <div></div>
-            }
-
-                <div className={'submit-container'}>
-                    <div className={'submit'} onClick={handleSubmit}>Submit</div>
-                </div>
+                        <img src={passwdIMG} alt={' '}></img>
+                        <input type={'password'} placeholder={"password"} value={password}
+                               onChange={handlePasswordChange}></input>
+                    </div>
+                </React.Fragment> : <div></div>
+                }
+                {action !== "Visitor" ?
+                    <div className={'submit-container'}>
+                        <div className={'submit shadow-xl'} onClick={handleSubmit}>Submit</div>
+                    </div>
+                    : <></>
+                }
 
                 <div style={{
                     display: 'flex',
@@ -234,25 +268,34 @@ const AuthApp = () => {
                 </div>
 
 
-                <div className={'submit-container'}>
-                    <div className={'submit-container'}>
-                        <div className={action === "Sign up" ? "submit gray" : "submit"}
-                             onClick={() => {
-                                 setAction("Sign up");
-                             }}>Sign up
-                        </div>
-                        <div className={action === "Log in" ? "submit gray" : "submit"}
-                             onClick={() => {
-                                 setAction("Log in");
-                             }}>Log in
-                        </div>
-                        <div className={action === "Visitor" ? "submit gray" : "submit"}
-                             onClick={() => {
-                                 setAction("Visitor");
-                             }}>Visitor
-                        </div>
+                <div className="submit-container grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div
+                        className={`submit ${action === "Sign up" ? "gray" : ""} shadow-xl`}
+                        onClick={() => {
+                            handleActionChange("Sign up");
+                        }}
+                    >
+                        Sign up
+                    </div>
+                    <div
+                        className={`submit ${action === "Log in" ? "gray" : ""} shadow-xl`}
+                        onClick={() => {
+                            handleActionChange("Log in");
+                        }}
+                    >
+                        Log in
+                    </div>
+                    <div
+                        className={`submit ${action === "Visitor" ? "gray" : ""} shadow-xl`}
+                        onClick={() => {
+                            handleActionChange("Visitor");
+                        }}
+                    >
+                        Visitor
                     </div>
                 </div>
+
+
             </div>
         </div>
     );
