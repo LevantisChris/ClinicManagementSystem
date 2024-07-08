@@ -2,6 +2,7 @@ import React, {useContext} from 'react'
 
 
 import logo from '../../../assets/health.png';
+import user_32IMG from '../../../assets/icons8-user-50.png';
 import GlobalContext from "../context/GlobalContext";
 import dayjs from "dayjs";
 
@@ -44,6 +45,13 @@ export default function CalendarHeader() {
             <h2 className={'ml-4 text-xl text-gray-500 font-bold'}>
                 {dayjs(new Date(dayjs().year(), monthIndex)).format("MMMM YYYY")}
             </h2>
+            <div className="flex items-center ml-auto gap-2"> {/* Align items to the right */}
+                <div className="grid grid-rows-2 grid-cols-1 justify-items-end">
+                    <span className="text-gray-600">Chris Levantis</span>
+                    <span className="text-gray-600 text-xs">Doctor</span>
+                </div>
+                <img src={user_32IMG} alt="User Icon" className="w-8 h-8 rounded-full mr-2"/>
+            </div>
         </header>
     );
 }
