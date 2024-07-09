@@ -2,12 +2,10 @@ import React, {useContext, useRef, useState} from 'react';
 import {motion} from 'framer-motion';
 import Calendar from 'react-calendar';
 import ActiveHoursModalCSS from './compCSS/ActiveHoursModalCSS.css';
-import InsertModal from './InsertModal';
 import GlobalContext from '../context/GlobalContext';
 
 export default function ActiveHoursModal({onClose}) {
     const {
-        setShowInsertModal,
         daySelected,
         selectedOptions,
         setSelectedOptions,
@@ -20,6 +18,8 @@ export default function ActiveHoursModal({onClose}) {
     const [draggedId, setDraggedId] = useState(null);
     const [hours, setHours] = useState([]);
 
+    const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+
     const handleDateChange = newDate => {
         setDate(newDate);
         console.log('Selected date:', newDate);
@@ -28,6 +28,7 @@ export default function ActiveHoursModal({onClose}) {
     const handleMouseDown = (event, hourId, minute) => {
         event.preventDefault();
         clearList();
+        setShowSubmitDialog(false);
         setIsDragging(true);
         dragItemRef.current = {hourId, minute};
     };
@@ -35,6 +36,7 @@ export default function ActiveHoursModal({onClose}) {
     const handleMouseMove = (event, hourId, minute) => {
         event.preventDefault();
         if (isDragging) {
+            setShowSubmitDialog(false);
             setDraggedId(`${minute}-${hourId}`);
             addToList(`${hourId}:${minute}`);
             console.log('Dragging over MouseMove:', hourId, minute);
@@ -45,6 +47,7 @@ export default function ActiveHoursModal({onClose}) {
         setIsDragging(false);
         dragItemRef.current = null;
         //setDraggedId(null);
+        setShowSubmitDialog(true);
         console.log("dragging-mouseUp stopped");
     };
 
@@ -145,6 +148,16 @@ export default function ActiveHoursModal({onClose}) {
                             className="overflow-y-auto"
                             style={{maxHeight: '600px'}}
                         >
+                            {(showSubmitDialog === true && selectedOptions.length > 0) ?
+                                <div
+                                    className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
+                                    <a href="#"
+                                       className="block px-4 py-2 text-gray-800 hover:bg-green-200"
+                                    >Submit</a>
+                                    <a href="#"
+                                       className="block px-4 py-2 text-gray-800 hover:bg-red-200">Close</a>
+                                </div>
+                                : console.log("Dont show")}
                             {hours.map(hour => (<React.Fragment key={hour.id}>
                                     <div
                                         id={"00-" + hour.id}
