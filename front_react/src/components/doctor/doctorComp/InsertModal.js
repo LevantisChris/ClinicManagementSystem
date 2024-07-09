@@ -2,7 +2,6 @@ import React, { useContext, useState, useRef } from "react";
 import GlobalContext from "../context/GlobalContext";
 import DescriptionInsertModal from "./DescriptionInsertModal";
 import { motion } from "framer-motion";
-import InsertModalCSS from "./compCSS/InsertModalCSS.css";
 
 /* The modal that helps the user pick time slots */
 
@@ -144,23 +143,23 @@ export default function InsertModal() {
       <form className="g-amber-50 rounded-lg shadow-2xl w-11/12
       max-w-full max-h-screen overflow-auto">
         <header
-          className={"bg-gray-100 px-4 py-2 flex justify-between items-center"}
+            className={"bg-gray-100 px-4 py-2 flex justify-between items-center"}
         >
           <p className="text-slate-700 font-black hover:text-sky-700">
             {daySelected.format("dddd, MMMM, DD")}
           </p>
           <div>
             <button
-              onClick={() => {
-                setShowDescriptionInsertModal(false);
-                setShowInsertModal(false);
-                clearList();
-              }}
+                onClick={() => {
+                  setShowDescriptionInsertModal(false);
+                  setShowInsertModal(false);
+                  clearList();
+                }}
             >
               <span
-                className={
-                  "material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-outs"
-                }
+                  className={
+                    "material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-outs"
+                  }
               >
                 close
               </span>
