@@ -139,7 +139,7 @@ export default function InsertModal() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.1, ease: "easeOut" }}
-      className="h-screen w- w-screen fixed left-0 top-0 flex justify-center items-center">
+      className="h-max w-screen fixed flex justify-center items-center">
       <form className="g-amber-50 rounded-lg shadow-2xl w-11/12
       max-w-full max-h-screen overflow-auto">
         <header
