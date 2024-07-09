@@ -1,0 +1,4 @@
+.scrollable-sidebar {
+    max-height: 100vh; /* Adjust as needed */
+    overflow-y: hidden;
+}

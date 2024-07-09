@@ -44,7 +44,7 @@ export default function SmallCalendar() {
   return (
     <div
       className={
-        "mt-9 hover:bg-gray-100 p-2 rounded-xl transition duration-300 ease-in-out"
+        "bg-white mt-9 mb-5 hover:bg-gray-100 p-2 rounded-xl transition duration-300 ease-in-out border-4"
       }
     >
       {" "}
