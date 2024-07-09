@@ -2,6 +2,9 @@ import React, { useContext, useState, useRef } from "react";
 import GlobalContext from "../context/GlobalContext";
 import DescriptionInsertModal from "./DescriptionInsertModal";
 import { motion } from "framer-motion";
+import InsertModalCSS from "./compCSS/InsertModalCSS.css";
+
+/* The modal that helps the user pick time slots */
 
 export default function InsertModal() {
   const {
@@ -137,9 +140,9 @@ export default function InsertModal() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.1, ease: "easeOut" }}
-    
       className="h-screen w- w-screen fixed left-0 top-0 flex justify-center items-center">
-      <form className="g-amber-50 rounded-lg shadow-2xl w-11/12">
+      <form className="g-amber-50 rounded-lg shadow-2xl w-11/12
+      max-w-full max-h-screen overflow-auto">
         <header
           className={"bg-gray-100 px-4 py-2 flex justify-between items-center"}
         >

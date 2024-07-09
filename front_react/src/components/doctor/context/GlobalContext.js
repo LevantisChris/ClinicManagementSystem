@@ -17,6 +17,9 @@ const GlobalContext = React.createContext({
     showDescriptionInsertModal: false,
     setShowDescriptionInsertModal: () => {},
 
+    showActiveHoursModal: false,
+    setShowActiveHoursModal: () => {},
+
     selectedOptions: [],
     setSelectedOptions: () => {},
     clearList: () => {},

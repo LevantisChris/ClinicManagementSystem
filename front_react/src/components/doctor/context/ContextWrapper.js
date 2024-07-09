@@ -43,6 +43,9 @@ export default function ContextWrapper(props) {
   const [showDescriptionInsertModal, setShowDescriptionInsertModal] =
     useState(false); /* This state is to know when to show the modal that the user will add the info for an event after the selection of the hours */
 
+  const [showActiveHoursModal, setShowActiveHoursModal] =
+    useState(false); /* This state is for the Active Hours Modal, to know when to show it */
+
   const filteredEvents = useMemo(() => {
     return savedEvents.filter((evt) =>
       labels
@@ -111,6 +114,9 @@ export default function ContextWrapper(props) {
 
         showDescriptionInsertModal,
         setShowDescriptionInsertModal,
+
+        showActiveHoursModal,
+        setShowActiveHoursModal,
 
         selectedOptions,
         setSelectedOptions,
