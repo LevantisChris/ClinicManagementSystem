@@ -7,10 +7,16 @@ import Month from "./doctorComp/Month";
 import GlobalContext from "./context/GlobalContext";
 import EventModal from "./doctorComp/EventModal";
 import InsertModal from "./doctorComp/InsertModal";
+import SearchAppointments from "./doctorComp/SearchAppointments";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
-    const {monthIndex, showEventModal, showInsertModal} = useContext(GlobalContext);
+    const {
+        monthIndex,
+        showEventModal,
+        showInsertModal,
+        showSearchAppointments
+    } = useContext(GlobalContext);
 
     useEffect(() => {
         setCurrentMonth(getMonth(monthIndex));
@@ -23,8 +29,8 @@ function DoctorApp() {
             <div className={'h-screen flex flex-col'}>
                 <CalendarHeader />
                 <div className={'flex flex-1'}>
-                    <SideBar />
-                    <Month month={currentMonth}/>
+                    <SideBar/>
+                    {showSearchAppointments === false ? <Month month={currentMonth}/> : <SearchAppointments/>}
                 </div>
             </div>
         </React.Fragment>

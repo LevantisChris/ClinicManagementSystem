@@ -1,7 +1,8 @@
-import React, {useState} from 'react'
+import React, {useContext, useState} from 'react'
 import CreateEventButton from './CreateEventButton'
 import SmallCalendar from "./SmallCalendar";
 import SideBarCSS from "./compCSS/SideBarCSS.css"
+import GlobalContext from "../context/GlobalContext";
 
 export default function SideBar() {
     const [activeCategory, setActiveCategory] = useState(null); // for dynamic sub-categories
@@ -9,6 +10,11 @@ export default function SideBar() {
     const handleCategoryClick = (category) => {
         setActiveCategory(activeCategory === category ? null : category);
     };
+
+    const {
+        showSearchAppointments,
+        setShowSearchAppointments
+    } = useContext(GlobalContext);
 
     return (<aside className={'border p-5'}>
             <div className={"w-64 scrollable-sidebar"}>
@@ -22,7 +28,6 @@ export default function SideBar() {
                     <nav className="">
                         <div>
                             <a
-                                href="#"
                                 onClick={() => handleCategoryClick('home')}
                                 className="m-1 bg-gray-200 block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-400 hover:text-white"
                             >
@@ -35,8 +40,12 @@ export default function SideBar() {
                             </a>
 
                             {activeCategory === 'home' && (<div className="ml-4">
-                                <a href=""
-                                   className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white">
+                                <a
+                                    className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                    onClick={() =>
+                                        ( showSearchAppointments === false ?
+                                            setShowSearchAppointments(true) :
+                                            setShowSearchAppointments(false) )}>
                                     Search Appointments
                                 </a>
                             </div>)}

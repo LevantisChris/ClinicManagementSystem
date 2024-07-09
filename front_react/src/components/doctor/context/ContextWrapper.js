@@ -46,6 +46,9 @@ export default function ContextWrapper(props) {
   const [showActiveHoursModal, setShowActiveHoursModal] =
     useState(false); /* This state is for the Active Hours Modal, to know when to show it */
 
+   const [showSearchAppointments, setShowSearchAppointments]
+    = useState(false); /* This is for the switching between the Calendar (Month) and the view for the Search Appointments */
+
   const filteredEvents = useMemo(() => {
     return savedEvents.filter((evt) =>
       labels
@@ -117,6 +120,9 @@ export default function ContextWrapper(props) {
 
         showActiveHoursModal,
         setShowActiveHoursModal,
+
+        showSearchAppointments,
+        setShowSearchAppointments,
 
         selectedOptions,
         setSelectedOptions,
