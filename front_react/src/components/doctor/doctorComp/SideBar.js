@@ -40,14 +40,16 @@ export default function SideBar() {
                             </a>
 
                             {activeCategory === 'home' && (<div className="ml-4">
-                                <a
-                                    className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
-                                    onClick={() =>
-                                        ( showSearchAppointments === false ?
-                                            setShowSearchAppointments(true) :
-                                            setShowSearchAppointments(false) )}>
-                                    Search Appointments
-                                </a>
+                                <div className={"flex items-center ml-5"}>
+                                    <span className="material-icons-outlined text-sm">
+                                        arrow_forward_ios
+                                    </span>
+                                    <a
+                                        className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                        onClick={() => (showSearchAppointments === false ? setShowSearchAppointments(true) : setShowSearchAppointments(false))}>
+                                        Search Appointments
+                                    </a>
+                                </div>
                             </div>)}
                         </div>
                         <div>
