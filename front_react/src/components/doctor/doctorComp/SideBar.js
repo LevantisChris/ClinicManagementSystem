@@ -16,7 +16,8 @@ export default function SideBar() {
         setShowSearchAppointments
     } = useContext(GlobalContext);
 
-    return (<aside className={'border p-5'}>
+    return (
+        <aside className={'p-5'}>
             <div className={"w-64 scrollable-sidebar"}>
                 <CreateEventButton/>
                 <SmallCalendar/>

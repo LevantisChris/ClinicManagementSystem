@@ -12,7 +12,8 @@ export default function CalendarHeader() {
     const {monthIndex,
         setMonthIndex,
         showActiveHoursModal,
-        setShowActiveHoursModal
+        setShowActiveHoursModal,
+        showSearchAppointments
     } = useContext(GlobalContext);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -50,22 +51,31 @@ export default function CalendarHeader() {
             <header className={'px-4 py-2 flex items-center'}>
                 <img src={logo} alt={'Calendar'} className={'mr-2 w-12 h-12'}/>
                 <h1 className={'mr-10 text-xl text-gray-500 font-bold'}>HealthSyS</h1>
-                <button className={'border rounded py-2 px-4 mr-5'} onClick={handleReset}>
-                    Today
-                </button>
-                <button onClick={handlePrevMonth}>
-                    <span className={'material-icons-outlined cursor-pointer text-gray-600 mx-2'}>
-                        chevron_left
-                    </span>
-                </button>
-                <button onClick={handleNextMonth}>
-                    <span className={'material-icons-outlined cursor-pointer text-gray-600 mx-2'}>
-                        chevron_right
-                    </span>
-                </button>
-                <h2 className={'ml-4 text-xl text-gray-500 font-bold'}>
-                    {dayjs(new Date(dayjs().year(), monthIndex)).format("MMMM YYYY")}
-                </h2>
+
+                {
+                    showSearchAppointments === false ? (
+                        <>
+                            <button className="border rounded py-2 px-4 mr-5" onClick={handleReset}>
+                                Today
+                            </button>
+                            <button onClick={handlePrevMonth}>
+                            <span className="material-icons-outlined cursor-pointer text-gray-600 mx-2">
+                                chevron_left
+                            </span>
+                                        </button>
+                                        <button onClick={handleNextMonth}>
+                            <span className="material-icons-outlined cursor-pointer text-gray-600 mx-2">
+                                chevron_right
+                            </span>
+                            </button>
+                            <h2 className="ml-4 text-xl text-gray-500 font-bold">
+                                {dayjs(new Date(dayjs().year(), monthIndex)).format("MMMM YYYY")}
+                            </h2>
+                        </>
+                    ) : (<div></div>)
+                }
+
+
                 <div className="flex items-center ml-auto gap-2">
                     <div className="grid grid-rows-2 grid-cols-1 justify-items-end">
                         <span className="text-gray-600">Chris Levantis</span>
