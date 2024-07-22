@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.levantis</groupId>
-	<artifactId>clinicManagment</artifactId>
+	<artifactId>clinicManagement</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>clinicManagment</name>
-	<description>Clinic Project.</description>
+	<name>clinicManagement</name>
+	<description>Clinic Management Project.</description>
 	<url/>
 	<licenses>
 		<license/>

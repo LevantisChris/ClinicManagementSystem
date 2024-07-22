@@ -1,13 +1,13 @@
-package com.levantis.clinicManagment;
+package com.levantis.clinicManagement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ClinicManagmentApplication {
+public class ClinicManagementApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ClinicManagmentApplication.class, args);
+		SpringApplication.run(ClinicManagementApplication.class, args);
 	}
 
 }
