@@ -1,16 +1,27 @@
 package com.levantis.clinicManagement.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.levantis.clinicManagement.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+import java.util.List;
+
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true) /* Default is false  */
 public class UserDTO {
 
+    private int statusCode;
+    private String error;
+    private String message;
+    private String token;
+    private String refreshToken;
+    private String expirationTime;
+    //
     private Integer userId;
     private String userName;
     private String userSurname;
@@ -21,4 +32,7 @@ public class UserDTO {
     // Optional
     private Integer patientId;
     private Integer doctorId;
+    //
+    private User users;
+    private List<User> userList;
 }

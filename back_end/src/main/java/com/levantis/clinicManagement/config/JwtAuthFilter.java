@@ -1,41 +1,57 @@
 package com.levantis.clinicManagement.config;
 
-import jakarta.servlet.Filter;
+import com.levantis.clinicManagement.service.JwtUtils;
+import com.levantis.clinicManagement.service.UserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@RequiredArgsConstructor
-public class JwtAuthFilter implements OncePerRequestFilter {
+@Component
+public class JwtAuthFilter extends OncePerRequestFilter {
 
+    @Autowired
+    private JwtUtils jwtUtils;
 
-    private UserAuthProvider userAuthProvider;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwtToken;
+        final String userEmail;
 
-        if(header != null) {
-            String[] elements = header.split(" ");
+        if(authHeader == null || authHeader.isBlank()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            if(elements.length == 2 && "Bearer".equals(elements[0])) {
-                try {
-                    SecurityContextHolder.getContext().setAuthentication(
-                            userAuthProvider.validateToker(elements[1]);
-                    );
-                } catch (RuntimeException e) {
-                    SecurityContextHolder.clearContext();
-                    throw e;
-                }
+        jwtToken = authHeader.substring(7);
+        userEmail = jwtUtils.extractUsername(jwtToken);
+
+        if(userEmail == null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+
+            if(jwtUtils.isTokenValid(jwtToken, userDetails)) {
+                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+                UsernamePasswordAuthenticationToken token
+                        = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities()
+                );
+                token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                securityContext.setAuthentication(token);
+                SecurityContextHolder.setContext(securityContext);
             }
         }
         filterChain.doFilter(request, response);

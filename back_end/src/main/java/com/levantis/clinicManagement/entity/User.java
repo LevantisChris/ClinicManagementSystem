@@ -1,9 +1,15 @@
 package com.levantis.clinicManagement.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +30,8 @@ public class User {
 
     @Column(nullable = false, length = 60)
     private String user_password;
+
+    private String role_str;
 
     @ManyToOne
     @JoinColumn(name = "user_role", referencedColumnName = "role_id", nullable = false)
@@ -108,5 +116,35 @@ public class User {
 
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role_str));
+    }
+
+    @Override
+    public String getPassword() {
+        return "";
+    }
+
+    @Override
+    public String getUsername() {
+        return user_email; /* as username we have the email and not the username ... */
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
