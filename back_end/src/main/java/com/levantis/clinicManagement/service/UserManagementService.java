@@ -33,7 +33,7 @@ public class UserManagementService {
             user.setUser_name(registrationRequest.getUserName());
             user.setUser_surname(registrationRequest.getUserSurname());
             user.setUser_idNumber(registrationRequest.getUserIdNumber());
-            user.setUser_email(registrationRequest.getUserEmail());
+            user.setEmail(registrationRequest.getUserEmail());
             user.setUser_password(passwordEncoder.encode(registrationRequest.getPassword()));
 
             User userResult = userRepository.save(user);
@@ -57,7 +57,7 @@ public class UserManagementService {
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUserEmail(),
                             loginRequest.getPassword()));
-            var user = userRepository.findByEmail(loginRequest.getUserEmail()).orElseThrow();
+            var user = userRepository.findByUser_email(loginRequest.getUserEmail()).orElseThrow();
             var jwt = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
             resp.setStatusCode(200);
@@ -76,7 +76,7 @@ public class UserManagementService {
         UserDTO response = new UserDTO();
         try{
             String ourEmail = jwtUtils.extractUsername(refreshTokenReqiest.getToken());
-            User users = userRepository.findByEmail(ourEmail).orElseThrow();
+            User users = userRepository.findByUser_email(ourEmail).orElseThrow();
             if (jwtUtils.isTokenValid(refreshTokenReqiest.getToken(), users)) {
                 var jwt = jwtUtils.generateToken(users);
                 response.setStatusCode(200);
@@ -156,7 +156,7 @@ public class UserManagementService {
             Optional<User> userOptional = userRepository.findById(userId);
             if (userOptional.isPresent()) {
                 User existingUser = userOptional.get();
-                existingUser.setUser_email(updatedUser.getUser_email());
+                existingUser.setEmail(updatedUser.getEmail());
                 existingUser.setUser_name(updatedUser.getUser_name());
                 existingUser.setUser_surname(updatedUser.getUser_surname());
                 existingUser.setRole(updatedUser.getRole());
@@ -185,7 +185,7 @@ public class UserManagementService {
     public UserDTO getMyInfo(String email){
         UserDTO UserDTO = new UserDTO();
         try {
-            Optional<User> userOptional = userRepository.findByEmail(email);
+            Optional<User> userOptional = userRepository.findByUser_email(email);
             if (userOptional.isPresent()) {
                 UserDTO.setUsers(userOptional.get());
                 UserDTO.setStatusCode(200);

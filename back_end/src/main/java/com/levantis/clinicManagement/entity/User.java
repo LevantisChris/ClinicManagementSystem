@@ -26,7 +26,7 @@ public class User implements UserDetails {
     private String user_idNumber;
 
     @Column(nullable = false, length = 150, unique = true)
-    private String user_email;
+    private String email;
 
     @Column(nullable = false, length = 60)
     private String user_password;
@@ -78,12 +78,12 @@ public class User implements UserDetails {
         this.user_idNumber = user_idNumber;
     }
 
-    public String getUser_email() {
-        return user_email;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUser_email(String user_email) {
-        this.user_email = user_email;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUser_password() {
@@ -130,7 +130,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user_email; /* as username we have the email and not the username ... */
+        return email; /* as username we have the email and not the username ... */
     }
 
     @Override
