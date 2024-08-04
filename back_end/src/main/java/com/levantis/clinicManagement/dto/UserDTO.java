@@ -29,6 +29,7 @@ public class UserDTO {
     private String userEmail;
     private Integer roleId;
     private String roleName;
+    private String password;
     // Optional
     private Integer patientId;
     private Integer doctorId;
