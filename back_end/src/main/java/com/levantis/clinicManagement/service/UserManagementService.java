@@ -1,14 +1,22 @@
 package com.levantis.clinicManagement.service;
 
 import com.levantis.clinicManagement.dto.UserDTO;
+import com.levantis.clinicManagement.entity.Patient;
+import com.levantis.clinicManagement.entity.Role;
 import com.levantis.clinicManagement.entity.User;
+import com.levantis.clinicManagement.repository.PatientRepository;
+import com.levantis.clinicManagement.repository.RoleRepository;
 import com.levantis.clinicManagement.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +24,14 @@ import java.util.Optional;
 @Service
 public class UserManagementService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserManagementService.class);
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private PatientRepository patientRepository;
+
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
@@ -25,6 +39,7 @@ public class UserManagementService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /* Sign up a user in the system */
     public UserDTO registerUser(UserDTO registrationRequest) {
         UserDTO resp = new UserDTO();
         try {
@@ -34,14 +49,23 @@ public class UserManagementService {
             user.setUser_surname(registrationRequest.getUserSurname());
             user.setUser_idNumber(registrationRequest.getUserIdNumber());
             user.setEmail(registrationRequest.getUserEmail());
-            user.setUser_password(passwordEncoder.encode(registrationRequest.getPassword()));
+            user.setUser_password(passwordEncoder.encode(registrationRequest.getUserPassword()));
+
+            Role role = roleRepository.findById(registrationRequest.getRoleId())
+                    .orElseThrow(() -> new RuntimeException("Role not found"));
+            user.setRole(role);
+            user.setRole_str(role.getRole_description());
 
             User userResult = userRepository.save(user);
+
+            // Continue with updating the other tables (Patient and Doctor) based on the role
+            registerRoleUser(user, registrationRequest);
 
             if(userResult.getUser_id() > 0) {
                 resp.setUsers(userResult);
                 resp.setMessage("User registered successfully");
                 resp.setStatusCode(200);
+                log.info("User registered successfully, email: {}", registrationRequest.getUserEmail());
             }
         } catch (Exception e) {
             resp.setStatusCode(500);
@@ -50,14 +74,29 @@ public class UserManagementService {
         return resp;
     }
 
+    private void registerRoleUser(User user, UserDTO registrationRequest) throws Exception {
+        System.out.println("TEST --> " + user.getRole_str());
+        if(user.getRole_str().equals("USER_PATIENT")) {
+            Patient patient = new Patient();
+            patient.setUser(user);
+            patient.setPatient_AMKA(registrationRequest.getPatientAMKA());
+            patient.setPatientRegistrationDate(Date.valueOf(LocalDate.now()));
+            Patient patientResult = patientRepository.save(patient);
+            if(patientResult.getPatient_id() > 0) {
+                log.info("Patient registered successfully, email: {}", registrationRequest.getUserEmail());
+            } else
+                throw new Exception();
+        }
+    }
+
     public UserDTO login(UserDTO loginRequest) {
         UserDTO resp = new UserDTO();
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUserEmail(),
-                            loginRequest.getPassword()));
-            var user = userRepository.findByUser_email(loginRequest.getUserEmail()).orElseThrow();
+                            loginRequest.getUserPassword()));
+            var user = userRepository.findByEmail(loginRequest.getUserEmail()).orElseThrow();
             var jwt = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
             resp.setStatusCode(200);
@@ -76,7 +115,7 @@ public class UserManagementService {
         UserDTO response = new UserDTO();
         try{
             String ourEmail = jwtUtils.extractUsername(refreshTokenReqiest.getToken());
-            User users = userRepository.findByUser_email(ourEmail).orElseThrow();
+            User users = userRepository.findByEmail(ourEmail).orElseThrow();
             if (jwtUtils.isTokenValid(refreshTokenReqiest.getToken(), users)) {
                 var jwt = jwtUtils.generateToken(users);
                 response.setStatusCode(200);
@@ -185,7 +224,7 @@ public class UserManagementService {
     public UserDTO getMyInfo(String email){
         UserDTO UserDTO = new UserDTO();
         try {
-            Optional<User> userOptional = userRepository.findByUser_email(email);
+            Optional<User> userOptional = userRepository.findByEmail(email);
             if (userOptional.isPresent()) {
                 UserDTO.setUsers(userOptional.get());
                 UserDTO.setStatusCode(200);

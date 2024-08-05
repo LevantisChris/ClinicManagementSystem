@@ -46,6 +46,7 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Doctor doctor;
 
+
     public Integer getUser_id() {
         return user_id;
     }
@@ -92,6 +93,14 @@ public class User implements UserDetails {
 
     public void setUser_password(String user_password) {
         this.user_password = user_password;
+    }
+
+    public String getRole_str() {
+        return role_str;
+    }
+
+    public void setRole_str(String role_str) {
+        this.role_str = role_str;
     }
 
     public Role getRole() {

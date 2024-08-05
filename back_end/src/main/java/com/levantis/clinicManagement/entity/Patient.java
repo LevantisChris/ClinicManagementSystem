@@ -9,6 +9,9 @@ public class Patient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "patient_id")
+    private Integer patient_id;
+
     @OneToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "user_id", nullable = false)
     private User user;
@@ -18,6 +21,14 @@ public class Patient {
 
     @Column(name = "patient_registrationDate", nullable = false)
     private Date patientRegistrationDate;
+
+    public Integer getPatient_id() {
+        return patient_id;
+    }
+
+    public void setPatient_id(Integer patient_id) {
+        this.patient_id = patient_id;
+    }
 
     public User getUser() {
         return user;

@@ -29,7 +29,9 @@ public class UserDTO {
     private String userEmail;
     private Integer roleId;
     private String roleName;
-    private String password;
+    private String userPassword;
+    //
+    private String patientAMKA;
     // Optional
     private Integer patientId;
     private Integer doctorId;
