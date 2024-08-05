@@ -31,7 +31,8 @@ public class UserDTO {
     private String roleName;
     private String userPassword;
     //
-    private String patientAMKA;
+    private String patientAMKA; // for patient
+    private Integer doctorSpecialityId; // for doctor
     // Optional
     private Integer patientId;
     private Integer doctorId;

@@ -1,12 +1,8 @@
 package com.levantis.clinicManagement.service;
 
 import com.levantis.clinicManagement.dto.UserDTO;
-import com.levantis.clinicManagement.entity.Patient;
-import com.levantis.clinicManagement.entity.Role;
-import com.levantis.clinicManagement.entity.User;
-import com.levantis.clinicManagement.repository.PatientRepository;
-import com.levantis.clinicManagement.repository.RoleRepository;
-import com.levantis.clinicManagement.repository.UserRepository;
+import com.levantis.clinicManagement.entity.*;
+import com.levantis.clinicManagement.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +34,10 @@ public class UserManagementService {
     private AuthenticationManager  authenticationManager;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private DoctorSpecialityRepository doctorSpecialityRepository;
+    @Autowired
+    private DoctorRepository doctorRepository;
 
     /* Sign up a user in the system */
     public UserDTO registerUser(UserDTO registrationRequest) {
@@ -75,18 +75,34 @@ public class UserManagementService {
     }
 
     private void registerRoleUser(User user, UserDTO registrationRequest) throws Exception {
-        System.out.println("TEST --> " + user.getRole_str());
-        if(user.getRole_str().equals("USER_PATIENT")) {
-            Patient patient = new Patient();
-            patient.setUser(user);
-            patient.setPatient_AMKA(registrationRequest.getPatientAMKA());
-            patient.setPatientRegistrationDate(Date.valueOf(LocalDate.now()));
-            Patient patientResult = patientRepository.save(patient);
-            if(patientResult.getPatient_id() > 0) {
-                log.info("Patient registered successfully, email: {}", registrationRequest.getUserEmail());
-            } else
-                throw new Exception();
-        }
+           try {
+               if (user.getRole_str().equals("USER_PATIENT")) {
+                   Patient patient = new Patient();
+                   patient.setUser(user);
+                   patient.setPatient_AMKA(registrationRequest.getPatientAMKA());
+                   patient.setPatientRegistrationDate(Date.valueOf(LocalDate.now()));
+                   Patient patientResult = patientRepository.save(patient);
+                   if (patientResult.getPatient_id() > 0) {
+                       log.info("Patient registered successfully, email: {}", registrationRequest.getUserEmail());
+                   } else
+                       throw new Exception();
+               } else if (user.getRole_str().equals("USER_DOCTOR")) {
+                   Doctor doctor = new Doctor();
+                   doctor.setUser(user);
+
+                   DoctorSpeciality doctorSpeciality =
+                           doctorSpecialityRepository.findById(registrationRequest.getDoctorSpecialityId())
+                                   .orElseThrow(() -> new RuntimeException("Doctor speciality not found"));
+                   doctor.setDoctorSpeciality(doctorSpeciality);
+                   Doctor doctorResult = doctorRepository.save(doctor);
+                   if (doctorResult.getDoctor_id() > 0) {
+                       log.info("Doctor registered successfully, email: {}", registrationRequest.getUserEmail());
+                   }
+               }
+           } catch (Exception e) {
+               e.printStackTrace();
+               throw new Exception();
+           }
     }
 
     public UserDTO login(UserDTO loginRequest) {

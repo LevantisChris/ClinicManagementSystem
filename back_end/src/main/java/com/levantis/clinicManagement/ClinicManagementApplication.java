@@ -1,6 +1,9 @@
 package com.levantis.clinicManagement;
 
+import com.levantis.clinicManagement.entity.DoctorSpeciality;
 import com.levantis.clinicManagement.entity.Role;
+import com.levantis.clinicManagement.enums.DoctorSpecialities;
+import com.levantis.clinicManagement.repository.DoctorSpecialityRepository;
 import com.levantis.clinicManagement.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +15,9 @@ public class ClinicManagementApplication implements CommandLineRunner {
 
 	@Autowired
 	private RoleRepository roleRepository;
+
+	@Autowired
+	private DoctorSpecialityRepository doctorSpecialityRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ClinicManagementApplication.class, args);
@@ -33,6 +39,25 @@ public class ClinicManagementApplication implements CommandLineRunner {
 			roleRepository.save(patientRole);
 			roleRepository.save(secretaryRole);
 			roleRepository.save(doctorRole);
+		}
+		if (doctorSpecialityRepository.findAll().isEmpty()) {
+			DoctorSpeciality anaesthesiology = new DoctorSpeciality();
+			anaesthesiology.setSpecialityDescription(DoctorSpecialities.Anesthesiology.toString());
+
+			DoctorSpeciality cardiology = new DoctorSpeciality();
+			cardiology.setSpecialityDescription(DoctorSpecialities.Cardiology.toString());
+
+			DoctorSpeciality forensicPathology = new DoctorSpeciality();
+			forensicPathology.setSpecialityDescription(DoctorSpecialities.Forensic_Pathology.toString());
+
+			DoctorSpeciality generalSurgery = new DoctorSpeciality();
+			generalSurgery.setSpecialityDescription(DoctorSpecialities.General_Surgery.toString());
+
+			// Save all specialties
+			doctorSpecialityRepository.save(anaesthesiology);
+			doctorSpecialityRepository.save(cardiology);
+			doctorSpecialityRepository.save(forensicPathology);
+			doctorSpecialityRepository.save(generalSurgery);
 		}
 	}
 }
