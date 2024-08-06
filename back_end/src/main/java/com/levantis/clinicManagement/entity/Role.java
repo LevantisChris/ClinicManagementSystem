@@ -1,5 +1,7 @@
 package com.levantis.clinicManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.*;
@@ -16,23 +18,12 @@ public class Role {
     @Column(nullable = false, length = 100)
     private String role_description;
 
-    @OneToMany(mappedBy = "role")
-    private Set<User> users;
-
     public Integer getRole_id() {
         return role_id;
     }
 
     public void setRole_id(Integer role_id) {
         this.role_id = role_id;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 
     public String getRole_description() {

@@ -127,16 +127,16 @@ public class UserManagementService {
         return resp;
     }
 
-    public UserDTO refreshToken(UserDTO refreshTokenReqiest){
+    public UserDTO refreshToken(UserDTO refreshTokenRequest){
         UserDTO response = new UserDTO();
         try{
-            String ourEmail = jwtUtils.extractUsername(refreshTokenReqiest.getToken());
+            String ourEmail = jwtUtils.extractUsername(refreshTokenRequest.getToken());
             User users = userRepository.findByEmail(ourEmail).orElseThrow();
-            if (jwtUtils.isTokenValid(refreshTokenReqiest.getToken(), users)) {
+            if (jwtUtils.isTokenValid(refreshTokenRequest.getToken(), users)) {
                 var jwt = jwtUtils.generateToken(users);
                 response.setStatusCode(200);
                 response.setToken(jwt);
-                response.setRefreshToken(refreshTokenReqiest.getToken());
+                response.setRefreshToken(refreshTokenRequest.getToken());
                 response.setExpirationTime("24Hr");
                 response.setMessage("Successfully Refreshed Token");
             }
@@ -152,7 +152,6 @@ public class UserManagementService {
 
     public UserDTO getAllUsers() {
         UserDTO UserDTO = new UserDTO();
-
         try {
             List<User> result = userRepository.findAll();
             if (!result.isEmpty()) {

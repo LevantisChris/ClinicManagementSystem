@@ -1,5 +1,7 @@
 package com.levantis.clinicManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,9 +42,14 @@ public class User implements UserDetails {
     /*
     *  https://stackoverflow.com/questions/13027214/what-is-the-meaning-of-the-cascadetype-all-for-a-manytoone-jpa-association
     * */
+    /* We add the @JsonIgnore because we have
+    *  circular reference between the entities
+    *  and that makes the JSON responses very long. */
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Patient patient;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Doctor doctor;
 

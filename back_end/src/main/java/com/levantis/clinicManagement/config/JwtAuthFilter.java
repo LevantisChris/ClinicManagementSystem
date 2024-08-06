@@ -39,11 +39,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         jwtToken = authHeader.substring(7);
         userEmail = jwtUtils.extractUsername(jwtToken);
+        System.out.println("TESTing --> " + userEmail);
 
-        if(userEmail == null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
             if(jwtUtils.isTokenValid(jwtToken, userDetails)) {
+                System.out.println("TEST --> " + userDetails.getAuthorities());
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken token
                         = new UsernamePasswordAuthenticationToken(
@@ -52,7 +54,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
+            } else {
+                logger.error("The toke is not valid");
             }
+        } else {
+            logger.error("Unsuccessful authentication");
         }
         filterChain.doFilter(request, response);
     }
