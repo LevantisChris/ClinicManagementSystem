@@ -1,20 +1,35 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import DoctorApp from "./components/doctor/DoctorApp";
 import AuthApp  from "./components/Auth/AuthApp";
 import './App.css';
+import UserService from "./services/UserService";
 
 const App = () => {
     return (
         <BrowserRouter>
             <div className={""}>
                 <Routes>
-                    /* NOTE: In v6 the render approach dont need to be implemented
-                    element do the job itself */
+                    <Route path={"/"}
+                           element={<AuthApp/>}/>
                     <Route path={"/doctor"}
                            element={<DoctorApp/>}/>
                     <Route path={"/auth"}
                            element={<AuthApp/>}/>
+
+                    {UserService.isDoctor()
+                        && UserService.isAuthenticated()
+                        &&
+                        (
+                            <>
+                                <Route path={"/doctor"}
+                                       element={<DoctorApp/>}/>
+                            </>
+                        )
+                    }
+                    <Route path={"*"}
+                           element={<Navigate to="/auth"/>}/>
+
                 </Routes>
             </div>
         </BrowserRouter>

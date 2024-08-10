@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import AuthAppCSS from './AuthAppCSS.css';
 
 import nameIMG from '../../assets/user_32.png';
+import passwordIMG from '../../assets/password_32.png';
 import doctorTypeIMG from '../../assets/doctor-type.png';
 import passwdIMG from '../../assets/passwd_32.png';
 import emailIMG from '../../assets/email_32.png';
@@ -10,6 +11,9 @@ import checkIMG from '../../assets/check.png';
 import generalUserIMG from '../../assets/user.png';
 import LogSignHeader from "./logSignComp/AuthHeader";
 import {color} from "framer-motion";
+import UserService from "../../services/UserService";
+import {useNavigate} from "react-router-dom";
+import {id} from "date-fns/locale";
 
 /*
 *   Patient: ID-Number, Name, Surname, email, password, ||AMKA||
@@ -38,18 +42,53 @@ const AuthApp = () => {
 
     const [loading, setLoading] = useState(false);
 
-    /* When the components mount make a GET request to /auth */
-    useEffect(() => {
-        // Fetch data when component mounts
-        callAPI();
-    }, []);
+    const [error, setError] = useState('');
 
-    const callAPI = () => {
-        fetch('http://localhost:5000/auth')
-            .then(res => res.text())
-            .then(res => setApiResponse(res))
-            .catch(error => console.log(error)); // Add error handling
-    };
+    const navigate = useNavigate();
+
+
+    const handleSubmit = async (e) => {
+        if(action === "Log in") {
+            console.log("Logging function...")
+            e.preventDefault();
+            try {
+                const userData = await UserService.login(email, password);
+                if (userData.token) {
+                    localStorage.setItem('token', userData.token);
+                    localStorage.setItem('role', userData.role);
+                    alert('User logged in successfully');
+                    navigate('/doctor')
+                } else {
+                    console.log(error.message)
+                    setError(userData.error.message)
+                }
+            } catch (error) {
+                console.log(error.message);
+                setError(error.message);
+                setTimeout(() => {
+                    setError('');
+                }, 5000);
+            }
+        } else { // Sign up/Register
+            e.preventDefault();
+            try {
+                // Call the register method from UserService
+
+                const token = localStorage.getItem('token');
+                await UserService.register({
+                    name, surname, idNumber, email, password, speciality, AMKA
+                }, token);
+
+                alert('User registered successfully');
+                navigate('/doctor');
+
+            } catch (error) {
+                console.error('Error registering user:', error.message);
+                alert('An error occurred while registering user');
+            }
+        }
+    }
+
     /* ------------------------------------------------------------------ */
 
     /* This is to get the values from the inputs */
@@ -93,7 +132,7 @@ const AuthApp = () => {
         }, 500); // delay for transition effect
     };
 
-    const handleSubmit = () => {
+    /*const handleSubmit = () => {
         const credentials = {
             AMKA: AMKA,
             email: email,
@@ -110,7 +149,7 @@ const AuthApp = () => {
             .then(response => response.text())
             .then(data => console.log(data))
             .catch(error => console.error('Error:', error));
-    };
+    };*/
 
     return (
         <div className={'container'}>
@@ -204,6 +243,15 @@ const AuthApp = () => {
                             />
                         </div>
                         <div className='input'>
+                            <img src={passwordIMG} alt=' '/>
+                            <input
+                                type='password'
+                                placeholder='Password'
+                                value={password}
+                                onChange={handleEmailChange}
+                            />
+                        </div>
+                        <div className='input'>
                             <img src={idNumberIMG} alt=' '/>
                             <input
                                 type='text'
@@ -241,7 +289,11 @@ const AuthApp = () => {
                 {action === "Log in" ? <React.Fragment>
                     <div className={'input'}>
                         <img src={emailIMG} alt={' '}></img>
-                        <input type={'email'} placeholder={"email"} value={email} onChange={handleEmailChange}></input>
+                        <input
+                            type={'email'}
+                            placeholder={"email"}
+                            value={email}
+                            onChange={handleEmailChange}></input>
                     </div>
                     <div className={'input'}>
                         <img src={passwdIMG} alt={' '}></img>

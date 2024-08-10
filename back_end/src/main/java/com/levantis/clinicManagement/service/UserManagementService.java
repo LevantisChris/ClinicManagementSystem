@@ -108,6 +108,7 @@ public class UserManagementService {
     public UserDTO login(UserDTO loginRequest) {
         UserDTO resp = new UserDTO();
         try {
+            System.out.println("TEST --> " + loginRequest.getUserEmail());
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUserEmail(),
@@ -117,10 +118,15 @@ public class UserManagementService {
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
             resp.setStatusCode(200);
             resp.setToken(jwt);
+
+            resp.setRoleId(user.getRole().getRole_id());
+            resp.setRoleName(user.getRole().getRole_description());
+
             resp.setRefreshToken(refreshToken);
             resp.setExpirationTime("24Hrs");
             resp.setMessage("User logged in successfully");
         } catch (Exception e) {
+            e.printStackTrace();
             resp.setStatusCode(500);
             resp.setError(e.getMessage());
         }

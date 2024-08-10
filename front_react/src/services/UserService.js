@@ -5,12 +5,17 @@ class UserService {
 
     static async login(email, password) {
         try {
-            const response = await axios.post(`${UserService.BASE_URL}/auth/login`, {email, password})
+            const response = await axios.post(`${UserService.BASE_URL}/auth/login`, {
+                userEmail: email,
+                userPassword: password
+            });
             return response.data;
         } catch (err) {
+            console.log(err.message);
             throw err;
         }
     }
+
 
     static async register(userData, token) {
         try {
