@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react'
 import CreateEventButton from './CreateEventButton'
 import SmallCalendar from "./SmallCalendar";
 import SideBarCSS from "./compCSS/SideBarCSS.css"
-import GlobalContext from "../context/GlobalContext";
+import GlobalContext from "../../../context/GlobalContext";
 
 export default function SideBar() {
     const [activeCategory, setActiveCategory] = useState(null); // for dynamic sub-categories

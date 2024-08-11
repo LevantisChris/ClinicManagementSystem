@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import GlobalContext from "../context/GlobalContext";
+import GlobalContext from "../../../context/GlobalContext";
 import {animate , motion} from 'framer-motion'
 /*-*/
 

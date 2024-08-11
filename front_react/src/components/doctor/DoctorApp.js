@@ -4,7 +4,7 @@ import { getMonth } from './util'
 import CalendarHeader from "./doctorComp/CalendarHeader";
 import SideBar from "./doctorComp/SideBar";
 import Month from "./doctorComp/Month";
-import GlobalContext from "./context/GlobalContext";
+import GlobalContext from "../../context/GlobalContext";
 import EventModal from "./doctorComp/EventModal";
 import InsertModal from "./doctorComp/InsertModal";
 import SearchAppointments from "./doctorComp/SearchAppointments";

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef } from "react";
-import GlobalContext from "../context/GlobalContext";
+import GlobalContext from "../../../context/GlobalContext";
 import DescriptionInsertModal from "./DescriptionInsertModal";
 import { motion } from "framer-motion";
 

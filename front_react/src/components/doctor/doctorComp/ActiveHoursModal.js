@@ -2,7 +2,7 @@ import React, {useContext, useRef, useState} from 'react';
 import {motion} from 'framer-motion';
 import Calendar from 'react-calendar';
 import ActiveHoursModalCSS from './compCSS/ActiveHoursModalCSS.css';
-import GlobalContext from '../context/GlobalContext';
+import GlobalContext from '../../../context/GlobalContext';
 
 export default function ActiveHoursModal({onClose}) {
     const {

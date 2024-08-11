@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 
 import logo from '../../../assets/health.png';
 import user_32IMG from '../../../assets/icons8-user-50.png';
-import GlobalContext from "../context/GlobalContext";
+import GlobalContext from "../../../context/GlobalContext";
 import dayjs from "dayjs";
 import DescriptionInsertModal from "./DescriptionInsertModal";
 import ActiveHoursModal from "./ActiveHoursModal";

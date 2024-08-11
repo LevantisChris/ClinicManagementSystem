@@ -50,11 +50,13 @@ class UserService {
 
     static isAuthenticated() {
         const token = localStorage.getItem("token");
+        console.log(token)
         return !!token;
     }
 
     static isDoctor() {
         const role = localStorage.getItem("role");
+        console.log(role);
         return role === 'USER_DOCTOR'
     }
 

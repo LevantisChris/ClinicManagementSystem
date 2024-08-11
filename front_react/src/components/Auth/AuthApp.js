@@ -78,7 +78,7 @@ const AuthApp = () => {
             const payload = atob(token.split('.')[1]);
             const decoded = JSON.parse(payload);
             console.log("TEST ROLE: " + decoded.role);
-            console.log("TEST EMAIL: " + payload);
+            return decoded.role
         } catch (e) {
             console.error("Error decoding token:", e);
             return null;
@@ -92,10 +92,10 @@ const AuthApp = () => {
             try {
                 const userData = await UserService.login(email, password);
                 if (userData.token) {
-                    localStorage.setItem('token', userData.token);
                     alert('User logged in successfully');
-                    getRole(userData.token);
                     navigate('/doctor')
+                    localStorage.setItem('token', userData.token);
+                    localStorage.setItem('role', getRole(userData.token));
                 } else {
                     console.log(error.message)
                     setError(userData.error.message)
@@ -136,7 +136,7 @@ const AuthApp = () => {
                 setSurname("")
 
                 localStorage.setItem('token', userData.token);
-                getRole(userData.token);
+                localStorage.setItem('role', getRole(userData.token));
             } catch (error) {
                 console.error('Error registering user:', error.message);
                 alert('An error occurred while registering user');

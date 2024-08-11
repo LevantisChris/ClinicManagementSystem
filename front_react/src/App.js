@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext, useState} from "react";
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import DoctorApp from "./components/doctor/DoctorApp";
 import AuthApp  from "./components/Auth/AuthApp";
@@ -10,23 +10,18 @@ const App = () => {
         <BrowserRouter>
             <div className={""}>
                 <Routes>
+                    {/*<Route path={"/"}
+                           element={ UserService.isDoctor() && UserService.isAuthenticated() ? <DoctorApp/>
+                               : UserService.isPatient() && UserService.isAuthenticated() ? <PatientApp/>
+                                   : UserService.isSecretary() && UserService.isAuthenticated() ? <SecretaryApp/>
+                    */}
                     <Route path={"/"}
                            element={<AuthApp/>}/>
-                    <Route path={"/doctor"}
-                           element={<DoctorApp/>}/>
                     <Route path={"/auth"}
                            element={<AuthApp/>}/>
-
-                    {UserService.isDoctor()
-                        && UserService.isAuthenticated()
-                        &&
-                        (
-                            <>
-                                <Route path={"/doctor"}
-                                       element={<DoctorApp/>}/>
-                            </>
-                        )
-                    }
+                    {/* Protected routes */}
+                    <Route path={"/doctor"}
+                           element={ UserService.isDoctor() && UserService.isAuthenticated() ? <DoctorApp/> : <Navigate to={'/'}/>}/>
                     <Route path={"*"}
                            element={<Navigate to="/auth"/>}/>
 

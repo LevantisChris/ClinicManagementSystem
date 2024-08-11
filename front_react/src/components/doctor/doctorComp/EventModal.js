@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import GlobalContext from "../context/GlobalContext";
+import GlobalContext from "../../../context/GlobalContext";
 
 const labelsClasses = [
     'red',
