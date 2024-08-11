@@ -1,6 +1,7 @@
 package com.levantis.clinicManagement.entity;
 
 import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
 public class DoctorSpeciality {
@@ -13,11 +14,10 @@ public class DoctorSpeciality {
     @Column(name = "speciality_description", nullable = false, length = 200)
     private String specialityDescription;
 
-    @OneToOne(mappedBy = "doctorSpeciality")
-    private Doctor doctor;
+    @OneToMany(mappedBy = "doctorSpeciality")
+    private Set<Doctor> doctors; // This represents the one-to-many relationship
 
-
-
+    // Getters and setters
     public Integer getSpecialityId() {
         return specialityId;
     }
@@ -34,11 +34,11 @@ public class DoctorSpeciality {
         this.specialityDescription = specialityDescription;
     }
 
-    public Doctor getDoctor() {
-        return doctor;
+    public Set<Doctor> getDoctors() {
+        return doctors;
     }
 
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
+    public void setDoctors(Set<Doctor> doctors) {
+        this.doctors = doctors;
     }
 }

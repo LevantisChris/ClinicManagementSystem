@@ -2,6 +2,7 @@ package com.levantis.clinicManagement.service;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
@@ -12,6 +13,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /* Class to handle JWT Web Tokens */
 @Component
@@ -28,8 +30,13 @@ public class JwtUtils {
 
     /* Generate a token for a given user */
     public String generateToken(UserDetails userDetails) {
+        String role = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("ROLE_USER"); // Default role if no role is found
         return Jwts.builder()
                 .subject(userDetails.getUsername()) // The subject is the username of the user
+                .claim("role", role) // Include role in the token
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(secretKey)
@@ -50,6 +57,10 @@ public class JwtUtils {
     /* Extract the username of a user, given the JWT token */
     public String extractUsername(String token) {
         return extractClaims(token, Claims::getSubject);
+    }
+
+    public String extractRole(String token) {
+        return extractClaims(token, claims -> claims.get("role", String.class));
     }
 
     public <T> T extractClaims(String token, Function<Claims, T> claimsTFunction) {

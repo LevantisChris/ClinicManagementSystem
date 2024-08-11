@@ -27,18 +27,18 @@ const AuthApp = () => {
     const [AMKA, setAMKA] = useState('');
 
     const [name, setName] = useState('');
+
     const [surname, setSurname] = useState('');
 
     const [idNumber, setIdNumber] = useState('');
 
     const [email, setEmail] = useState('');
+
     const [password, setPassword] = useState('');
 
     const [speciality, setSpeciality] = useState('Cardiology');
 
     const [role, setRole] = useState('Doctor');
-
-    const [apiResponse, setApiResponse] = useState('');
 
     const [loading, setLoading] = useState(false);
 
@@ -47,24 +47,62 @@ const AuthApp = () => {
     const navigate = useNavigate();
 
 
+    /* Set the role id based on the role str */
+    function setUserRoleId() {
+        if(role === "Patient") {
+            return 1
+        } else if(role === "Doctor") {
+            return 3
+        } else {
+            return 2
+        }
+    }
+
+    /* Very bad way of doing it, but I set
+       the speciality id based on the speciality str
+    *  so the server can understand the request. */
+    function setSpecialityId() {
+        if(speciality === "Anesthesiology") {
+            return 1
+        } else if(speciality === "Cardiology") {
+            return 2
+        } else if(speciality === "Forensic Pathology"){
+            return 3
+        } else { // General Surgery
+            return 4
+        }
+    }
+
+    function getRole(token) {
+        try {
+            const payload = atob(token.split('.')[1]);
+            const decoded = JSON.parse(payload);
+            console.log("TEST ROLE: " + decoded.role);
+            console.log("TEST EMAIL: " + payload);
+        } catch (e) {
+            console.error("Error decoding token:", e);
+            return null;
+        }
+    }
+
+
     const handleSubmit = async (e) => {
         if(action === "Log in") {
-            console.log("Logging function...")
             e.preventDefault();
             try {
                 const userData = await UserService.login(email, password);
                 if (userData.token) {
                     localStorage.setItem('token', userData.token);
-                    localStorage.setItem('role', userData.role);
                     alert('User logged in successfully');
+                    getRole(userData.token);
                     navigate('/doctor')
                 } else {
                     console.log(error.message)
                     setError(userData.error.message)
                 }
             } catch (error) {
-                console.log(error.message);
                 setError(error.message);
+                alert("Error in logging");
                 setTimeout(() => {
                     setError('');
                 }, 5000);
@@ -73,15 +111,32 @@ const AuthApp = () => {
             e.preventDefault();
             try {
                 // Call the register method from UserService
-
-                const token = localStorage.getItem('token');
-                await UserService.register({
-                    name, surname, idNumber, email, password, speciality, AMKA
-                }, token);
+                const userData = await UserService.register(
+                    {
+                        userEmail: email,
+                        userPassword: password,
+                        userIdNumber: idNumber,
+                        userName: name,
+                        userSurname: surname,
+                        patientAMKA: AMKA,
+                        doctorSpecialityId: setSpecialityId(),
+                        roleId: setUserRoleId()
+                    });
 
                 alert('User registered successfully');
                 navigate('/doctor');
 
+                setAMKA("")
+                setName("")
+                setEmail("")
+                setIdNumber("")
+                setPassword("")
+                setRole("")
+                setSpeciality("")
+                setSurname("")
+
+                localStorage.setItem('token', userData.token);
+                getRole(userData.token);
             } catch (error) {
                 console.error('Error registering user:', error.message);
                 alert('An error occurred while registering user');
@@ -131,25 +186,6 @@ const AuthApp = () => {
             setLoading(false);
         }, 500); // delay for transition effect
     };
-
-    /*const handleSubmit = () => {
-        const credentials = {
-            AMKA: AMKA,
-            email: email,
-            password: password
-        };
-
-        fetch('http://localhost:5000/auth', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(credentials)
-        })
-            .then(response => response.text())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
-    };*/
 
     return (
         <div className={'container'}>
@@ -248,7 +284,7 @@ const AuthApp = () => {
                                 type='password'
                                 placeholder='Password'
                                 value={password}
-                                onChange={handleEmailChange}
+                                onChange={handlePasswordChange}
                             />
                         </div>
                         <div className='input'>

@@ -9,20 +9,23 @@ class UserService {
                 userEmail: email,
                 userPassword: password
             });
-            return response.data;
+            if (response.data.statusCode === 500) {
+                throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
+            } else
+                return response.data;
         } catch (err) {
-            console.log(err.message);
-            throw err;
+           throw err;
         }
     }
 
 
-    static async register(userData, token) {
+    static async register(userData) {
         try {
-            const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData, {
-                headers: {Authorization: `Bearer ${token}`}
-            });
-            return response.data;
+            const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData);
+            if (response.data.statusCode === 500) {
+                throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
+            } else
+                return response.data;
         } catch (err) {
             throw err;
         }
@@ -43,7 +46,6 @@ class UserService {
     /* Check if its log in, role etc */
     static logout() {
         localStorage.removeItem("token");
-        localStorage.removeItem('role');
     }
 
     static isAuthenticated() {

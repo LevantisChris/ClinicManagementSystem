@@ -42,8 +42,17 @@ public class UserManagementService {
     /* Sign up a user in the system */
     public UserDTO registerUser(UserDTO registrationRequest) {
         UserDTO resp = new UserDTO();
+        if(registrationRequest.getUserName() == null || registrationRequest.getUserName().isEmpty()
+                || registrationRequest.getUserSurname() == null || registrationRequest.getUserSurname().isEmpty()
+                || registrationRequest.getUserIdNumber() == null || registrationRequest.getUserIdNumber().isEmpty()
+                || registrationRequest.getUserPassword() == null || registrationRequest.getUserPassword().isEmpty()
+                || registrationRequest.getUserEmail() == null || registrationRequest.getUserEmail().isEmpty()) {
+            log.error("Empty/null fields");
+            resp.setMessage("Empty/null fields.");
+            resp.setStatusCode(500);
+            return resp;
+        }
         try {
-
             User user = new User();
             user.setUser_name(registrationRequest.getUserName());
             user.setUser_surname(registrationRequest.getUserSurname());
@@ -55,6 +64,10 @@ public class UserManagementService {
                     .orElseThrow(() -> new RuntimeException("Role not found"));
             user.setRole(role);
             user.setRole_str(role.getRole_description());
+
+            var jwt = jwtUtils.generateToken(user);
+            var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
+            resp.setToken(jwt);
 
             User userResult = userRepository.save(user);
 
@@ -68,6 +81,8 @@ public class UserManagementService {
                 log.info("User registered successfully, email: {}", registrationRequest.getUserEmail());
             }
         } catch (Exception e) {
+            log.error("Error registering user", e);
+            e.printStackTrace();
             resp.setStatusCode(500);
             resp.setError(e.getMessage());
         }
@@ -108,7 +123,6 @@ public class UserManagementService {
     public UserDTO login(UserDTO loginRequest) {
         UserDTO resp = new UserDTO();
         try {
-            System.out.println("TEST --> " + loginRequest.getUserEmail());
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUserEmail(),
@@ -126,8 +140,9 @@ public class UserManagementService {
             resp.setExpirationTime("24Hrs");
             resp.setMessage("User logged in successfully");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error logging in", e);
             resp.setStatusCode(500);
+            resp.setMessage("User login failed in server: " + e.getMessage());
             resp.setError(e.getMessage());
         }
         return resp;

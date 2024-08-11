@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,13 +41,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         jwtToken = authHeader.substring(7);
         userEmail = jwtUtils.extractUsername(jwtToken);
-        System.out.println("TESTing --> " + userEmail);
 
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
             if(jwtUtils.isTokenValid(jwtToken, userDetails)) {
-                System.out.println("TEST --> " + userDetails.getAuthorities());
+                /* Extract role */
+                String role = jwtUtils.extractRole(jwtToken);
+                GrantedAuthority authority = new SimpleGrantedAuthority(role);
+
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken token
                         = new UsernamePasswordAuthenticationToken(
@@ -55,7 +59,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
             } else {
-                logger.error("The toke is not valid");
+                logger.error("The token is not valid");
             }
         } else {
             logger.error("Unsuccessful authentication");

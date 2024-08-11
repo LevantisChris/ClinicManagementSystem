@@ -14,10 +14,11 @@ public class Doctor {
     @JoinColumn(name = "doctor_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "doctor_speciality", referencedColumnName = "speciality_id", nullable = false)
-    private DoctorSpeciality doctorSpeciality;
+    private DoctorSpeciality doctorSpeciality; // Changed to ManyToOne
 
+    // Getters and setters
     public User getUser() {
         return user;
     }

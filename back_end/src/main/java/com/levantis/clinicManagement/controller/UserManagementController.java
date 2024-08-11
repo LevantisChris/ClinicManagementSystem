@@ -26,7 +26,6 @@ public class UserManagementController {
 
     @PostMapping("/auth/login")
     public ResponseEntity<UserDTO> login(@RequestBody UserDTO userDTO) {
-        System.out.println("TEST 2 " + userDTO.getUserEmail());
         return ResponseEntity.ok(userManagementService.login(userDTO));
     }
 
