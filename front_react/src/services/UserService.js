@@ -5,6 +5,26 @@ import GlobalContext from "../context/GlobalContext";
 class UserService {
     static BASE_URL = "http://localhost:8080";
 
+    static async getUserDetails(token) {
+        try {
+            if (token) {
+                console.log("In getUserDetails");
+                const response = await axios.get(`${UserService.BASE_URL}/user-details`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log(response.data);
+                return response.data;
+            } else {
+                throw new Error('Token is required');
+            }
+        } catch (err) {
+            console.error('Error fetching user details:', err);
+            throw err;
+        }
+    }
+
     static async login(email, password) {
         try {
             const response = await axios.post(`${UserService.BASE_URL}/auth/login`, {

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 
 import logo from '../../../assets/health.png';
@@ -7,13 +7,17 @@ import GlobalContext from "../../../context/GlobalContext";
 import dayjs from "dayjs";
 import DescriptionInsertModal from "./DescriptionInsertModal";
 import ActiveHoursModal from "./ActiveHoursModal";
+import {useNavigate} from "react-router-dom";
+import UserService from "../../../services/UserService";
 
 export default function CalendarHeader() {
     const {monthIndex,
         setMonthIndex,
         showActiveHoursModal,
         setShowActiveHoursModal,
-        showSearchAppointments
+        showSearchAppointments,
+        userAuthed,
+        setUserAuthed
     } = useContext(GlobalContext);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -78,8 +82,14 @@ export default function CalendarHeader() {
 
                 <div className="flex items-center ml-auto gap-2">
                     <div className="grid grid-rows-2 grid-cols-1 justify-items-end">
-                        <span className="text-gray-600">Chris Levantis</span>
-                        <span className="text-gray-600 text-xs">Doctor</span>
+                        <span className="text-gray-600">{userAuthed.username}</span>
+                        <span className="text-gray-600 text-xs">
+                            {
+                                userAuthed.role === "USER_DOCTOR" ? 'Doctor' :
+                                userAuthed.role === "USER_PATIENT" ? 'Patient' :
+                                userAuthed.role === "USER_SECRETARY" ? 'Secretary' : 'Role undefined'
+                            }
+                        </span>
                     </div>
                     <div className="ml-auto relative">
                         <div className="flex items-center cursor-pointer" onClick={toggleMenu}>

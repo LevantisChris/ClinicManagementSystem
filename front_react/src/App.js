@@ -3,7 +3,6 @@ import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import DoctorApp from "./components/doctor/DoctorApp";
 import AuthApp  from "./components/Auth/AuthApp";
 import './App.css';
-import UserService from "./services/UserService";
 
 const App = () => {
     return (

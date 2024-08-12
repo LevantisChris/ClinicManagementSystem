@@ -96,16 +96,16 @@ const AuthApp = () => {
                 const userData = await UserService.login(email, password);
                 if (userData.token) {
                     localStorage.setItem('token', userData.token);
-                    localStorage.setItem('role', getRole(userData.token));
+                    //localStorage.setItem('role', getRole(userData.token));
                     // Update global context with user data
-                    setUserAuthed({
+                    /*setUserAuthed({
                         username: userData.users.user_name,
                         email: userData.users.email,
                         surname: userData.users.user_surname,
                         role: userData.users.role_str,
-                    });
+                    });*/
                     alert('User logged in successfully');
-                    navigate('/doctor')
+                    roleNavigator(userData.users.role_str);
                 } else {
                     console.log(error.message)
                     setError(userData.error.message)
@@ -133,39 +133,37 @@ const AuthApp = () => {
                         roleId: setUserRoleId()
                     });
 
-                setAMKA("")
-                setName("")
-                setEmail("")
-                setIdNumber("")
-                setPassword("")
-                setRole("")
-                setSpeciality("")
-                setSurname("")
-
                 /*
                 console.log("Username: ", userData.users.user_name);
                 console.log("Email: ", userData.users.email);
                 console.log("Surname: ", userData.users.user_surname);
                 console.log("Role: ", userData.users.role_str);
-                */
+
                 // Update global context with user data
                 setUserAuthed({
                     username: userData.users.user_name,
                     email: userData.users.email,
                     surname: userData.users.user_surname,
                     role: userData.users.role_str,
-                });
+                }); */
 
                 localStorage.setItem('token', userData.token);
-                localStorage.setItem('role', getRole(userData.token));
+                //localStorage.setItem('role', getRole(userData.token));
 
                 alert('User registered successfully');
-                navigate('/doctor');
+                roleNavigator(userData.users.role_str);
             } catch (error) {
                 console.error('Error registering user:', error.message);
                 alert('An error occurred while registering user');
             }
         }
+    }
+
+    function roleNavigator(role_str) {
+        if(role_str === "USER_DOCTOR")
+            navigate('/doctor')
+        else /* Add the other roles */
+            navigate('/')
     }
 
     /* ------------------------------------------------------------------ */

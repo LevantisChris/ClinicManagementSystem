@@ -1,6 +1,8 @@
 package com.levantis.clinicManagement.controller;
 
 import com.levantis.clinicManagement.dto.UserDTO;
+import com.levantis.clinicManagement.service.JwtUtils;
+import com.levantis.clinicManagement.service.UserDetailsService;
 import com.levantis.clinicManagement.service.UserManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,10 @@ public class UserManagementController {
 
     @Autowired
     private UserManagementService userManagementService;
+    @Autowired
+    private JwtUtils jwtUtils;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @PostMapping("/auth/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
@@ -31,6 +37,18 @@ public class UserManagementController {
     @PostMapping("auth/refresh")
     public ResponseEntity<UserDTO> refresh(@RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(userManagementService.refreshToken(userDTO));
+    }
+
+    @GetMapping("/user-details")
+    public ResponseEntity<UserDTO> getUserDetails(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        String username = jwtUtils.extractUsername(jwtToken);
+        System.out.println("TESTTT --> " + username);
+
+        if (username != null) {
+            return ResponseEntity.ok(userManagementService.getMyInfo(username));
+        }
+        throw new RuntimeException("Invalid token");
     }
 
     @GetMapping("/doctor/get-all-users")
