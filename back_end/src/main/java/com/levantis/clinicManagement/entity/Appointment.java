@@ -28,5 +28,4 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "appointment_state", referencedColumnName = "appointment_state_id", nullable = false)
     private AppointmentState appointmentState;
-
 }
