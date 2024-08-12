@@ -80,7 +80,6 @@ const AuthApp = () => {
         try {
             const payload = atob(token.split('.')[1]);
             const decoded = JSON.parse(payload);
-            console.log("TEST ROLE: " + decoded.role);
             return decoded.role
         } catch (e) {
             console.error("Error decoding token:", e);
@@ -97,21 +96,17 @@ const AuthApp = () => {
                 if (userData.token) {
                     localStorage.setItem('token', userData.token);
                     //localStorage.setItem('role', getRole(userData.token));
-                    // Update global context with user data
-                    /*setUserAuthed({
-                        username: userData.users.user_name,
-                        email: userData.users.email,
-                        surname: userData.users.user_surname,
-                        role: userData.users.role_str,
-                    });*/
                     alert('User logged in successfully');
-                    roleNavigator(userData.users.role_str);
+                    /* Note: Here you don't take the user as a response, you only get the token. */
+                    console.log(userData)
+                    roleNavigator(userData.roleName);
                 } else {
                     console.log(error.message)
                     setError(userData.error.message)
                 }
             } catch (error) {
                 setError(error.message);
+                console.log(error.message)
                 alert("Error in logging");
                 setTimeout(() => {
                     setError('');
@@ -132,21 +127,6 @@ const AuthApp = () => {
                         doctorSpecialityId: setSpecialityId(),
                         roleId: setUserRoleId()
                     });
-
-                /*
-                console.log("Username: ", userData.users.user_name);
-                console.log("Email: ", userData.users.email);
-                console.log("Surname: ", userData.users.user_surname);
-                console.log("Role: ", userData.users.role_str);
-
-                // Update global context with user data
-                setUserAuthed({
-                    username: userData.users.user_name,
-                    email: userData.users.email,
-                    surname: userData.users.user_surname,
-                    role: userData.users.role_str,
-                }); */
-
                 localStorage.setItem('token', userData.token);
                 //localStorage.setItem('role', getRole(userData.token));
 

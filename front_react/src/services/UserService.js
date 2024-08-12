@@ -34,7 +34,6 @@ class UserService {
             if (response.data.statusCode === 500) {
                 throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
             } else {
-                console.log(response.data)
                 return response.data;
             }
         } catch (err) {
