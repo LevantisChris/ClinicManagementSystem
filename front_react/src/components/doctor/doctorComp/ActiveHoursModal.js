@@ -22,7 +22,7 @@ export default function ActiveHoursModal({onClose}) {
 
     const handleDateChange = newDate => {
         setDate(newDate);
-        console.log('Selected date:', newDate);
+        //console.log('Selected date:', newDate);
     };
 
     const handleMouseDown = (event, hourId, minute) => {
@@ -39,7 +39,7 @@ export default function ActiveHoursModal({onClose}) {
             setShowSubmitDialog(false);
             setDraggedId(`${minute}-${hourId}`);
             addToList(`${hourId}:${minute}`);
-            console.log('Dragging over MouseMove:', hourId, minute);
+            //console.log('Dragging over MouseMove:', hourId, minute);
         }
     };
 
@@ -48,13 +48,13 @@ export default function ActiveHoursModal({onClose}) {
         dragItemRef.current = null;
         //setDraggedId(null);
         setShowSubmitDialog(true);
-        console.log("dragging-mouseUp stopped");
+        //console.log("dragging-mouseUp stopped");
     };
 
     const handleTouchStart = (event, hourId, minute) => {
         event.preventDefault();
         setIsDragging(true);
-        console.log("TouchStart: " + hourId + "-" + minute);
+        //console.log("TouchStart: " + hourId + "-" + minute);
         //setDraggedId(minute + "-" + hourId);
         dragItemRef.current = { hourId, minute };
     };
@@ -64,7 +64,7 @@ export default function ActiveHoursModal({onClose}) {
         if (isDragging) {
             setDraggedId(minute + "-" + hourId);
             //addObjectToList(minute, hourId);
-            console.log("Dragging over TouchMove:", hourId, minute);
+            //console.log("Dragging over TouchMove:", hourId, minute);
         }
     };
 
@@ -72,19 +72,19 @@ export default function ActiveHoursModal({onClose}) {
         setIsDragging(false);
         dragItemRef.current = null;
         //setDraggedId(null);
-        console.log("dragging-touchEnd stopped");
+        //console.log("dragging-touchEnd stopped");
     };
 
     const handleTouchCancel = () => {
         setIsDragging(false);
         dragItemRef.current = null;
         //setDraggedId(null);
-        console.log("dragging-touchCancel stopped");
+        //console.log("dragging-touchCancel stopped");
     };
 
     const addToList = option => {
         if (!selectedOptions.includes(option)) {
-            console.log("\nTOTAL SELECTED: " + selectedOptions);
+            //console.log("\nTOTAL SELECTED: " + selectedOptions);
             setSelectedOptions([...selectedOptions, option]);
         }
     };
@@ -111,13 +111,23 @@ export default function ActiveHoursModal({onClose}) {
             .split(":")
             .map(Number);
         if (firstHours === secondHours) {
-            console.log("PROTO");
+            //console.log("PROTO");
             const firstTotalMinutes = firstHours * 60 + firstMinutes;
             const secondTotalMinutes = secondHours * 60 + secondMinutes;
             return firstTotalMinutes < secondTotalMinutes;
         }
-        console.log("SECOND");
+        //console.log("SECOND");
         return firstHours < secondHours;
+    }
+
+    function handleSubmit() {
+        console.log("Day Selected: ", date)
+        console.log("Hours Selected: ", selectedOptions)
+    }
+
+    function handleClose() {
+        setShowSubmitDialog(false)
+        clearList();
     }
 
     return (<motion.div
@@ -148,19 +158,22 @@ export default function ActiveHoursModal({onClose}) {
                             className="overflow-y-auto"
                             style={{maxHeight: '600px'}}
                         >
-                            {(showSubmitDialog === true && selectedOptions.length > 0) ?
-                                <div
-                                    className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
-                                    <a href="#"
-                                       className="block px-4 py-2 text-gray-800 hover:bg-green-200"
-                                    >Submit</a>
-                                    <a href="#"
-                                       className="block px-4 py-2 text-gray-800 hover:bg-red-200">Close</a>
-                                </div>
-                                : console.log("Dont show")}
-                            {hours.map(hour => (<React.Fragment key={hour.id}>
+                            {
+                                (showSubmitDialog === true && selectedOptions.length > 0) ?
                                     <div
-                                        id={"00-" + hour.id}
+                                        className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
+                                        <a href="#"
+                                           className="block px-4 py-2 text-gray-800 hover:bg-green-200"
+                                           onClick={() => handleSubmit()}>Submit</a>
+                                        <a href="#"
+                                           className="block px-4 py-2 text-gray-800 hover:bg-red-200"
+                                           onClick={() => handleClose()}>Close</a>
+                                    </div>
+                                    : ""
+                            }
+                            {hours.map(hour => (<React.Fragment key={hour.id}>
+                                <div
+                                    id={"00-" + hour.id}
                                         className={`border rounded-md p-2 ${(draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00`) ? "bg-blue-400 transition duration-100 ease-in-outs" : "NOT"}`}
                                         onMouseDown={e => handleMouseDown(e, hour.id, '00')}
                                         onMouseMove={e => handleMouseMove(e, hour.id, '00')}

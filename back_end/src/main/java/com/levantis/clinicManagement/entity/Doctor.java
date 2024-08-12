@@ -2,6 +2,8 @@ package com.levantis.clinicManagement.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 public class Doctor {
 
@@ -17,6 +19,9 @@ public class Doctor {
     @ManyToOne
     @JoinColumn(name = "doctor_speciality", referencedColumnName = "speciality_id", nullable = false)
     private DoctorSpeciality doctorSpeciality; // Changed to ManyToOne
+
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<WorkingHours> workingHours; // A doctor does not have continuous working hours for a specific day
 
     // Getters and setters
     public User getUser() {
@@ -41,5 +46,13 @@ public class Doctor {
 
     public void setDoctor_id(Integer doctor_id) {
         this.doctor_id = doctor_id;
+    }
+
+    public Set<WorkingHours> getWorkingHours() {
+        return workingHours;
+    }
+
+    public void setWorkingHours(Set<WorkingHours> workingHours) {
+        this.workingHours = workingHours;
     }
 }

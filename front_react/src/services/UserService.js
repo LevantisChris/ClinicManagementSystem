@@ -1,6 +1,4 @@
 import axios from "axios";
-import {useContext} from "react";
-import GlobalContext from "../context/GlobalContext";
 
 class UserService {
     static BASE_URL = "http://localhost:8080";
