@@ -21,7 +21,7 @@ const App = () => {
                            element={<AuthApp/>}/>
                     {/* Protected routes */}
                     <Route path={"/doctor"}
-                           element={ UserService.isDoctor() && UserService.isAuthenticated() ? <DoctorApp/> : <Navigate to={'/'}/>}/>
+                           element={<DoctorApp/>}/>
                     <Route path={"*"}
                            element={<Navigate to="/auth"/>}/>
 

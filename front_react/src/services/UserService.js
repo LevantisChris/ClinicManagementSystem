@@ -1,4 +1,6 @@
 import axios from "axios";
+import {useContext} from "react";
+import GlobalContext from "../context/GlobalContext";
 
 class UserService {
     static BASE_URL = "http://localhost:8080";
@@ -11,8 +13,10 @@ class UserService {
             });
             if (response.data.statusCode === 500) {
                 throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
-            } else
+            } else {
+                console.log(response.data)
                 return response.data;
+            }
         } catch (err) {
            throw err;
         }
@@ -24,8 +28,9 @@ class UserService {
             const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData);
             if (response.data.statusCode === 500) {
                 throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
-            } else
+            } else {
                 return response.data;
+            }
         } catch (err) {
             throw err;
         }

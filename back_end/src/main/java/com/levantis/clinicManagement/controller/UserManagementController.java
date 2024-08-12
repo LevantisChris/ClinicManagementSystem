@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 public class UserManagementController {
 
-    private static final Logger log = LoggerFactory.getLogger(UserManagementController.class);
     @Autowired
     private UserManagementService userManagementService;
 
@@ -61,4 +60,5 @@ public class UserManagementController {
     public ResponseEntity<UserDTO> deleteUSer(@PathVariable Integer userId){
         return ResponseEntity.ok(userManagementService.deleteUser(userId));
     }
+
 }

@@ -23,6 +23,9 @@ const GlobalContext = React.createContext({
     showSearchAppointments: false,
     setShowSearchAppointments: () => {},
 
+    userAuthed: null,
+    setUserAuthed: () => {},
+
     selectedOptions: [],
     setSelectedOptions: () => {},
     clearList: () => {},

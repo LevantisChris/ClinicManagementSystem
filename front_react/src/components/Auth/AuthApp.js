@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import AuthAppCSS from './AuthAppCSS.css';
 
 import nameIMG from '../../assets/user_32.png';
@@ -14,6 +14,7 @@ import {color} from "framer-motion";
 import UserService from "../../services/UserService";
 import {useNavigate} from "react-router-dom";
 import {id} from "date-fns/locale";
+import GlobalContext from "../../context/GlobalContext";
 
 /*
 *   Patient: ID-Number, Name, Surname, email, password, ||AMKA||
@@ -45,6 +46,8 @@ const AuthApp = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
+
+    const {userAuthed, setUserAuthed} = useContext(GlobalContext);
 
 
     /* Set the role id based on the role str */
@@ -92,10 +95,17 @@ const AuthApp = () => {
             try {
                 const userData = await UserService.login(email, password);
                 if (userData.token) {
-                    alert('User logged in successfully');
-                    navigate('/doctor')
                     localStorage.setItem('token', userData.token);
                     localStorage.setItem('role', getRole(userData.token));
+                    // Update global context with user data
+                    setUserAuthed({
+                        username: userData.users.user_name,
+                        email: userData.users.email,
+                        surname: userData.users.user_surname,
+                        role: userData.users.role_str,
+                    });
+                    alert('User logged in successfully');
+                    navigate('/doctor')
                 } else {
                     console.log(error.message)
                     setError(userData.error.message)
@@ -123,9 +133,6 @@ const AuthApp = () => {
                         roleId: setUserRoleId()
                     });
 
-                alert('User registered successfully');
-                navigate('/doctor');
-
                 setAMKA("")
                 setName("")
                 setEmail("")
@@ -135,8 +142,25 @@ const AuthApp = () => {
                 setSpeciality("")
                 setSurname("")
 
+                /*
+                console.log("Username: ", userData.users.user_name);
+                console.log("Email: ", userData.users.email);
+                console.log("Surname: ", userData.users.user_surname);
+                console.log("Role: ", userData.users.role_str);
+                */
+                // Update global context with user data
+                setUserAuthed({
+                    username: userData.users.user_name,
+                    email: userData.users.email,
+                    surname: userData.users.user_surname,
+                    role: userData.users.role_str,
+                });
+
                 localStorage.setItem('token', userData.token);
                 localStorage.setItem('role', getRole(userData.token));
+
+                alert('User registered successfully');
+                navigate('/doctor');
             } catch (error) {
                 console.error('Error registering user:', error.message);
                 alert('An error occurred while registering user');
