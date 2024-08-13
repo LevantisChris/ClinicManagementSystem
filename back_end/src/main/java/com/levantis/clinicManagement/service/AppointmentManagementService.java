@@ -28,8 +28,7 @@ public class AppointmentManagementService {
 
     public WorkingHoursDTO defineWorkingHours(WorkingHoursDTO registrationRequest) {
         WorkingHoursDTO resp = new WorkingHoursDTO();
-        if(registrationRequest.getWorkingHoursId() == null
-            || registrationRequest.getDoctorId() == null
+        if(registrationRequest.getDoctorId() == null
             || registrationRequest.getWorkingHoursDate() == null
             || registrationRequest.getStartTime() == null
             || registrationRequest.getEndTime() == null) {
