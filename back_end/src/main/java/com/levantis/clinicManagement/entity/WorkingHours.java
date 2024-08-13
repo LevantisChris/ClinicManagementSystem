@@ -14,16 +14,16 @@ public class WorkingHours {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id", nullable = false)
+    @JoinColumn(name = "working_hours_doctor_id", nullable = false)
     private Doctor doctor;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "working_hours_date", nullable = false)
     private LocalDate date; // Specific date for the working hours
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "working_hours_start_time", nullable = false)
     private LocalTime startTime; // Start time of the interval
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "working_hours_end_time", nullable = false)
     private LocalTime endTime; // End time of the interval
 
 
