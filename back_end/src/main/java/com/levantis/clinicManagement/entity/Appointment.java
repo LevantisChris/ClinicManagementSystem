@@ -28,4 +28,65 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "appointment_state", referencedColumnName = "appointment_state_id", nullable = false)
     private AppointmentState appointmentState;
+
+    /* For an appointment is responsible a doctor. One doctor has multiple appointments. */
+    @ManyToOne
+    @JoinColumn(name = "doctor_id", referencedColumnName = "doctor_id", nullable = false)
+    private Doctor doctor;
+
+    public Integer getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(Integer appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public Date getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(Date appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+
+    public Time getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(Time appointmentTime) {
+        this.appointmentTime = appointmentTime;
+    }
+
+    public String getAppointmentJustification() {
+        return appointmentJustification;
+    }
+
+    public void setAppointmentJustification(String appointmentJustification) {
+        this.appointmentJustification = appointmentJustification;
+    }
+
+    public Date getAppointmentCreationDate() {
+        return appointmentCreationDate;
+    }
+
+    public void setAppointmentCreationDate(Date appointmentCreationDate) {
+        this.appointmentCreationDate = appointmentCreationDate;
+    }
+
+    public AppointmentState getAppointmentState() {
+        return appointmentState;
+    }
+
+    public void setAppointmentState(AppointmentState appointmentState) {
+        this.appointmentState = appointmentState;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
 }
