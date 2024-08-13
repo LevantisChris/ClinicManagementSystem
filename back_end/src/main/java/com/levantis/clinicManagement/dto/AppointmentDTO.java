@@ -21,6 +21,7 @@ public class AppointmentDTO {
     private String expirationTime;
 
     private Integer appointmentId;
+    private String appointmentDoctorEmail;
     private Date appointmentDate;
     private Time appointmentTime;
     private String appointmentJustification;

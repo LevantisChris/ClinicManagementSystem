@@ -32,7 +32,7 @@ public class Appointment {
     /* For an appointment is responsible a doctor. One doctor has multiple appointments. */
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "doctor_id", nullable = false)
-    private Doctor doctor;
+    private Doctor appointmentDoctor;
 
     public Integer getAppointmentId() {
         return appointmentId;
@@ -82,11 +82,11 @@ public class Appointment {
         this.appointmentState = appointmentState;
     }
 
-    public Doctor getDoctor() {
-        return doctor;
+    public Doctor getAppointmentDoctor() {
+        return appointmentDoctor;
     }
 
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
+    public void setAppointmentDoctor(Doctor appointmentDoctor) {
+        this.appointmentDoctor = appointmentDoctor;
     }
 }

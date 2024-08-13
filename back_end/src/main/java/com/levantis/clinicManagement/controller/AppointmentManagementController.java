@@ -1,5 +1,6 @@
 package com.levantis.clinicManagement.controller;
 
+import com.levantis.clinicManagement.dto.AppointmentDTO;
 import com.levantis.clinicManagement.dto.WorkingHoursDTO;
 import com.levantis.clinicManagement.service.AppointmentManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ public class AppointmentManagementController {
     @DeleteMapping("/appoint/delete-wh")
     public ResponseEntity<WorkingHoursDTO> deleteWorkingHours(@RequestBody WorkingHoursDTO workingHours) {
         return ResponseEntity.ok(appointmentManagementService.deleteWorkingHours(workingHours));
+    }
+
+    @PostMapping("/appoint/create")
+    public ResponseEntity<AppointmentDTO> createAppointment(@RequestBody AppointmentDTO appointment) {
+        return ResponseEntity.ok(appointmentManagementService.createAppointment(appointment));
     }
 
 }

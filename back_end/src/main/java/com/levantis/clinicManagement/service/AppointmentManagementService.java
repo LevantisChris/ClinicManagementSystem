@@ -1,9 +1,14 @@
 package com.levantis.clinicManagement.service;
 
+import com.levantis.clinicManagement.dto.AppointmentDTO;
 import com.levantis.clinicManagement.dto.WorkingHoursDTO;
+import com.levantis.clinicManagement.entity.Appointment;
 import com.levantis.clinicManagement.entity.Doctor;
+import com.levantis.clinicManagement.entity.User;
 import com.levantis.clinicManagement.entity.WorkingHours;
+import com.levantis.clinicManagement.repository.AppointmentRepository;
 import com.levantis.clinicManagement.repository.DoctorRepository;
+import com.levantis.clinicManagement.repository.UserRepository;
 import com.levantis.clinicManagement.repository.WorkingHoursRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +25,10 @@ public class AppointmentManagementService {
 
     @Autowired
     private WorkingHoursRepository workingHoursRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
     public AppointmentManagementService(DoctorRepository doctorRepository) {
@@ -49,7 +58,7 @@ public class AppointmentManagementService {
             workingHours.setStartTime(registrationRequest.getStartTime());
             workingHours.setEndTime(registrationRequest.getEndTime());
 
-            WorkingHours workingHoursResult =workingHoursRepository.save(workingHours);
+            WorkingHours workingHoursResult = workingHoursRepository.save(workingHours);
 
             if (workingHoursResult.getId() != null) {
                 // If the save was successful, populate the response DTO
@@ -65,7 +74,6 @@ public class AppointmentManagementService {
                 resp.setMessage("Failed to save working hours.");
                 resp.setStatusCode(500);
             }
-
         } catch (Exception e) {
             log.error("Error in defining the working hours: " + e.getMessage());
             e.printStackTrace();
@@ -108,6 +116,55 @@ public class AppointmentManagementService {
             }
         } catch (Exception e) {
             log.error("Error in deleting the working hours: " + e.getMessage(), e);
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
+    public AppointmentDTO createAppointment(AppointmentDTO registrationRequest) {
+        AppointmentDTO resp = new AppointmentDTO();
+        if(registrationRequest.getAppointmentDoctorEmail() == null
+            || registrationRequest.getAppointmentDate() == null
+            || registrationRequest.getAppointmentTime() == null
+            || registrationRequest.getAppointmentJustification() == null
+            || registrationRequest.getAppointmentState() == null) {
+            log.error("Empty/null fields");
+            resp.setMessage("Empty/null fields.");
+            resp.setStatusCode(500);
+            return resp;
+        }
+        try {
+            Appointment appointment = new Appointment();
+
+            Doctor doctor = doctorRepository.findByEmail(registrationRequest.getAppointmentDoctorEmail())
+                        .orElseThrow(() -> new RuntimeException("Doctor (Email) not found"));
+
+            appointment.setAppointmentDoctor(doctor);
+            appointment.setAppointmentDate(registrationRequest.getAppointmentDate());
+            appointment.setAppointmentTime(registrationRequest.getAppointmentTime());
+            appointment.setAppointmentJustification(registrationRequest.getAppointmentJustification());
+            appointment.setAppointmentState(registrationRequest.getAppointmentState());
+
+            Appointment appointmentResult = appointmentRepository.save(appointment);
+            if (appointmentResult.getAppointmentId() != null) {
+                // If the save was successful, populate the response DTO
+                resp.setAppointmentId(appointmentResult.getAppointmentId());
+                resp.setAppointmentDoctorEmail(appointmentResult.getAppointmentDoctor().getUser().getEmail());
+                resp.setAppointmentDate(appointmentResult.getAppointmentDate());
+                resp.setAppointmentTime(appointmentResult.getAppointmentTime());
+                resp.setAppointmentJustification(appointmentResult.getAppointmentJustification());
+                resp.setAppointmentState(appointmentResult.getAppointmentState());
+                resp.setMessage("Appointment successfully created.");
+                resp.setStatusCode(200);
+            } else {
+                log.error("Failed to create appointment.");
+                resp.setMessage("Failed to create appointment.");
+                resp.setStatusCode(500);
+            }
+        } catch (Exception e) {
+            log.error("Error in creation of the appointment: {}", e.getMessage());
+            e.printStackTrace();
             resp.setStatusCode(500);
             resp.setError(e.getMessage());
         }
