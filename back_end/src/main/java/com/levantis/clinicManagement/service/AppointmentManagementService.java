@@ -4,10 +4,14 @@ import com.levantis.clinicManagement.dto.AppointmentDTO;
 import com.levantis.clinicManagement.dto.WorkingHoursDTO;
 import com.levantis.clinicManagement.entity.*;
 import com.levantis.clinicManagement.repository.*;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Date;
 
@@ -27,6 +31,8 @@ public class AppointmentManagementService {
     private UserRepository userRepository;
     @Autowired
     private AppointmentStateRepository appointmentStateRepository;
+    @Autowired
+    private JwtUtils jwtUtils;
 
 
     public AppointmentManagementService(DoctorRepository doctorRepository) {
@@ -169,6 +175,66 @@ public class AppointmentManagementService {
             }
         } catch (Exception e) {
             log.error("Error in creation of the appointment: {}", e.getMessage());
+            e.printStackTrace();
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
+    public AppointmentDTO updateAppointment(AppointmentDTO registrationRequest) {
+
+        /* Must access the token */
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String authorizationHeader = request.getHeader("Authorization");
+        String jwtToken = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwtToken = authorizationHeader.substring(7);
+        }
+
+        AppointmentDTO resp = new AppointmentDTO();
+        if(registrationRequest.getAppointmentDate() == null
+                || registrationRequest.getAppointmentStartTime() == null
+                || registrationRequest.getAppointmentEndTime() == null) {
+            log.error("Empty/null fields");
+            resp.setMessage("Empty/null fields.");
+            resp.setStatusCode(500);
+            return resp;
+        }
+        try {
+            Appointment appointment = appointmentRepository.findById(registrationRequest.getAppointmentId())
+                    .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+            appointment.setAppointmentDate(registrationRequest.getAppointmentDate());
+            appointment.setAppointmentStartTime(registrationRequest.getAppointmentStartTime());
+            appointment.setAppointmentEndTime(registrationRequest.getAppointmentEndTime());
+            /* Only a secretary and a doctor can change the appointment State */
+            if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")
+                    || jwtUtils.extractRole(jwtToken).equals("USER_SECRETARY")) {
+                log.info("Updating also the appointment State, the role is: {}", jwtUtils.extractRole(jwtToken));
+                appointment.setAppointmentState(
+                        appointmentStateRepository.findByAppointmentStateId(registrationRequest.getAppointmentStateId()));
+            }
+            Appointment updatedAppointmentResult = appointmentRepository.save(appointment);
+
+            if (updatedAppointmentResult.getAppointmentId() != null) {
+                // If the save was successful, populate the response DTO
+                resp.setAppointmentId(updatedAppointmentResult.getAppointmentId());
+                resp.setAppointmentDoctorEmail(updatedAppointmentResult.getAppointmentDoctor().getUser().getEmail());
+                resp.setAppointmentDate(updatedAppointmentResult.getAppointmentDate());
+                resp.setAppointmentStartTime(updatedAppointmentResult.getAppointmentStartTime());
+                resp.setAppointmentEndTime(updatedAppointmentResult.getAppointmentEndTime());
+                resp.setAppointmentJustification(updatedAppointmentResult.getAppointmentJustification());
+                resp.setAppointmentStateId(updatedAppointmentResult.getAppointmentState().getAppointmentStateId());
+                resp.setMessage("Appointment successfully updated.");
+                resp.setStatusCode(200);
+            } else {
+                log.error("Failed to update appointment with id {}", updatedAppointmentResult.getAppointmentId());
+                resp.setMessage("Failed to update appointment with id: " + updatedAppointmentResult.getAppointmentId());
+                resp.setStatusCode(500);
+            }
+        } catch (Exception e) {
+            log.error("Error in updating appointment: {}", e.getMessage());
             e.printStackTrace();
             resp.setStatusCode(500);
             resp.setError(e.getMessage());

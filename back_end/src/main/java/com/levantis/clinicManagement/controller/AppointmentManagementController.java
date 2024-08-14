@@ -5,10 +5,7 @@ import com.levantis.clinicManagement.dto.WorkingHoursDTO;
 import com.levantis.clinicManagement.service.AppointmentManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AppointmentManagementController {
@@ -29,6 +26,11 @@ public class AppointmentManagementController {
     @PostMapping("/appoint/create")
     public ResponseEntity<AppointmentDTO> createAppointment(@RequestBody AppointmentDTO appointment) {
         return ResponseEntity.ok(appointmentManagementService.createAppointment(appointment));
+    }
+
+    @PutMapping("/appoint/update")
+    public ResponseEntity<AppointmentDTO> updateAppointment(@RequestBody AppointmentDTO appointment) {
+        return ResponseEntity.ok(appointmentManagementService.updateAppointment(appointment));
     }
 
 }
