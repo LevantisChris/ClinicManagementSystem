@@ -215,6 +215,26 @@ public class AppointmentManagementService {
             Appointment appointment = appointmentRepository.findById(registrationRequest.getAppointmentId())
                     .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
+            /* If the request comes from a user with role patient, we must check whether
+             *  appointment belongs to him. For the Doctor and the secretary we don't need
+             *  to do anything. */
+            if (jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                log.info("The role is USER_PATIENT, must check the permission for the appointment {}", registrationRequest.getAppointmentId());
+                if(!Objects.equals(appointment.getAppointmentPatient().getUser().getEmail()
+                        , jwtUtils.extractUsername(jwtToken))) {
+                    log.error("Failed to update appointment with id: "
+                            +  appointment.getAppointmentId() + ", because the user with username: "
+                            +  jwtUtils.extractUsername(jwtToken) + " dont have the permission to view it, "
+                            +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
+                    resp.setMessage("Failed to update appointment with id: "
+                            +  appointment.getAppointmentId() + ", because the user with username: "
+                            +  jwtUtils.extractUsername(jwtToken) + " dont have the permission to view it, "
+                            +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
+                    resp.setStatusCode(500);
+                    return resp;
+                }
+            }
+
             appointment.setAppointmentDate(registrationRequest.getAppointmentDate());
             appointment.setAppointmentStartTime(registrationRequest.getAppointmentStartTime());
             appointment.setAppointmentEndTime(registrationRequest.getAppointmentEndTime());
@@ -258,15 +278,42 @@ public class AppointmentManagementService {
      * the appointmentStateId in it. We inly need the appointment id.*/
     public AppointmentDTO cancelAppointment(AppointmentDTO registrationRequest) {
         AppointmentDTO resp = new AppointmentDTO();
-        if(registrationRequest.getAppointmentId() == null) {
-            log.error("Empty/null fields");
-            resp.setMessage("Empty/null fields.");
-            resp.setStatusCode(500);
-            return resp;
-        }
         try {
+
+            String jwtToken = getToken();
+
+            if(registrationRequest.getAppointmentId() == null || jwtToken == null) {
+                log.error("Empty/null fields");
+                resp.setMessage("Empty/null fields.");
+                resp.setStatusCode(500);
+                return resp;
+            }
+
             Appointment appointment = appointmentRepository.findById(registrationRequest.getAppointmentId())
                     .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+            /* If the request comes from a user with role patient, we must check whether
+            *  appointment belongs to him. For the Doctor and the secretary we don't need
+            *  to do anything. */
+            if (jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                log.info("The role is USER_PATIENT, must check the permission for the appointment {}", registrationRequest.getAppointmentId());
+                if(!Objects.equals(appointment.getAppointmentPatient().getUser().getEmail()
+                        , jwtUtils.extractUsername(jwtToken))) {
+                    log.error("Failed to cancel appointment with id: "
+                            +  appointment.getAppointmentId() + ", because the user with username: "
+                            +  jwtUtils.extractUsername(jwtToken) + " dont have the permission to view it, "
+                            +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
+                    resp.setMessage("Failed to cancel appointment with id: "
+                            +  appointment.getAppointmentId() + ", because the user with username: "
+                            +  jwtUtils.extractUsername(jwtToken) + " dont have the permission to view it, "
+                            +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
+                    resp.setStatusCode(500);
+                    return resp;
+                }
+            }
+            /* If everything goes ok we continue,
+            *  here we will be if the role is
+            *  patient or doctor. */
 
             appointment.setAppointmentState(
                     appointmentStateRepository.findByAppointmentStateId(3)); // hard coded the state id to 3
@@ -308,7 +355,7 @@ public class AppointmentManagementService {
         try {
             /* Must access the token */
             String jwtToken = getToken();
-            if (jwtToken == null) {
+            if (jwtToken == null || registrationRequest.getAppointmentId() == null) {
                 log.error("Empty/null token");
                 resp.setMessage("Empty/null token.");
                 resp.setStatusCode(500);
