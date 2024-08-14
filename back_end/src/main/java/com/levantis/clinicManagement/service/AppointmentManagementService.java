@@ -5,7 +5,6 @@ import com.levantis.clinicManagement.dto.WorkingHoursDTO;
 import com.levantis.clinicManagement.entity.*;
 import com.levantis.clinicManagement.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 public class AppointmentManagementService {
@@ -193,16 +193,16 @@ public class AppointmentManagementService {
     }
 
     public AppointmentDTO updateAppointment(AppointmentDTO registrationRequest) {
-
+        AppointmentDTO resp = new AppointmentDTO();
         /* Must access the token */
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String authorizationHeader = request.getHeader("Authorization");
-        String jwtToken = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwtToken = authorizationHeader.substring(7);
+        String jwtToken = getToken();
+        if (jwtToken == null) {
+            log.error("Empty/null token");
+            resp.setMessage("Empty/null token.");
+            resp.setStatusCode(500);
+            return resp;
         }
 
-        AppointmentDTO resp = new AppointmentDTO();
         if(registrationRequest.getAppointmentDate() == null
                 || registrationRequest.getAppointmentStartTime() == null
                 || registrationRequest.getAppointmentEndTime() == null) {
@@ -231,6 +231,7 @@ public class AppointmentManagementService {
                 // If the save was successful, populate the response DTO
                 resp.setAppointmentId(updatedAppointmentResult.getAppointmentId());
                 resp.setAppointmentDoctorEmail(updatedAppointmentResult.getAppointmentDoctor().getUser().getEmail());
+                resp.setAppointmentPatientAMKA(updatedAppointmentResult.getAppointmentPatient().getPatient_AMKA());
                 resp.setAppointmentDate(updatedAppointmentResult.getAppointmentDate());
                 resp.setAppointmentStartTime(updatedAppointmentResult.getAppointmentStartTime());
                 resp.setAppointmentEndTime(updatedAppointmentResult.getAppointmentEndTime());
@@ -250,5 +251,131 @@ public class AppointmentManagementService {
             resp.setError(e.getMessage());
         }
         return resp;
+    }
+
+    /* Update an appointment state (appointmentStateId) to Cancelled (state: 4) *
+     * The update will be done automatically, no need the JSON request to have
+     * the appointmentStateId in it. We inly need the appointment id.*/
+    public AppointmentDTO cancelAppointment(AppointmentDTO registrationRequest) {
+        AppointmentDTO resp = new AppointmentDTO();
+        if(registrationRequest.getAppointmentId() == null) {
+            log.error("Empty/null fields");
+            resp.setMessage("Empty/null fields.");
+            resp.setStatusCode(500);
+            return resp;
+        }
+        try {
+            Appointment appointment = appointmentRepository.findById(registrationRequest.getAppointmentId())
+                    .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+            appointment.setAppointmentState(
+                    appointmentStateRepository.findByAppointmentStateId(3)); // hard coded the state id to 3
+
+            Appointment updatedAppointmentResult = appointmentRepository.save(appointment);
+
+            if (updatedAppointmentResult.getAppointmentId() != null) {
+                // If the save was successful, populate the response DTO
+                resp.setAppointmentId(updatedAppointmentResult.getAppointmentId());
+                resp.setAppointmentDoctorEmail(updatedAppointmentResult.getAppointmentDoctor().getUser().getEmail());
+                resp.setAppointmentPatientAMKA(updatedAppointmentResult.getAppointmentPatient().getPatient_AMKA());
+                resp.setAppointmentDate(updatedAppointmentResult.getAppointmentDate());
+                resp.setAppointmentStartTime(updatedAppointmentResult.getAppointmentStartTime());
+                resp.setAppointmentEndTime(updatedAppointmentResult.getAppointmentEndTime());
+                resp.setAppointmentJustification(updatedAppointmentResult.getAppointmentJustification());
+                resp.setAppointmentStateId(updatedAppointmentResult.getAppointmentState().getAppointmentStateId());
+                resp.setMessage("Appointment successfully canceled.");
+                resp.setStatusCode(200);
+            } else {
+                log.error("Failed to canceled appointment with id {}", updatedAppointmentResult.getAppointmentId());
+                resp.setMessage("Failed to canceled appointment with id: " + updatedAppointmentResult.getAppointmentId());
+                resp.setStatusCode(500);
+            }
+        } catch (Exception e) {
+            log.error("Error in cancelling appointment: {}", e.getMessage());
+            e.printStackTrace();
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
+    /* Here a user can request an appointment given the ID of that.
+    *  In case the request comes from a Patient the request must be verified,
+    *  to see if the appointment belongs to him. Doctor and Secretary can see everything.
+    *  We can take the role from the token.*/
+    public AppointmentDTO displayAppointmentById(AppointmentDTO registrationRequest) {
+        AppointmentDTO resp = new AppointmentDTO();
+        try {
+            /* Must access the token */
+            String jwtToken = getToken();
+            if (jwtToken == null) {
+                log.error("Empty/null token");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return resp;
+            }
+            /* At first check id the appointment exists */
+            Appointment appointment = appointmentRepository.findById(registrationRequest.getAppointmentId())
+                    .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+            if (jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                log.info("The role is USER_PATIENT, must check the permission for the appointment {}", registrationRequest.getAppointmentId());
+                /* Get from the appointment the patient email (appointmentPatientAMKA)
+                *  and compare it with the email of the user that has the token in the request. */
+                if(Objects.equals(appointment.getAppointmentPatient().getUser().getEmail()
+                        , jwtUtils.extractUsername(jwtToken))) {
+                    resp.setAppointmentId(appointment.getAppointmentId());
+                    resp.setAppointmentDoctorEmail(appointment.getAppointmentDoctor().getUser().getEmail());
+                    resp.setAppointmentPatientAMKA(appointment.getAppointmentPatient().getPatient_AMKA());
+                    resp.setAppointmentDate(appointment.getAppointmentDate());
+                    resp.setAppointmentStartTime(appointment.getAppointmentStartTime());
+                    resp.setAppointmentEndTime(appointment.getAppointmentEndTime());
+                    resp.setAppointmentJustification(appointment.getAppointmentJustification());
+                    resp.setAppointmentStateId(appointment.getAppointmentState().getAppointmentStateId());
+                    resp.setMessage("Appointment successfully found.");
+                    resp.setStatusCode(200);
+                } else {
+                    log.error("Failed to display appointment with id: "
+                            +  appointment.getAppointmentId() + ", because the user with username: "
+                            +  jwtUtils.extractUsername(jwtToken) + " dont have the permission to view it, "
+                            +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
+                    resp.setMessage("Failed to display appointment with id: "
+                            +  appointment.getAppointmentId() + ", because the user with username: "
+                            +  jwtUtils.extractUsername(jwtToken) + " dont have the permission to view it, "
+                            +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
+                    resp.setStatusCode(500);
+                }
+            } else { // the role is secretary and doctor, we don't need to make any permission check
+                resp.setAppointmentId(appointment.getAppointmentId());
+                resp.setAppointmentDoctorEmail(appointment.getAppointmentDoctor().getUser().getEmail());
+                resp.setAppointmentPatientAMKA(appointment.getAppointmentPatient().getPatient_AMKA());
+                resp.setAppointmentDate(appointment.getAppointmentDate());
+                resp.setAppointmentStartTime(appointment.getAppointmentStartTime());
+                resp.setAppointmentEndTime(appointment.getAppointmentEndTime());
+                resp.setAppointmentJustification(appointment.getAppointmentJustification());
+                resp.setAppointmentStateId(appointment.getAppointmentState().getAppointmentStateId());
+                resp.setMessage("Appointment successfully found.");
+                resp.setStatusCode(200);
+            }
+        } catch (Exception e) {
+            log.error("Error in displaying appointment: {}", e.getMessage());
+            e.printStackTrace();
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
+
+    /*------------------------------------------------------------------------------------------------------------------------------------------------*/
+    private String getToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String authorizationHeader = request.getHeader("Authorization");
+        String jwtToken = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwtToken = authorizationHeader.substring(7);
+            return jwtToken;
+        }
+        return null;
     }
 }

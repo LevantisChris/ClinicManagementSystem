@@ -33,4 +33,14 @@ public class AppointmentManagementController {
         return ResponseEntity.ok(appointmentManagementService.updateAppointment(appointment));
     }
 
+    @PutMapping("/appoint/cancel")
+    public ResponseEntity<AppointmentDTO> canceledAppointment(@RequestBody AppointmentDTO appointment) {
+        return ResponseEntity.ok(appointmentManagementService.cancelAppointment(appointment));
+    }
+
+    @GetMapping("/appoint/display-by-id")
+    public ResponseEntity<AppointmentDTO> displayAppointmentById(@RequestBody AppointmentDTO appointment) {
+        return ResponseEntity.ok(appointmentManagementService.displayAppointmentById(appointment));
+    }
+
 }
