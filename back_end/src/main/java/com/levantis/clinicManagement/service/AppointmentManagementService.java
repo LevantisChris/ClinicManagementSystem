@@ -12,8 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentManagementService {
@@ -170,7 +173,7 @@ public class AppointmentManagementService {
                 // If the save was successful, populate the response DTO
                 resp.setAppointmentId(appointmentResult.getAppointmentId());
                 resp.setAppointmentDoctorEmail(appointmentResult.getAppointmentDoctor().getUser().getEmail());
-                resp.setAppointmentPatientAMKA(appointmentResult.getAppointmentPatient().getUser().getEmail());
+                resp.setAppointmentPatientAMKA(appointmentResult.getAppointmentPatient().getPatient_AMKA());
                 resp.setAppointmentDate(appointmentResult.getAppointmentDate());
                 resp.setAppointmentStartTime(appointmentResult.getAppointmentStartTime());
                 resp.setAppointmentEndTime(appointmentResult.getAppointmentEndTime());
@@ -411,6 +414,104 @@ public class AppointmentManagementService {
             resp.setError(e.getMessage());
         }
         return resp;
+    }
+
+    /* If the user does not give a date range or a patient's surname or AMKA or
+       appointment status, then the pending appointments of the current day will
+       be predetermined to him. Otherwise, appointments that meet
+       the user's search criteria will be displayed.
+       Also, if the role is patient we must check if the patient has the permission
+       to view the returned appointments.*/
+    public AppointmentDTO searchAppointments(AppointmentDTO searchCriteria) {
+        AppointmentDTO resp = new AppointmentDTO();
+        List<Appointment> appointments;
+
+        try {
+            /* At first get the token, we will use the token to retrieve the
+            *  role of the user that make the request */
+            String jwtToken = getToken();
+            if (jwtToken == null) {
+                log.error("Empty/null token");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return resp;
+            }
+
+            boolean hasDateRange = searchCriteria.getStartDate() != null && searchCriteria.getEndDate() != null;
+            boolean hasPatientSurname = searchCriteria.getPatientSurname() != null;
+            boolean hasPatientAMKA = searchCriteria.getAppointmentPatientAMKA() != null;
+            boolean hasAppointmentStatus = searchCriteria.getAppointmentStateId() != null;
+
+            String status_description = "Created";
+
+            if (!hasDateRange && !hasPatientSurname && !hasPatientAMKA && !hasAppointmentStatus) {
+                Date today = new Date();
+                appointments = appointmentRepository.findByAppointmentDateAndAppointmentState(today, status_description);
+            } else if (hasAppointmentStatus) {
+                appointments = appointmentRepository.findByAppointmentState(searchCriteria.getAppointmentStateId());
+            } else if (hasDateRange && hasPatientSurname) {
+                appointments = appointmentRepository.findByDateRangeAndPatientSurnameAndAppointmentState(
+                        searchCriteria.getStartDate(), searchCriteria.getEndDate(), searchCriteria.getPatientSurname(), status_description);
+            } else if (hasDateRange && hasPatientAMKA) {
+                appointments = appointmentRepository.findByDateRangeAndPatientAMKAAndAppointmentState(
+                        searchCriteria.getStartDate(), searchCriteria.getEndDate(), searchCriteria.getAppointmentPatientAMKA(), status_description);
+            } else if (hasDateRange) {
+                appointments = appointmentRepository.findByAppointmentDateBetweenAndAppointmentState(
+                        searchCriteria.getStartDate(), searchCriteria.getEndDate(), status_description);
+            } else if (hasPatientSurname) {
+                appointments = appointmentRepository.findByPatientSurnameAndAppointmentState(
+                        searchCriteria.getPatientSurname(), status_description);
+            } else if (hasPatientAMKA) {
+                appointments = appointmentRepository.findByPatientAMKAAndAppointmentState(
+                        searchCriteria.getAppointmentPatientAMKA(), status_description);
+            } else {
+                appointments = new ArrayList<>();
+            }
+
+            /* Filter the results in case the user is patient, only the one
+            *  that belong to him must be returned. */
+            /* Check if the role is patient */
+            if (jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                List<Appointment> appointmentsPatient = new ArrayList<>();
+                log.info("The role is USER_PATIENT, must check the permission for the appointment");
+                for(int i = 0;i < appointments.size();i++) {
+                    /* If true the previously returned appointment belong to him */
+                    if(appointments.get(i).getAppointmentPatient().getUser().getEmail()
+                            .equals(jwtUtils.extractUsername(jwtToken))) {
+                        appointmentsPatient.add(appointments.get(i));
+                    }
+                }
+                appointments = appointmentsPatient;
+            }
+
+            if (!appointments.isEmpty()) {
+                resp.setAppointmentList(appointments.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
+                resp.setMessage("Appointments retrieved successfully.");
+                resp.setStatusCode(200);
+            } else {
+                resp.setMessage("No appointments found.");
+                resp.setStatusCode(404);
+            }
+        } catch (Exception e) {
+            log.error("Error searching appointments: {}", e.getMessage());
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
+    private AppointmentDTO mapToAppointmentDTO(Appointment appointment) {
+        AppointmentDTO dto = new AppointmentDTO();
+        dto.setAppointmentId(appointment.getAppointmentId());
+        dto.setAppointmentDoctorEmail(appointment.getAppointmentDoctor().getUser().getEmail());
+        dto.setAppointmentPatientAMKA(appointment.getAppointmentPatient().getPatient_AMKA());
+        dto.setAppointmentDate(appointment.getAppointmentDate());
+        dto.setAppointmentStartTime(appointment.getAppointmentStartTime());
+        dto.setAppointmentEndTime(appointment.getAppointmentEndTime());
+        dto.setAppointmentJustification(appointment.getAppointmentJustification());
+        dto.setAppointmentCreationDate(appointment.getAppointmentCreationDate());
+        dto.setAppointmentStateId(appointment.getAppointmentState().getAppointmentStateId());
+        return dto;
     }
 
 

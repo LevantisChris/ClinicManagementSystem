@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class AppointmentManagementController {
 
@@ -42,5 +44,11 @@ public class AppointmentManagementController {
     public ResponseEntity<AppointmentDTO> displayAppointmentById(@RequestBody AppointmentDTO appointment) {
         return ResponseEntity.ok(appointmentManagementService.displayAppointmentById(appointment));
     }
+
+    @GetMapping("/appoint/search")
+    public ResponseEntity<AppointmentDTO> searchAppointment(@RequestBody AppointmentDTO appointment) {
+        return ResponseEntity.ok(appointmentManagementService.searchAppointments(appointment));
+    }
+
 
 }
