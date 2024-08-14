@@ -16,8 +16,11 @@ public class Appointment {
     @Column(name = "appointment_date", nullable = false)
     private Date appointmentDate;
 
-    @Column(name = "appointment_time", nullable = false)
-    private Time appointmentTime;
+    @Column(name = "appointment_start_time", nullable = false)
+    private Time appointmentStartTime;
+
+    @Column(name = "appointment_end_time", nullable = false)
+    private Time appointmentEndTime;
 
     @Column(name = "appointment_justification", length = 500, nullable = false)
     private String appointmentJustification;
@@ -50,12 +53,20 @@ public class Appointment {
         this.appointmentDate = appointmentDate;
     }
 
-    public Time getAppointmentTime() {
-        return appointmentTime;
+    public Time getAppointmentStartTime() {
+        return appointmentStartTime;
     }
 
-    public void setAppointmentTime(Time appointmentTime) {
-        this.appointmentTime = appointmentTime;
+    public void setAppointmentStartTime(Time appointmentStartTime) {
+        this.appointmentStartTime = appointmentStartTime;
+    }
+
+    public Time getAppointmentEndTime() {
+        return appointmentEndTime;
+    }
+
+    public void setAppointmentEndTime(Time appointmentEndTime) {
+        this.appointmentEndTime = appointmentEndTime;
     }
 
     public String getAppointmentJustification() {

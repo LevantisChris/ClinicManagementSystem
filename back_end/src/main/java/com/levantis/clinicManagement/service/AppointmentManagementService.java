@@ -2,18 +2,14 @@ package com.levantis.clinicManagement.service;
 
 import com.levantis.clinicManagement.dto.AppointmentDTO;
 import com.levantis.clinicManagement.dto.WorkingHoursDTO;
-import com.levantis.clinicManagement.entity.Appointment;
-import com.levantis.clinicManagement.entity.Doctor;
-import com.levantis.clinicManagement.entity.User;
-import com.levantis.clinicManagement.entity.WorkingHours;
-import com.levantis.clinicManagement.repository.AppointmentRepository;
-import com.levantis.clinicManagement.repository.DoctorRepository;
-import com.levantis.clinicManagement.repository.UserRepository;
-import com.levantis.clinicManagement.repository.WorkingHoursRepository;
+import com.levantis.clinicManagement.entity.*;
+import com.levantis.clinicManagement.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class AppointmentManagementService {
@@ -29,6 +25,8 @@ public class AppointmentManagementService {
     private AppointmentRepository appointmentRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AppointmentStateRepository appointmentStateRepository;
 
 
     public AppointmentManagementService(DoctorRepository doctorRepository) {
@@ -126,9 +124,10 @@ public class AppointmentManagementService {
         AppointmentDTO resp = new AppointmentDTO();
         if(registrationRequest.getAppointmentDoctorEmail() == null
             || registrationRequest.getAppointmentDate() == null
-            || registrationRequest.getAppointmentTime() == null
+            || registrationRequest.getAppointmentStartTime() == null
+            || registrationRequest.getAppointmentEndTime() == null
             || registrationRequest.getAppointmentJustification() == null
-            || registrationRequest.getAppointmentState() == null) {
+            || registrationRequest.getAppointmentStateId() == null) {
             log.error("Empty/null fields");
             resp.setMessage("Empty/null fields.");
             resp.setStatusCode(500);
@@ -142,19 +141,25 @@ public class AppointmentManagementService {
 
             appointment.setAppointmentDoctor(doctor);
             appointment.setAppointmentDate(registrationRequest.getAppointmentDate());
-            appointment.setAppointmentTime(registrationRequest.getAppointmentTime());
+            appointment.setAppointmentStartTime(registrationRequest.getAppointmentStartTime());
+            appointment.setAppointmentEndTime(registrationRequest.getAppointmentEndTime());
             appointment.setAppointmentJustification(registrationRequest.getAppointmentJustification());
-            appointment.setAppointmentState(registrationRequest.getAppointmentState());
-
+            appointment.setAppointmentCreationDate(new Date());
+            AppointmentState appointmentState =
+                    appointmentStateRepository.findById(registrationRequest.getAppointmentStateId())
+                                    .orElseThrow(() -> new RuntimeException("Appointment State not found"));
+            appointment.setAppointmentState(appointmentState);
             Appointment appointmentResult = appointmentRepository.save(appointment);
+
             if (appointmentResult.getAppointmentId() != null) {
                 // If the save was successful, populate the response DTO
                 resp.setAppointmentId(appointmentResult.getAppointmentId());
                 resp.setAppointmentDoctorEmail(appointmentResult.getAppointmentDoctor().getUser().getEmail());
                 resp.setAppointmentDate(appointmentResult.getAppointmentDate());
-                resp.setAppointmentTime(appointmentResult.getAppointmentTime());
+                resp.setAppointmentStartTime(appointmentResult.getAppointmentStartTime());
+                resp.setAppointmentEndTime(appointmentResult.getAppointmentEndTime());
                 resp.setAppointmentJustification(appointmentResult.getAppointmentJustification());
-                resp.setAppointmentState(appointmentResult.getAppointmentState());
+                resp.setAppointmentStateId(appointmentResult.getAppointmentState().getAppointmentStateId());
                 resp.setMessage("Appointment successfully created.");
                 resp.setStatusCode(200);
             } else {
