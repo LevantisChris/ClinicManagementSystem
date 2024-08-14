@@ -13,7 +13,7 @@ public class Doctor {
     private Integer doctor_id;
 
     @OneToOne
-    @JoinColumn(name = "doctor_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
     @ManyToOne

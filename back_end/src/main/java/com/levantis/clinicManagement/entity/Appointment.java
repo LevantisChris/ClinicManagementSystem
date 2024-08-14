@@ -32,6 +32,10 @@ public class Appointment {
     @JoinColumn(name = "appointment_state", referencedColumnName = "appointment_state_id", nullable = false)
     private AppointmentState appointmentState;
 
+    @ManyToOne
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id", nullable = false)
+    private Patient appointmentPatient;
+
     /* For an appointment is responsible a doctor. One doctor has multiple appointments. */
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "doctor_id", nullable = false)
@@ -91,6 +95,14 @@ public class Appointment {
 
     public void setAppointmentState(AppointmentState appointmentState) {
         this.appointmentState = appointmentState;
+    }
+
+    public Patient getAppointmentPatient() {
+        return appointmentPatient;
+    }
+
+    public void setAppointmentPatient(Patient appointmentPatient) {
+        this.appointmentPatient = appointmentPatient;
     }
 
     public Doctor getAppointmentDoctor() {

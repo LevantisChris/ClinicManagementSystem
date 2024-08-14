@@ -22,6 +22,7 @@ public class AppointmentDTO {
 
     private Integer appointmentId;
     private String appointmentDoctorEmail;
+    private String appointmentPatientAMKA; // AMKA is unique in the database
     private Date appointmentDate;
     private Time appointmentStartTime;
     private Time appointmentEndTime;

@@ -13,7 +13,7 @@ public class Patient {
     private Integer patient_id;
 
     @OneToOne
-    @JoinColumn(name = "patient_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false, length = 11, unique = true)

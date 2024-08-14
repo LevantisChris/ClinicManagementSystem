@@ -33,6 +33,8 @@ public class AppointmentManagementService {
     private AppointmentStateRepository appointmentStateRepository;
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private PatientRepository patientRepository;
 
 
     public AppointmentManagementService(DoctorRepository doctorRepository) {
@@ -133,6 +135,7 @@ public class AppointmentManagementService {
             || registrationRequest.getAppointmentStartTime() == null
             || registrationRequest.getAppointmentEndTime() == null
             || registrationRequest.getAppointmentJustification() == null
+            || registrationRequest.getAppointmentPatientAMKA() == null
             || registrationRequest.getAppointmentStateId() == null) {
             log.error("Empty/null fields");
             resp.setMessage("Empty/null fields.");
@@ -144,23 +147,30 @@ public class AppointmentManagementService {
 
             Doctor doctor = doctorRepository.findByEmail(registrationRequest.getAppointmentDoctorEmail())
                         .orElseThrow(() -> new RuntimeException("Doctor (Email) not found"));
-
             appointment.setAppointmentDoctor(doctor);
+
+            Patient patient = patientRepository.findByPatient_AMKA(registrationRequest.getAppointmentPatientAMKA())
+                            .orElseThrow(() -> new RuntimeException("Patient (AMKA) not found"));
+            appointment.setAppointmentPatient(patient);
+
             appointment.setAppointmentDate(registrationRequest.getAppointmentDate());
             appointment.setAppointmentStartTime(registrationRequest.getAppointmentStartTime());
             appointment.setAppointmentEndTime(registrationRequest.getAppointmentEndTime());
             appointment.setAppointmentJustification(registrationRequest.getAppointmentJustification());
             appointment.setAppointmentCreationDate(new Date());
+
             AppointmentState appointmentState =
                     appointmentStateRepository.findById(registrationRequest.getAppointmentStateId())
                                     .orElseThrow(() -> new RuntimeException("Appointment State not found"));
             appointment.setAppointmentState(appointmentState);
+
             Appointment appointmentResult = appointmentRepository.save(appointment);
 
             if (appointmentResult.getAppointmentId() != null) {
                 // If the save was successful, populate the response DTO
                 resp.setAppointmentId(appointmentResult.getAppointmentId());
                 resp.setAppointmentDoctorEmail(appointmentResult.getAppointmentDoctor().getUser().getEmail());
+                resp.setAppointmentPatientAMKA(appointmentResult.getAppointmentPatient().getUser().getEmail());
                 resp.setAppointmentDate(appointmentResult.getAppointmentDate());
                 resp.setAppointmentStartTime(appointmentResult.getAppointmentStartTime());
                 resp.setAppointmentEndTime(appointmentResult.getAppointmentEndTime());
