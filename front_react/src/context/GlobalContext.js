@@ -26,6 +26,12 @@ const GlobalContext = React.createContext({
     userAuthed: null,
     setUserAuthed: () => {},
 
+    successMessage: null,
+    setSuccessMessage: () => {},
+
+    errorMessage: null,
+    setErrorMessage: () => {},
+
     selectedOptions: [],
     setSelectedOptions: () => {},
     clearList: () => {},

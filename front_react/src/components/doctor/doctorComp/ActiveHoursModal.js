@@ -4,12 +4,19 @@ import Calendar from 'react-calendar';
 import ActiveHoursModalCSS from './compCSS/ActiveHoursModalCSS.css';
 import GlobalContext from '../../../context/GlobalContext';
 import UserService from "../../../services/UserService";
+import LoadingApp from "../../Loading/LoadingApp";
+import SuccessApp from "../../Success/SuccessApp";
+import ErrorApp from "../../Error/ErrorApp";
 
 export default function ActiveHoursModal({onClose}) {
     const {
         selectedOptions,
         setSelectedOptions,
-        clearList
+        clearList,
+        successMessage,
+        setSuccessMessage,
+        errorMessage,
+        setErrorMessage
     } = useContext(GlobalContext);
 
     const [date, setDate] = useState(new Date());
@@ -17,6 +24,7 @@ export default function ActiveHoursModal({onClose}) {
     const dragItemRef = useRef(null);
     const [draggedId, setDraggedId] = useState(null);
     const [hours, setHours] = useState([]);
+    const [loading, setLoading] = useState(false)
 
     const am_str = "AM";
     const pm_str =  "PM";
@@ -105,6 +113,10 @@ export default function ActiveHoursModal({onClose}) {
     }, []);
 
     function handleSubmit() {
+        /* set loading true, load the loading component to the user */
+        setLoading(true)
+
+
         console.log("Day Selected: ", date)
         console.log("Hours Selected: ", selectedOptions)
 
@@ -160,6 +172,12 @@ export default function ActiveHoursModal({onClose}) {
             }
         )
         console.log(response)
+        if (response.statusCode === 200) {
+            setLoading(false)
+            setSuccessMessage(response.message)
+        } else {
+            setErrorMessage(response.message)
+        }
     }
 
     function handleClose() {
@@ -167,12 +185,20 @@ export default function ActiveHoursModal({onClose}) {
         clearList();
     }
 
-    return (<motion.div
+    return (
+        <motion.div
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             transition={{duration: 0.1, ease: 'easeOut'}}
             className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
         >
+            {loading ? (
+                <LoadingApp />
+            ) : successMessage !== null ? (
+                <SuccessApp />
+            ) : errorMessage !== null ? (
+                <ErrorApp />
+            ) : (
             <div className="grid grid-cols-2 gap-4 w-10/12 h-3/6 bg-white shadow-2xl p-5 relative">
                 <Calendar
                     onChange={handleDateChange}
@@ -299,5 +325,6 @@ export default function ActiveHoursModal({onClose}) {
                     </button>
                 </div>
             </div>
-        </motion.div>);
+            )}
+        </motion.div>)
 }

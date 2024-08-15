@@ -52,6 +52,13 @@ export default function ContextWrapper(props) {
     const [userAuthed, setUserAuthed]
         = useState(null) /* The details of the user that has been authenticated */
 
+    const [successMessage, setSuccessMessage]
+        = useState(null)
+
+    const [errorMessage, setErrorMessage]
+        = useState(null)
+
+
   const filteredEvents = useMemo(() => {
     return savedEvents.filter((evt) =>
       labels
@@ -129,6 +136,12 @@ export default function ContextWrapper(props) {
 
         userAuthed,
         setUserAuthed,
+
+        successMessage,
+        setSuccessMessage,
+
+        errorMessage,
+        setErrorMessage,
 
         selectedOptions,
         setSelectedOptions,
