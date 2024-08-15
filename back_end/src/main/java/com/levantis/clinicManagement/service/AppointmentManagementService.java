@@ -138,7 +138,7 @@ public class AppointmentManagementService {
         }
     }*/
 
-    public List<WorkingHoursDTO> getWorkingHoursOfADoctor(WorkingHoursDTO registrationRequest) {
+    public List<WorkingHoursDTO> getWorkingHoursOfADoctor() {
         WorkingHoursDTO resp = new WorkingHoursDTO();
         try {
 

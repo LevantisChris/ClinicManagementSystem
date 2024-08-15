@@ -22,8 +22,8 @@ public class AppointmentManagementController {
     }
 
     @GetMapping("/appoint/get-wh")
-    public ResponseEntity<List<WorkingHoursDTO>> getWorkingHours(WorkingHoursDTO workingHours) {
-        return ResponseEntity.ok(appointmentManagementService.getWorkingHoursOfADoctor(workingHours));
+    public ResponseEntity<List<WorkingHoursDTO>> getWorkingHours() {
+        return ResponseEntity.ok(appointmentManagementService.getWorkingHoursOfADoctor());
     }
 
     @DeleteMapping("/appoint/delete-wh")

@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {motion} from 'framer-motion';
 import Calendar from 'react-calendar';
 import ActiveHoursModalCSS from './compCSS/ActiveHoursModalCSS.css';
@@ -25,6 +25,7 @@ export default function ActiveHoursModal({onClose}) {
     const [draggedId, setDraggedId] = useState(null);
     const [hours, setHours] = useState([]);
     const [loading, setLoading] = useState(false)
+    const [workingHours, setWorkingHours] = useState([]);
 
     const am_str = "AM";
     const pm_str =  "PM";
@@ -185,6 +186,54 @@ export default function ActiveHoursModal({onClose}) {
         clearList();
     }
 
+    useEffect(() => {
+        const loadWorkingHours = async () => {
+            const token = localStorage.getItem('token');
+            if(token) {
+                try {
+                    const w_hours = await UserService.getWorkingHoursOfADoctor(token);
+                    console.log("TEST: ", w_hours);
+                    if(w_hours[0].statusCode !== 404) {
+                        setWorkingHours(w_hours);
+                    } else {
+                        alert("You dont have any working hours predefined.")
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch working hours:', error);
+                }
+            }
+        }
+        loadWorkingHours();
+    }, []);
+
+    /* If there are any already predefined working hours we have to display them to the user
+    *  In this function we will try to match them, in order to know which of them to "underline" */
+    function checkDateSimilarity(calendarDate, calendarTime) {
+        if(workingHours != null) {
+            for (const workingHour of workingHours) {
+                console.log("TEST 2 array: " + workingHour.startTime)
+                isTimeInRange(workingHour, calendarTime);
+            }
+        } else {
+            console.log("Is null")
+        }
+        return false;
+    }
+
+    function isTimeInRange(time, time1, time2) {
+        // Base date to compare times (using an arbitrary date since we only care about time)
+        const baseDate = '1970-01-01';
+
+        // Convert strings to Date objects
+        const timeDate = new Date(`${baseDate}T${time}`);
+        const time1Date = new Date(`${baseDate}T${time1}`);
+        const time2Date = new Date(`${baseDate}T${time2}`);
+
+        // Check if time is greater than or equal to time1 and less than or equal to time2
+        return timeDate >= time1Date && timeDate <= time2Date;
+    }
+
+
     return (
         <motion.div
             initial={{opacity: 0}}
@@ -248,28 +297,42 @@ export default function ActiveHoursModal({onClose}) {
                                         onTouchCancel={handleTouchCancel}
                                     >
                                     <span className="text-slate-700 font-bold">
-                                      {hour.hour === 12 && hour.ampm === pm_str ? (<>
-                                          <span className="material-icons-outlined text-yellow-600 mr-1">
-                                            light_mode
-                                          </span>
-                                              {hour.hour}
-                                          </>) : hour.hour === 12 && hour.ampm === am_str ? (<>
-                                          <span className="material-icons-outlined text-blue-600 mr-1">
-                                            dark_mode
-                                          </span>
-                                              {hour.hour}
-                                          </>) : (hour.hour)}
+                                      {
+                                          hour.hour === 12 && hour.ampm === pm_str ?
+                                          (
+                                              <>
+                                                  <span className="material-icons-outlined text-yellow-600 mr-1">
+                                                    light_mode
+                                                  </span>
+                                                    {hour.hour}
+                                                </>
+                                          )
+                                              : hour.hour === 12 && hour.ampm === am_str ?
+                                                  (
+                                                      <>
+                                                          <span className="material-icons-outlined text-blue-600 mr-1">
+                                                            dark_mode
+                                                          </span>
+                                                            {hour.hour}
+                                                      </>
+                                                  )
+                                                  : (hour.hour)
+                                      }
                                     </span>
                                         <span className="text-slate-600 ml-1">{hour.ampm}</span>
                                     </div>
                                     <React.Fragment>
                                         <div
-                                            className={`border rounded-md p-2 text-xs ${(draggedId === "15-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:15:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-300 ease-in-outs" : "NOT"}`}
+                                            className={`border rounded-md p-2 text-xs 
+                                                ${
+                                                    (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") ? "bg-amber-600" :
+                                                    ((draggedId === "15-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:15:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-300 ease-in-outs" : "NOT"))
+                                                }`
+                                            }
                                             id={"15-" + hour.id}
                                             onMouseDown={(e) => handleMouseDown(e, hour.id, 15)}
                                             onMouseMove={(e) => handleMouseMove(e, hour.id, 15, hour.ampm === pm_str ? pm_str : am_str)}
                                             onMouseUp={handleMouseUp}
-                                            //onMouseLeave={handleMouseLeave}
                                             onTouchStart={(e) => handleTouchStart(e, hour.id, 15)}
                                             onTouchMove={(e) => handleTouchMove(e, hour.id, 15)}
                                             onTouchEnd={handleTouchEnd}
@@ -284,7 +347,6 @@ export default function ActiveHoursModal({onClose}) {
                                             onMouseDown={(e) => handleMouseDown(e, hour.id, 30)}
                                             onMouseMove={(e) => handleMouseMove(e, hour.id, 30, hour.ampm === pm_str ? pm_str : am_str)}
                                             onMouseUp={handleMouseUp}
-                                            //onMouseLeave={handleMouseLeave}
                                             onTouchStart={(e) => handleTouchStart(e, hour.id, 30)}
                                             onTouchMove={(e) => handleTouchMove(e, hour.id, 30)}
                                             onTouchEnd={handleTouchEnd}
@@ -299,7 +361,6 @@ export default function ActiveHoursModal({onClose}) {
                                             onMouseDown={(e) => handleMouseDown(e, hour.id, 45)}
                                             onMouseMove={(e) => handleMouseMove(e, hour.id, 45, hour.ampm === pm_str ? pm_str : am_str)}
                                             onMouseUp={handleMouseUp}
-                                            //onMouseLeave={handleMouseLeave}
                                             onTouchStart={(e) => handleTouchStart(e, hour.id, 45)}
                                             onTouchMove={(e) => handleTouchMove(e, hour.id, 45)}
                                             onTouchEnd={handleTouchEnd}

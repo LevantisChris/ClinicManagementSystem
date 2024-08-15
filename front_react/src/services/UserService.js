@@ -96,6 +96,20 @@ class UserService {
         }
     }
 
+    static async getWorkingHoursOfADoctor() {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/appoint/get-wh`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
     /* Check if its log in, role etc */
     static logout() {
         localStorage.removeItem("token");
