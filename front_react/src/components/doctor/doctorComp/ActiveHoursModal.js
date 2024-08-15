@@ -3,10 +3,10 @@ import {motion} from 'framer-motion';
 import Calendar from 'react-calendar';
 import ActiveHoursModalCSS from './compCSS/ActiveHoursModalCSS.css';
 import GlobalContext from '../../../context/GlobalContext';
+import UserService from "../../../services/UserService";
 
 export default function ActiveHoursModal({onClose}) {
     const {
-        daySelected,
         selectedOptions,
         setSelectedOptions,
         clearList
@@ -18,11 +18,14 @@ export default function ActiveHoursModal({onClose}) {
     const [draggedId, setDraggedId] = useState(null);
     const [hours, setHours] = useState([]);
 
+    const am_str = "AM";
+    const pm_str =  "PM";
+
     const [showSubmitDialog, setShowSubmitDialog] = useState(false);
 
     const handleDateChange = newDate => {
         setDate(newDate);
-        //console.log('Selected date:', newDate);
+        console.log('Selected date:', date);
     };
 
     const handleMouseDown = (event, hourId, minute) => {
@@ -33,12 +36,12 @@ export default function ActiveHoursModal({onClose}) {
         dragItemRef.current = {hourId, minute};
     };
 
-    const handleMouseMove = (event, hourId, minute) => {
+    const handleMouseMove = (event, hourId, minute, amfm_str) => {
         event.preventDefault();
         if (isDragging) {
             setShowSubmitDialog(false);
             setDraggedId(`${minute}-${hourId}`);
-            addToList(`${hourId}:${minute}`);
+            addToList(`${hourId}:${minute}:${amfm_str}`);
             //console.log('Dragging over MouseMove:', hourId, minute);
         }
     };
@@ -95,34 +98,68 @@ export default function ActiveHoursModal({onClose}) {
             generatedHours.push({
                 id: i,
                 hour: i % 12 === 0 ? 12 : i % 12,
-                ampm: i < 12 ? "AM" : "PM",
+                ampm: i < 12 ? am_str : pm_str,
             });
         }
         setHours(generatedHours);
     }, []);
 
-    function isLater() {
-        const [firstHours, firstMinutes] = selectedOptions[0]
-            .split(":")
-            .map(Number);
-        const [secondHours, secondMinutes] = selectedOptions[
-        selectedOptions.length - 1
-            ]
-            .split(":")
-            .map(Number);
-        if (firstHours === secondHours) {
-            //console.log("PROTO");
-            const firstTotalMinutes = firstHours * 60 + firstMinutes;
-            const secondTotalMinutes = secondHours * 60 + secondMinutes;
-            return firstTotalMinutes < secondTotalMinutes;
-        }
-        //console.log("SECOND");
-        return firstHours < secondHours;
-    }
-
     function handleSubmit() {
         console.log("Day Selected: ", date)
         console.log("Hours Selected: ", selectedOptions)
+
+        /* We will modify the date and first, last value of the
+        *  array selected option to be able to send them in the backend
+        *  in the corrected form. */
+
+        // Extracting the date and formatting it to yyyy-MM-dd
+        const formattedDate = date.toISOString().split('T')[0];
+        console.log("Formatted Date: ", formattedDate);
+
+        // Extracting the start and end time
+        const startTime = selectedOptions[0];
+        const endTime = selectedOptions[selectedOptions.length - 1];
+
+        // Converting time to 24-hour format (HH:mm)
+        const convertTo24HourFormat = (time12h) => {
+            const [time, modifier] = time12h.split(" ");
+            let [hours, minutes] = time.split(":");
+
+            if (hours === "12" && modifier === "AM") {
+                hours = "00";
+            } else if (hours !== "12" && modifier === "PM") {
+                hours = parseInt(hours, 10) + 12;
+            }
+
+            return `${String(hours).padStart(2, '0')}:${minutes}`;
+        };
+
+        const formattedStartTime = convertTo24HourFormat(startTime);
+        const formattedEndTime = convertTo24HourFormat(endTime);
+
+        console.log("Formatted Start Time: ", formattedStartTime);
+        console.log("Formatted End Time: ", formattedEndTime);
+
+        /* Make the request to the backend */
+        getDoctorFromId(formattedDate, formattedStartTime, formattedEndTime);
+    }
+
+    async function getDoctorFromId(formattedDate, formattedStartTime, formattedEndTime) {
+        const response = await UserService.getDoctorIdFromToken();
+        sendRequest(formattedDate, formattedStartTime, formattedEndTime, response.doctorId);
+    }
+
+    async function sendRequest(formattedDate, formattedStartTime, formattedEndTime, doctorId) {
+        console.log(Number(doctorId))
+        const response = await UserService.defineWorkingHours(
+            {
+                workingHoursDate: formattedDate,
+                startTime: formattedStartTime + ":00",
+                endTime: formattedEndTime + ":00",
+                doctorId: Number(doctorId)
+            }
+        )
+        console.log(response)
     }
 
     function handleClose() {
@@ -171,39 +208,40 @@ export default function ActiveHoursModal({onClose}) {
                                     </div>
                                     : ""
                             }
-                            {hours.map(hour => (<React.Fragment key={hour.id}>
+                            {hours.map(hour => (
+                                <React.Fragment key={hour.id}>
                                 <div
                                     id={"00-" + hour.id}
-                                        className={`border rounded-md p-2 ${(draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00`) ? "bg-blue-400 transition duration-100 ease-in-outs" : "NOT"}`}
+                                        className={`border rounded-md p-2 ${(draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-400 transition duration-100 ease-in-outs" : "NOT"}`}
                                         onMouseDown={e => handleMouseDown(e, hour.id, '00')}
-                                        onMouseMove={e => handleMouseMove(e, hour.id, '00')}
+                                        onMouseMove={e => handleMouseMove(e, hour.id, '00', hour.ampm === pm_str ? pm_str : am_str)}
                                         onMouseUp={handleMouseUp}
                                         onTouchStart={e => handleTouchStart(e, hour.id, '00')}
                                         onTouchMove={e => handleTouchMove(e, hour.id, '00')}
                                         onTouchEnd={handleTouchEnd}
                                         onTouchCancel={handleTouchCancel}
                                     >
-                    <span className="text-slate-700 font-bold">
-                      {hour.hour === 12 && hour.ampm === 'PM' ? (<>
-                          <span className="material-icons-outlined text-yellow-600 mr-1">
-                            light_mode
-                          </span>
-                              {hour.hour}
-                          </>) : hour.hour === 12 && hour.ampm === 'AM' ? (<>
-                          <span className="material-icons-outlined text-blue-600 mr-1">
-                            dark_mode
-                          </span>
-                              {hour.hour}
-                          </>) : (hour.hour)}
-                    </span>
+                                    <span className="text-slate-700 font-bold">
+                                      {hour.hour === 12 && hour.ampm === pm_str ? (<>
+                                          <span className="material-icons-outlined text-yellow-600 mr-1">
+                                            light_mode
+                                          </span>
+                                              {hour.hour}
+                                          </>) : hour.hour === 12 && hour.ampm === am_str ? (<>
+                                          <span className="material-icons-outlined text-blue-600 mr-1">
+                                            dark_mode
+                                          </span>
+                                              {hour.hour}
+                                          </>) : (hour.hour)}
+                                    </span>
                                         <span className="text-slate-600 ml-1">{hour.ampm}</span>
                                     </div>
                                     <React.Fragment>
                                         <div
-                                            className={`border rounded-md p-2 text-xs ${(draggedId === "15-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:15`) ? "bg-blue-200 transition duration-300 ease-in-outs" : "NOT"}`}
+                                            className={`border rounded-md p-2 text-xs ${(draggedId === "15-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:15:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-300 ease-in-outs" : "NOT"}`}
                                             id={"15-" + hour.id}
                                             onMouseDown={(e) => handleMouseDown(e, hour.id, 15)}
-                                            onMouseMove={(e) => handleMouseMove(e, hour.id, 15)}
+                                            onMouseMove={(e) => handleMouseMove(e, hour.id, 15, hour.ampm === pm_str ? pm_str : am_str)}
                                             onMouseUp={handleMouseUp}
                                             //onMouseLeave={handleMouseLeave}
                                             onTouchStart={(e) => handleTouchStart(e, hour.id, 15)}
@@ -211,14 +249,14 @@ export default function ActiveHoursModal({onClose}) {
                                             onTouchEnd={handleTouchEnd}
                                             onTouchCancel={handleTouchCancel}
                                         >
-                                            {hour.hour}:15
+                                            {hour.hour}:15 {hour.ampm === pm_str ? pm_str : am_str}
                                         </div>
 
                                         <div
-                                            className={`border rounded-md p-2 text-xs ${() => "w-3/6"} ${(draggedId === "30-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:30`) ? "bg-blue-200" : "NOT"}`}
+                                            className={`border rounded-md p-2 text-xs ${() => "w-3/6"} ${(draggedId === "30-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:30:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200" : "NOT"}`}
                                             id={"30-" + hour.id}
                                             onMouseDown={(e) => handleMouseDown(e, hour.id, 30)}
-                                            onMouseMove={(e) => handleMouseMove(e, hour.id, 30)}
+                                            onMouseMove={(e) => handleMouseMove(e, hour.id, 30, hour.ampm === pm_str ? pm_str : am_str)}
                                             onMouseUp={handleMouseUp}
                                             //onMouseLeave={handleMouseLeave}
                                             onTouchStart={(e) => handleTouchStart(e, hour.id, 30)}
@@ -226,14 +264,14 @@ export default function ActiveHoursModal({onClose}) {
                                             onTouchEnd={handleTouchEnd}
                                             onTouchCancel={handleTouchCancel}
                                         >
-                                            {hour.hour}:30
+                                            {hour.hour}:30 {hour.ampm === pm_str ? pm_str : am_str}
                                         </div>
 
                                         <div
-                                            className={`border rounded-md p-2 text-xs ${() => "w-3/6"} ${(draggedId === "45-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:45`) ? "bg-blue-200 transition duration-00 ease-in-outs" : "NOT"}`}
+                                            className={`border rounded-md p-2 text-xs ${() => "w-3/6"} ${(draggedId === "45-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:45:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-00 ease-in-outs" : "NOT"}`}
                                             id={"45-" + hour.id}
                                             onMouseDown={(e) => handleMouseDown(e, hour.id, 45)}
-                                            onMouseMove={(e) => handleMouseMove(e, hour.id, 45)}
+                                            onMouseMove={(e) => handleMouseMove(e, hour.id, 45, hour.ampm === pm_str ? pm_str : am_str)}
                                             onMouseUp={handleMouseUp}
                                             //onMouseLeave={handleMouseLeave}
                                             onTouchStart={(e) => handleTouchStart(e, hour.id, 45)}
@@ -241,10 +279,11 @@ export default function ActiveHoursModal({onClose}) {
                                             onTouchEnd={handleTouchEnd}
                                             onTouchCancel={handleTouchCancel}
                                         >
-                                            {hour.hour}:45
+                                            {hour.hour}:45 {hour.ampm === pm_str ? pm_str : am_str}
                                         </div>
                                     </React.Fragment>
-                                </React.Fragment>))}
+                                </React.Fragment>))
+                            }
                         </motion.div>
                     </div>
                 </form>

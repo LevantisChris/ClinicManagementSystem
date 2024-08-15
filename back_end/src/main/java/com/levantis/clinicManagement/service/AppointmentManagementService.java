@@ -57,6 +57,8 @@ public class AppointmentManagementService {
         }
         try {
 
+            log.info("JSON Received in defineWorkingHours is: {}" , registrationRequest);
+
             WorkingHours workingHours = new WorkingHours();
             workingHours.setId(registrationRequest.getWorkingHoursId());
             // Get the doctor that correspond to that request
@@ -500,6 +502,8 @@ public class AppointmentManagementService {
         return resp;
     }
 
+    /*------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     private AppointmentDTO mapToAppointmentDTO(Appointment appointment) {
         AppointmentDTO dto = new AppointmentDTO();
         dto.setAppointmentId(appointment.getAppointmentId());
@@ -514,8 +518,6 @@ public class AppointmentManagementService {
         return dto;
     }
 
-
-    /*------------------------------------------------------------------------------------------------------------------------------------------------*/
     private String getToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String authorizationHeader = request.getHeader("Authorization");

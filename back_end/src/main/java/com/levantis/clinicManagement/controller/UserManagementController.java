@@ -79,4 +79,9 @@ public class UserManagementController {
         return ResponseEntity.ok(userManagementService.deleteUser(userId));
     }
 
+    @GetMapping("/doctor/get-id")
+    public ResponseEntity<UserDTO> getDoctorId() {
+        return ResponseEntity.ok(userManagementService.getDoctorIdByToken());
+    }
+
 }

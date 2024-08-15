@@ -65,6 +65,37 @@ class UserService {
         }
     }
 
+    static async getDoctorIdFromToken() {
+        const token = localStorage.getItem("token");
+        if(token === null)
+            return null;
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/doctor/get-id`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async defineWorkingHours(data) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.post(`${UserService.BASE_URL}/appoint/register-wh`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
     /* Check if its log in, role etc */
     static logout() {
         localStorage.removeItem("token");

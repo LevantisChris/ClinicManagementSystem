@@ -3,6 +3,7 @@ package com.levantis.clinicManagement.service;
 import com.levantis.clinicManagement.dto.UserDTO;
 import com.levantis.clinicManagement.entity.*;
 import com.levantis.clinicManagement.repository.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -205,6 +208,28 @@ public class UserManagementService {
         return UserDTO;
     }
 
+    public UserDTO getDoctorIdByToken() {
+        UserDTO resp = new UserDTO();
+        try {
+            String jwtToken = getToken();
+            if (jwtToken == null) {
+                log.error("Empty/null token");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return resp;
+            }
+            User user = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
+                    .orElseThrow(() -> new RuntimeException("User (Doctor) Not found"));
+            resp.setDoctorId(user.getDoctor().getDoctor_id());
+            resp.setStatusCode(200);
+            resp.setMessage("Doctor with email: " + user.getEmail() + " found successfully.");
+        } catch (Exception e) {
+            resp.setStatusCode(500);
+            resp.setMessage("User (doctor) not found).");
+        }
+        return resp;
+    }
+
     public UserDTO deleteUser(Integer userId) {
         UserDTO UserDTO = new UserDTO();
         try {
@@ -275,5 +300,18 @@ public class UserManagementService {
             UserDTO.setMessage("Error occurred while getting user info: " + e.getMessage());
         }
         return UserDTO;
+    }
+
+    /*------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+    private String getToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String authorizationHeader = request.getHeader("Authorization");
+        String jwtToken = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwtToken = authorizationHeader.substring(7);
+            return jwtToken;
+        }
+        return null;
     }
 }
