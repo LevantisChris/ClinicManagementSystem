@@ -175,6 +175,7 @@ export default function ActiveHoursModal({onClose}) {
         console.log(response)
         if (response.statusCode === 200) {
             setLoading(false)
+            setShowSubmitDialog(false);
             setSuccessMessage(response.message)
         } else {
             setErrorMessage(response.message)
@@ -195,8 +196,6 @@ export default function ActiveHoursModal({onClose}) {
                     console.log("TEST: ", w_hours);
                     if(w_hours[0].statusCode !== 404) {
                         setWorkingHours(w_hours);
-                    } else {
-                        alert("You dont have any working hours predefined.")
                     }
                 } catch (error) {
                     console.error('Failed to fetch working hours:', error);
@@ -204,7 +203,7 @@ export default function ActiveHoursModal({onClose}) {
             }
         }
         loadWorkingHours();
-    }, []);
+    }, [showSubmitDialog]);
 
     /* If there are any already predefined working hours we have to display them to the user
     *  In this function we will try to match them, in order to know which of them to "underline" */
