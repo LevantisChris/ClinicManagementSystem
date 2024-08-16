@@ -25,12 +25,22 @@ export default function ActiveHoursModal({onClose}) {
     const [draggedId, setDraggedId] = useState(null);
     const [hours, setHours] = useState([]);
     const [loading, setLoading] = useState(false)
+    /* The working hours that are already defined (if there are any, might be null) */
     const [workingHours, setWorkingHours] = useState([]);
+    /* The hour that is already
+    *  predefined and is the same as the one
+    *  the user select.
+    *  The hour that was found in the function checkDateSimilarity(...).
+    *  We mostly need this in the function delete WH.
+    *  */
+    const startTimeRef = useRef(null);
+    const endTimeRef = useRef(null);
 
     const am_str = "AM";
     const pm_str =  "PM";
 
     const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const handleDateChange = newDate => {
         setDate(newDate);
@@ -48,9 +58,6 @@ export default function ActiveHoursModal({onClose}) {
     const handleMouseMove = (event, hourId, minute, amfm_str) => {
         event.preventDefault();
         if (isDragging) {
-            setShowSubmitDialog(false);
-            setDraggedId(`${minute}-${hourId}`);
-            addToList(`${hourId}:${minute}:${amfm_str}`);
             console.log('Dragging over MouseMove:', hourId, minute);
             /* We have to check wheaten that hour the user
             *  select is already selected.
@@ -59,12 +66,17 @@ export default function ActiveHoursModal({onClose}) {
             *  */
             if(checkDateSimilarity(
                 date.toISOString().split('T')[0],
-                (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")) {
+                (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")
+            ) {
                 console.log("SAME --> ", hourId, minute)
+                setShowDeleteDialog(true)
                 setIsDragging(false);
                 dragItemRef.current = null;
             } else {
                 console.log("Not the same")
+                setDraggedId(`${minute}-${hourId}`);
+                addToList(`${hourId}:${minute}:${amfm_str}`);
+                setShowSubmitDialog(false);
             }
         }
     };
@@ -173,10 +185,10 @@ export default function ActiveHoursModal({onClose}) {
 
     async function getDoctorFromId(formattedDate, formattedStartTime, formattedEndTime) {
         const response = await UserService.getDoctorIdFromToken();
-        sendRequest(formattedDate, formattedStartTime, formattedEndTime, response.doctorId);
+        sendRequestToDefineWH(formattedDate, formattedStartTime, formattedEndTime, response.doctorId);
     }
 
-    async function sendRequest(formattedDate, formattedStartTime, formattedEndTime, doctorId) {
+    async function sendRequestToDefineWH(formattedDate, formattedStartTime, formattedEndTime, doctorId) {
         console.log(Number(doctorId))
         const response = await UserService.defineWorkingHours(
             {
@@ -196,9 +208,13 @@ export default function ActiveHoursModal({onClose}) {
         }
     }
 
-    function handleClose() {
+    function handleCloseSubmitDialog() {
         setShowSubmitDialog(false)
         clearList();
+    }
+
+    function handleCloseDeleteDialog() {
+        setShowDeleteDialog(false)
     }
 
     useEffect(() => {
@@ -224,6 +240,8 @@ export default function ActiveHoursModal({onClose}) {
         if(workingHours != null) {
             for (const workingHour of workingHours) {
                 if(isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime)) {
+                    startTimeRef.current = workingHour.startTime;
+                    endTimeRef.current = workingHour.endTime;
                     return true;
                 }
             }
@@ -245,6 +263,17 @@ export default function ActiveHoursModal({onClose}) {
     }
 
 
+    /* Here we will handle the deletion of the working hours */
+    function handleDelete() {
+        sendRequestToDeleteWH(date, startTimeRef, endTimeRef)
+    }
+
+    async function sendRequestToDeleteWH(workingHoursDate, startTime, endTime) {
+        console.log("DATE DELETE --> ", workingHoursDate.toISOString().split('T')[0])
+        console.log("START TIME DELETE --> ", startTime)
+        console.log("END TIME DELETE --> ", endTime)
+    }
+
     return (
         <motion.div
             initial={{opacity: 0}}
@@ -261,7 +290,7 @@ export default function ActiveHoursModal({onClose}) {
             ) : (
             <div className="grid grid-cols-2 gap-4 w-10/12 h-3/6 bg-white shadow-2xl p-5 relative">
                 <Calendar
-                    onChange={handleDateChange}
+                    onChange={() => handleDateChange}
                     value={date}
                     className="row-span-2 h-full"
                 />
@@ -285,23 +314,33 @@ export default function ActiveHoursModal({onClose}) {
                                 (showSubmitDialog === true && selectedOptions.length > 0) ?
                                     <div
                                         className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
-                                        <a href="#"
+                                        <a
                                            className="block px-4 py-2 text-gray-800 hover:bg-green-200"
                                            onClick={() => handleSubmit()}>Submit</a>
-                                        <a href="#"
+                                        <a
                                            className="block px-4 py-2 text-gray-800 hover:bg-red-200"
-                                           onClick={() => handleClose()}>Close</a>
+                                           onClick={() => handleCloseSubmitDialog()}>Close</a>
                                     </div>
-                                    : ""
+                                    : showDeleteDialog ?
+                                        <div
+                                            className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
+                                            <a
+                                               className="block px-4 py-2 text-red-600 hover:bg-red-400"
+                                               onClick={() => handleDelete()}>Delete</a>
+                                            <a
+                                               className="block px-4 py-2 text-gray-800 hover:bg-red-200"
+                                               onClick={() => handleCloseDeleteDialog()}>Close</a>
+                                        </div>
+                                        : ""
                             }
                             {hours.map(hour => (
                                 <React.Fragment key={hour.id}>
-                                <div
-                                    id={"00-" + hour.id}
+                                    <div
+                                        id={"00-" + hour.id}
                                         className={`border rounded-md p-2 
                                                 ${
-                                                    (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") ? "bg-slate-300" :
-                                                    ((draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-400 transition duration-100 ease-in-outs" : "NOT"))
+                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") ? "bg-slate-300" :
+                                                ((draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-400 transition duration-100 ease-in-outs" : "NOT"))
                                             }`
                                     }
                                         onMouseDown={e => handleMouseDown(e, hour.id, '00')}
