@@ -51,7 +51,21 @@ export default function ActiveHoursModal({onClose}) {
             setShowSubmitDialog(false);
             setDraggedId(`${minute}-${hourId}`);
             addToList(`${hourId}:${minute}:${amfm_str}`);
-            //console.log('Dragging over MouseMove:', hourId, minute);
+            console.log('Dragging over MouseMove:', hourId, minute);
+            /* We have to check wheaten that hour the user
+            *  select is already selected.
+            *  If its already selected then
+            *  send request to the server to delete it.
+            *  */
+            if(checkDateSimilarity(
+                date.toISOString().split('T')[0],
+                (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")) {
+                console.log("SAME --> ", hourId, minute)
+                setIsDragging(false);
+                dragItemRef.current = null;
+            } else {
+                console.log("Not the same")
+            }
         }
     };
 
@@ -193,7 +207,6 @@ export default function ActiveHoursModal({onClose}) {
             if(token) {
                 try {
                     const w_hours = await UserService.getWorkingHoursOfADoctor(token);
-                    console.log("TEST: ", w_hours);
                     if(w_hours[0].statusCode !== 404) {
                         setWorkingHours(w_hours);
                     }
