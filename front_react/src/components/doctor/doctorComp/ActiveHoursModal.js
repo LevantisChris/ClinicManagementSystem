@@ -33,8 +33,8 @@ export default function ActiveHoursModal({onClose}) {
     *  The hour that was found in the function checkDateSimilarity(...).
     *  We mostly need this in the function delete WH.
     *  */
-    const startTimeRef = useRef(null);
-    const endTimeRef = useRef(null);
+    const showStartTimeRef = useRef(false);
+    const showEndTimeRef = useRef(false);
 
     const am_str = "AM";
     const pm_str =  "PM";
@@ -64,19 +64,25 @@ export default function ActiveHoursModal({onClose}) {
             *  If its already selected then
             *  send request to the server to delete it.
             *  */
-            if(checkDateSimilarity(
+            const temp = checkDateSimilarity(
                 date.toISOString().split('T')[0],
                 (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")
+            if(temp !== null
             ) {
                 //console.log("SAME --> ", hourId, minute)
                 setShowDeleteDialog(true)
                 setIsDragging(false);
                 dragItemRef.current = null;
+                console.log("CHECK: " + temp[0])
+                console.log("CHECK: " + temp[1])
+                showStartTimeRef.current = temp[0]
+                showEndTimeRef.current = temp[1]
             } else {
                 //console.log("Not the same")
-                setDraggedId(`${minute}-${hourId}`);
                 addToList(`${hourId}:${minute}:${amfm_str}`);
+                setDraggedId(`${minute}-${hourId}`);
                 setShowSubmitDialog(false);
+
             }
         }
     };
@@ -85,7 +91,7 @@ export default function ActiveHoursModal({onClose}) {
         setIsDragging(false);
         dragItemRef.current = null;
         //setDraggedId(null);
-        setShowSubmitDialog(true);
+        if(!showDeleteDialog) setShowSubmitDialog(true)
         //console.log("dragging-mouseUp stopped");
     };
 
@@ -142,8 +148,6 @@ export default function ActiveHoursModal({onClose}) {
     function handleSubmit() {
         /* set loading true, load the loading component to the user */
         setLoading(true)
-
-
         //console.log("Day Selected: ", date)
         //console.log("Hours Selected: ", selectedOptions)
 
@@ -218,7 +222,6 @@ export default function ActiveHoursModal({onClose}) {
     }
 
     React.useEffect(() => {
-        console.log("CALLLLEEDD USE")
         const loadWorkingHours = async () => {
             const token = localStorage.getItem('token');
             if(token) {
@@ -241,13 +244,11 @@ export default function ActiveHoursModal({onClose}) {
         if(workingHours != null) {
             for (const workingHour of workingHours) {
                 if(isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime)) {
-                    startTimeRef.current = workingHour.startTime;
-                    endTimeRef.current = workingHour.endTime;
-                    return true;
+                    return [workingHour.startTime, workingHour.endTime];
                 }
             }
         }
-        return false;
+        return null;
     }
 
     function isTimeInRange(time, time1, time2) {
@@ -264,19 +265,19 @@ export default function ActiveHoursModal({onClose}) {
 
     /* Here we will handle the deletion of the working hours */
     function handleDelete() {
-        sendRequestToDeleteWH(date, startTimeRef, endTimeRef)
+        sendRequestToDeleteWH(date, showStartTimeRef.current, showEndTimeRef.current)
     }
 
     async function sendRequestToDeleteWH(workingHoursDate, startTime, endTime) {
         setLoading(true)
         console.log("DATE DELETE --> " + workingHoursDate.toISOString().split('T')[0]) // example output: 2024-08-16
-        console.log("START TIME DELETE --> ", startTime.current)
-        console.log("END TIME DELETE --> ", endTime.current)
+        console.log("START TIME DELETE --> ", startTime)
+        console.log("END TIME DELETE --> ", endTime)
         try {
             const data = {
                 workingHoursDate: workingHoursDate.toISOString().split('T')[0],
-                startTime: startTime.current,
-                endTime: endTime.current
+                startTime: startTime,
+                endTime: endTime
             }
             const response = await UserService.deleteWorkingHours(data)
             console.log(response)
@@ -333,28 +334,39 @@ export default function ActiveHoursModal({onClose}) {
                             style={{maxHeight: '600px'}}
                         >
                             {
-                                (showSubmitDialog === true && selectedOptions.length > 0) ?
-                                    <div
-                                        className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
+                                (showSubmitDialog && selectedOptions.length > 0) ? (
+                                    <div className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
                                         <a
-                                           className="block px-4 py-2 text-gray-800 hover:bg-green-200"
-                                           onClick={() => handleSubmit()}>Submit</a>
+                                            className="block px-4 py-2 text-gray-800 hover:bg-green-200"
+                                            onClick={() => handleSubmit()}
+                                        >
+                                            Submit
+                                        </a>
                                         <a
-                                           className="block px-4 py-2 text-gray-800 hover:bg-red-200"
-                                           onClick={() => handleCloseSubmitDialog()}>Close</a>
+                                            className="block px-4 py-2 text-gray-800 hover:bg-red-200"
+                                            onClick={() => handleCloseSubmitDialog()}
+                                        >
+                                            Close
+                                        </a>
+                                    </div> )
+                                : (showDeleteDialog ? (
+                                    <div className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
+                                        <a
+                                            className="block px-4 py-2 text-red-600 hover:bg-red-400"
+                                            onClick={() => handleDelete()}
+                                        >
+                                            Delete
+                                        </a>
+                                        <a
+                                            className="block px-4 py-2 text-gray-800 hover:bg-red-200"
+                                            onClick={() => handleCloseDeleteDialog()}
+                                        >
+                                            Close
+                                        </a>
                                     </div>
-                                    : showDeleteDialog ?
-                                        <div
-                                            className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
-                                            <a
-                                               className="block px-4 py-2 text-red-600 hover:bg-red-400"
-                                               onClick={() => handleDelete()}>Delete</a>
-                                            <a
-                                               className="block px-4 py-2 text-gray-800 hover:bg-red-200"
-                                               onClick={() => handleCloseDeleteDialog()}>Close</a>
-                                        </div>
-                                        : ""
+                                ) : null)
                             }
+
                             {hours.map(hour => (
                                 <React.Fragment key={hour.id}>
                                     <div
