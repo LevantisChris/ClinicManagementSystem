@@ -211,8 +211,9 @@ export default function ActiveHoursModal({onClose}) {
     function checkDateSimilarity(calendarDate, calendarTime) {
         if(workingHours != null) {
             for (const workingHour of workingHours) {
-                console.log("TEST 2 array: " + workingHour.startTime)
-                isTimeInRange(workingHour, calendarTime);
+                if(isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime)) {
+                    return true;
+                }
             }
         } else {
             console.log("Is null")
@@ -223,12 +224,10 @@ export default function ActiveHoursModal({onClose}) {
     function isTimeInRange(time, time1, time2) {
         // Base date to compare times (using an arbitrary date since we only care about time)
         const baseDate = '1970-01-01';
-
         // Convert strings to Date objects
         const timeDate = new Date(`${baseDate}T${time}`);
         const time1Date = new Date(`${baseDate}T${time1}`);
         const time2Date = new Date(`${baseDate}T${time2}`);
-
         // Check if time is greater than or equal to time1 and less than or equal to time2
         return timeDate >= time1Date && timeDate <= time2Date;
     }
@@ -287,7 +286,12 @@ export default function ActiveHoursModal({onClose}) {
                                 <React.Fragment key={hour.id}>
                                 <div
                                     id={"00-" + hour.id}
-                                        className={`border rounded-md p-2 ${(draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-400 transition duration-100 ease-in-outs" : "NOT"}`}
+                                        className={`border rounded-md p-2 
+                                                ${
+                                                    (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") ? "bg-slate-300" :
+                                                    ((draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-400 transition duration-100 ease-in-outs" : "NOT"))
+                                            }`
+                                    }
                                         onMouseDown={e => handleMouseDown(e, hour.id, '00')}
                                         onMouseMove={e => handleMouseMove(e, hour.id, '00', hour.ampm === pm_str ? pm_str : am_str)}
                                         onMouseUp={handleMouseUp}
@@ -325,7 +329,7 @@ export default function ActiveHoursModal({onClose}) {
                                         <div
                                             className={`border rounded-md p-2 text-xs 
                                                 ${
-                                                    (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") ? "bg-amber-600" :
+                                                    (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") ? "bg-slate-300" :
                                                     ((draggedId === "15-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:15:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-300 ease-in-outs" : "NOT"))
                                                 }`
                                             }
@@ -342,7 +346,13 @@ export default function ActiveHoursModal({onClose}) {
                                         </div>
 
                                         <div
-                                            className={`border rounded-md p-2 text-xs ${() => "w-3/6"} ${(draggedId === "30-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:30:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200" : "NOT"}`}
+                                            className={`border rounded-md p-2 text-xs 
+                                                    ${() => "w-3/6"} 
+                                                        ${
+                                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") ? "bg-slate-300" :
+                                                            ((draggedId === "30-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:30:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200" : "NOT"))
+                                                    }`
+                                            }
                                             id={"30-" + hour.id}
                                             onMouseDown={(e) => handleMouseDown(e, hour.id, 30)}
                                             onMouseMove={(e) => handleMouseMove(e, hour.id, 30, hour.ampm === pm_str ? pm_str : am_str)}
@@ -356,7 +366,13 @@ export default function ActiveHoursModal({onClose}) {
                                         </div>
 
                                         <div
-                                            className={`border rounded-md p-2 text-xs ${() => "w-3/6"} ${(draggedId === "45-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:45:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-00 ease-in-outs" : "NOT"}`}
+                                            className={`border rounded-md p-2 text-xs 
+                                                    ${() => "w-3/6"} 
+                                                        ${
+                                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") ? "bg-slate-300" :
+                                                            ((draggedId === "45-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:45:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-00 ease-in-outs" : "NOT"))
+                                                }`
+                                            }
                                             id={"45-" + hour.id}
                                             onMouseDown={(e) => handleMouseDown(e, hour.id, 45)}
                                             onMouseMove={(e) => handleMouseMove(e, hour.id, 45, hour.ampm === pm_str ? pm_str : am_str)}
