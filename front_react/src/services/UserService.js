@@ -110,6 +110,25 @@ class UserService {
         }
     }
 
+    static async deleteWorkingHours(data) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.request({
+                method: 'DELETE',
+                url: `${UserService.BASE_URL}/appoint/delete-wh`,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                data: data
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
+
     /* Check if its log in, role etc */
     static logout() {
         localStorage.removeItem("token");

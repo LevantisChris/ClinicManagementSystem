@@ -44,7 +44,7 @@ export default function ActiveHoursModal({onClose}) {
 
     const handleDateChange = newDate => {
         setDate(newDate);
-        console.log('Selected date:', date);
+        //console.log('Selected date:', date);
     };
 
     const handleMouseDown = (event, hourId, minute) => {
@@ -58,7 +58,7 @@ export default function ActiveHoursModal({onClose}) {
     const handleMouseMove = (event, hourId, minute, amfm_str) => {
         event.preventDefault();
         if (isDragging) {
-            console.log('Dragging over MouseMove:', hourId, minute);
+            //console.log('Dragging over MouseMove:', hourId, minute);
             /* We have to check wheaten that hour the user
             *  select is already selected.
             *  If its already selected then
@@ -68,12 +68,12 @@ export default function ActiveHoursModal({onClose}) {
                 date.toISOString().split('T')[0],
                 (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")
             ) {
-                console.log("SAME --> ", hourId, minute)
+                //console.log("SAME --> ", hourId, minute)
                 setShowDeleteDialog(true)
                 setIsDragging(false);
                 dragItemRef.current = null;
             } else {
-                console.log("Not the same")
+                //console.log("Not the same")
                 setDraggedId(`${minute}-${hourId}`);
                 addToList(`${hourId}:${minute}:${amfm_str}`);
                 setShowSubmitDialog(false);
@@ -144,8 +144,8 @@ export default function ActiveHoursModal({onClose}) {
         setLoading(true)
 
 
-        console.log("Day Selected: ", date)
-        console.log("Hours Selected: ", selectedOptions)
+        //console.log("Day Selected: ", date)
+        //console.log("Hours Selected: ", selectedOptions)
 
         /* We will modify the date and first, last value of the
         *  array selected option to be able to send them in the backend
@@ -153,7 +153,7 @@ export default function ActiveHoursModal({onClose}) {
 
         // Extracting the date and formatting it to yyyy-MM-dd
         const formattedDate = date.toISOString().split('T')[0];
-        console.log("Formatted Date: ", formattedDate);
+        //console.log("Formatted Date: ", formattedDate);
 
         // Extracting the start and end time
         const startTime = selectedOptions[0];
@@ -176,8 +176,8 @@ export default function ActiveHoursModal({onClose}) {
         const formattedStartTime = convertTo24HourFormat(startTime);
         const formattedEndTime = convertTo24HourFormat(endTime);
 
-        console.log("Formatted Start Time: ", formattedStartTime);
-        console.log("Formatted End Time: ", formattedEndTime);
+        //console.log("Formatted Start Time: ", formattedStartTime);
+        //console.log("Formatted End Time: ", formattedEndTime);
 
         /* Make the request to the backend */
         getDoctorFromId(formattedDate, formattedStartTime, formattedEndTime);
@@ -189,7 +189,7 @@ export default function ActiveHoursModal({onClose}) {
     }
 
     async function sendRequestToDefineWH(formattedDate, formattedStartTime, formattedEndTime, doctorId) {
-        console.log(Number(doctorId))
+        //console.log(Number(doctorId))
         const response = await UserService.defineWorkingHours(
             {
                 workingHoursDate: formattedDate,
@@ -198,7 +198,7 @@ export default function ActiveHoursModal({onClose}) {
                 doctorId: Number(doctorId)
             }
         )
-        console.log(response)
+        //console.log(response)
         if (response.statusCode === 200) {
             setLoading(false)
             setShowSubmitDialog(false);
@@ -217,7 +217,8 @@ export default function ActiveHoursModal({onClose}) {
         setShowDeleteDialog(false)
     }
 
-    useEffect(() => {
+    React.useEffect(() => {
+        console.log("CALLLLEEDD USE")
         const loadWorkingHours = async () => {
             const token = localStorage.getItem('token');
             if(token) {
@@ -232,7 +233,7 @@ export default function ActiveHoursModal({onClose}) {
             }
         }
         loadWorkingHours();
-    }, [showSubmitDialog]);
+    }, [showSubmitDialog, showDeleteDialog]);
 
     /* If there are any already predefined working hours we have to display them to the user
     *  In this function we will try to match them, in order to know which of them to "underline" */
@@ -245,8 +246,6 @@ export default function ActiveHoursModal({onClose}) {
                     return true;
                 }
             }
-        } else {
-            console.log("Is null")
         }
         return false;
     }
@@ -269,9 +268,32 @@ export default function ActiveHoursModal({onClose}) {
     }
 
     async function sendRequestToDeleteWH(workingHoursDate, startTime, endTime) {
-        console.log("DATE DELETE --> ", workingHoursDate.toISOString().split('T')[0])
-        console.log("START TIME DELETE --> ", startTime)
-        console.log("END TIME DELETE --> ", endTime)
+        setLoading(true)
+        console.log("DATE DELETE --> " + workingHoursDate.toISOString().split('T')[0]) // example output: 2024-08-16
+        console.log("START TIME DELETE --> ", startTime.current)
+        console.log("END TIME DELETE --> ", endTime.current)
+        try {
+            const data = {
+                workingHoursDate: workingHoursDate.toISOString().split('T')[0],
+                startTime: startTime.current,
+                endTime: endTime.current
+            }
+            const response = await UserService.deleteWorkingHours(data)
+            console.log(response)
+            if (response.statusCode === 200) {
+                setLoading(false)
+                setShowDeleteDialog(false);
+                setSuccessMessage(response.message)
+            } else {
+                setLoading(false)
+                setErrorMessage(response.message)
+            }
+        } catch (error) {
+            console.error('Error defining working hours:', error);
+            setErrorMessage('An error occurred while defining working hours.');
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
