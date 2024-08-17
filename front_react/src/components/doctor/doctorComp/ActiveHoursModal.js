@@ -44,6 +44,7 @@ export default function ActiveHoursModal({onClose}) {
 
     const handleDateChange = newDate => {
         setDate(newDate);
+        clearList();
         //console.log('Selected date:', date);
     };
 
@@ -148,16 +149,14 @@ export default function ActiveHoursModal({onClose}) {
     function handleSubmit() {
         /* set loading true, load the loading component to the user */
         setLoading(true)
-        //console.log("Day Selected: ", date)
-        //console.log("Hours Selected: ", selectedOptions)
+        console.log("Day Selected: ", date)
 
         /* We will modify the date and first, last value of the
         *  array selected option to be able to send them in the backend
         *  in the corrected form. */
 
         // Extracting the date and formatting it to yyyy-MM-dd
-        const formattedDate = date.toISOString().split('T')[0];
-        //console.log("Formatted Date: ", formattedDate);
+        const formattedDate = formatDateToLocal(date);
 
         // Extracting the start and end time
         const startTime = selectedOptions[0];
@@ -241,15 +240,27 @@ export default function ActiveHoursModal({onClose}) {
     /* If there are any already predefined working hours we have to display them to the user
     *  In this function we will try to match them, in order to know which of them to "underline" */
     function checkDateSimilarity(calendarDate, calendarTime) {
-        if(workingHours != null) {
+        if (workingHours != null) {
+            const formattedDate = formatDateToLocal(date);  // Local date formatting
             for (const workingHour of workingHours) {
-                if(isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime)) {
+                if (isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime) && formattedDate === workingHour.workingHoursDate) {
                     return [workingHour.startTime, workingHour.endTime];
                 }
             }
         }
         return null;
     }
+
+    function formatDateToLocal(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+// Usage in checkDateSimilarity
+    const formattedDate = formatDateToLocal(date);
+
 
     function isTimeInRange(time, time1, time2) {
         // Base date to compare times (using an arbitrary date since we only care about time)
@@ -270,12 +281,12 @@ export default function ActiveHoursModal({onClose}) {
 
     async function sendRequestToDeleteWH(workingHoursDate, startTime, endTime) {
         setLoading(true)
-        console.log("DATE DELETE --> " + workingHoursDate.toISOString().split('T')[0]) // example output: 2024-08-16
+        console.log("DATE DELETE --> " + formatDateToLocal(workingHoursDate)) // example output: 2024-08-16
         console.log("START TIME DELETE --> ", startTime)
         console.log("END TIME DELETE --> ", endTime)
         try {
             const data = {
-                workingHoursDate: workingHoursDate.toISOString().split('T')[0],
+                workingHoursDate: formatDateToLocal(workingHoursDate),
                 startTime: startTime,
                 endTime: endTime
             }
@@ -313,7 +324,7 @@ export default function ActiveHoursModal({onClose}) {
             ) : (
             <div className="grid grid-cols-2 gap-4 w-10/12 h-3/6 bg-white shadow-2xl p-5 relative">
                 <Calendar
-                    onChange={() => handleDateChange}
+                    onChange={handleDateChange}
                     value={date}
                     className="row-span-2 h-full"
                 />
@@ -324,7 +335,7 @@ export default function ActiveHoursModal({onClose}) {
                     </p>
                 </header>
 
-                <form className="overflow-auto">
+                <form className="overflow-auto" key={date.toString()}>
                     <div className="grid grid-cols-1 gap-4 bg-white">
                         <motion.div
                             initial={{opacity: 0}}
