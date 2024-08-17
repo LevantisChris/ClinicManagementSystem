@@ -6,6 +6,8 @@ import {data} from "autoprefixer";
 import LoadingApp from "../../Loading/LoadingApp";
 import SuccessApp from "../../Success/SuccessApp";
 import ErrorApp from "../../Error/ErrorApp";
+import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
+import {ChevronDownIcon} from "@heroicons/react/16/solid";
 /*-*/
 
 export default function DescriptionInsertModal({ props }) {
@@ -24,14 +26,17 @@ export default function DescriptionInsertModal({ props }) {
   } = useContext(GlobalContext);
 
   /* States to access the filed values */
-  const [patientName, setPatientName] = useState('');
-  const [patientSurname, setPatientSurname] = useState('');
+  // const [patientName, setPatientName] = useState('');
+  // const [patientSurname, setPatientSurname] = useState('');
   const [patientAmka, setPatientAmka] = useState('');
   const [description, setDescription] = useState('');
   /* For loading screen and  */
   const [loading, setLoading] = useState(false)
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  /* To handle the state selection */
+  const [stateSelected, setStateSelected] = useState("Created");
 
   /* In this function we will destruct from the selectedOption list
        the hours that the user has selected */
@@ -46,7 +51,7 @@ export default function DescriptionInsertModal({ props }) {
         ? 12 + selectedOptions[selectedOptions.length - 1].substring(1)
         : selectedOptions[selectedOptions.length - 1];
 
-    console.log(`Time selected ${selectedOptions}`);
+    //console.log(`Time selected ${selectedOptions}`);
 
     return `${start} to ${finish}`;
   }
@@ -59,13 +64,7 @@ export default function DescriptionInsertModal({ props }) {
 
   /* Here we will take the values of the fields and send them as JSON in the backend */
   async function handleClickSave() {
-    const formData = {
-      patient_name: patientName,
-      patient_surname: patientSurname,
-      patient_amka: patientAmka,
-      description,
-    };
-
+    setLoading(true)
     // Extracting the start and end time
     const startTime = selectedOptions[0];
     const endTime = selectedOptions[selectedOptions.length - 1];
@@ -76,28 +75,39 @@ export default function DescriptionInsertModal({ props }) {
     const formattedStartTime = convertTo24HourFormat(startTime);
     const formattedEndTime = convertTo24HourFormat(endTime);
 
-    console.log("Formatted Start Time: ", formattedStartTime);
-    console.log("Formatted End Time: ", formattedEndTime);
-    console.log("Date selected: " + date)
+    const formData = {
+      appointmentPatientAMKA: patientAmka,
+      appointmentDate: date,
+      appointmentStartTime: formattedStartTime + ":00",
+      appointmentEndTime: formattedEndTime + ":00",
+      appointmentJustification: description,
+      appointmentStateId: getStateId()
+  };
+
+    console.log("JSON: ", formData)
+
+    function getStateId() {
+      if(stateSelected === "Created")
+        return 1
+      else if(stateSelected === "Respected")
+        return 2
+      else if(stateSelected === "Completed")
+        return 3
+      else
+        return 4
+    }
 
 
     /* Send the request to the backend */
-    const response = await UserService.createAppointment(data)
+    const response = await UserService.createAppointment(formData)
     if (response.statusCode === 200) {
       setLoading(false)
       setShowSubmitDialog(false);
       setSuccessMessage(response.message)
     } else {
+      setLoading(false)
       setErrorMessage(response.message)
     }
-
-  }
-
-  function formatDateToLocal(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 
   const convertTo24HourFormat = (time12h) => {
@@ -137,7 +147,7 @@ export default function DescriptionInsertModal({ props }) {
                   {daySelected.format("dddd MMMM DD")},{" "}
                   <React.Fragment>
               <span className="font-bold">
-                {selectedOptions[0] !== undefined ? findTime() : console.log("EMPTY")}
+                {selectedOptions[0] !== undefined ? findTime() : ""}
               </span>
                   </React.Fragment>
                 </p>
@@ -145,30 +155,30 @@ export default function DescriptionInsertModal({ props }) {
                 <span className="text-center material-icons-outlined text-gray-400">
             person
           </span>
-          {/*      <input*/}
-          {/*          type="text"*/}
-          {/*          name="patient_name"*/}
-          {/*          placeholder="Patient name"*/}
-          {/*          className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"*/}
-          {/*          value={patientName}*/}
-          {/*          onChange={(e) => setPatientName(e.target.value)}*/}
-          {/*      />*/}
+                {/*      <input*/}
+                {/*          type="text"*/}
+                {/*          name="patient_name"*/}
+                {/*          placeholder="Patient name"*/}
+                {/*          className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"*/}
+                {/*          value={patientName}*/}
+                {/*          onChange={(e) => setPatientName(e.target.value)}*/}
+                {/*      />*/}
 
-          {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
-          {/*  person*/}
-          {/*</span>*/}
-          {/*      <input*/}
-          {/*          type="text"*/}
-          {/*          name="patient_surname"*/}
-          {/*          placeholder="Patient surname"*/}
-          {/*          className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"*/}
-          {/*          value={patientSurname}*/}
-          {/*          onChange={(e) => setPatientSurname(e.target.value)}*/}
-          {/*      />*/}
+                {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
+                {/*  person*/}
+                {/*</span>*/}
+                {/*      <input*/}
+                {/*          type="text"*/}
+                {/*          name="patient_surname"*/}
+                {/*          placeholder="Patient surname"*/}
+                {/*          className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"*/}
+                {/*          value={patientSurname}*/}
+                {/*          onChange={(e) => setPatientSurname(e.target.value)}*/}
+                {/*      />*/}
 
-          {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
-          {/*  medical_information*/}
-          {/*</span>*/}
+                {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
+                {/*  medical_information*/}
+                {/*</span>*/}
                 <input
                     type="text"
                     name="patient_amka"
@@ -177,6 +187,81 @@ export default function DescriptionInsertModal({ props }) {
                     value={patientAmka}
                     onChange={(e) => setPatientAmka(e.target.value)}
                 />
+                <span className="text-center material-icons-outlined text-gray-400">
+            check_circle
+          </span>
+                <Menu as="div" className="relative inline-block text-left">
+                  <div>
+                    <MenuButton
+                        className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                      Current State
+                      <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400"/>
+                    </MenuButton>
+                  </div>
+                  <MenuItems
+                      transition
+                      className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                  >
+                    <div className="py-1">
+                      <MenuItem>
+                        <a
+                            href="#"
+                            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            onClick={() => setStateSelected("Created")}
+                        >
+                          Created
+                          { stateSelected === "Created" ?
+                            <span className="material-icons-outlined text-gray-400">
+                              check
+                            </span> : ""
+                          }
+                        </a>
+                      </MenuItem>
+                      <MenuItem>
+                        <a
+                            href="#"
+                            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            onClick={() => setStateSelected("Respected")}
+                        >
+                          Respected
+                          { stateSelected === "Respected" ?
+                              <span className="material-icons-outlined text-gray-400">
+                              check
+                            </span> : ""
+                          }
+                        </a>
+                      </MenuItem>
+                      <MenuItem>
+                        <a
+                            href="#"
+                            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            onClick={() => setStateSelected("Completed")}
+                        >
+                          Completed
+                          { stateSelected === "Completed" ?
+                              <span className="material-icons-outlined text-gray-400">
+                              check
+                            </span> : ""
+                          }
+                        </a>
+                      </MenuItem>
+                      <MenuItem>
+                        <a
+                            href="#"
+                            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            onClick={() => setStateSelected("Cancelled")}
+                        >
+                          Cancelled
+                          { stateSelected === "Cancelled" ?
+                              <span className="material-icons-outlined text-gray-400">
+                              check
+                            </span> : ""
+                          }
+                        </a>
+                      </MenuItem>
+                    </div>
+                  </MenuItems>
+                </Menu>
 
                 <span className="text-center material-icons-outlined text-gray-400">
             description
@@ -184,18 +269,11 @@ export default function DescriptionInsertModal({ props }) {
                 <textarea
                     name="description"
                     placeholder="Reason for the appointment"
-                    style={{ height: "200px", resize: "none" }}
+                    style={{height: "200px", resize: "none"}}
                     className="pt-3 border-0 text-gray-600 bg-gray-200 pd-2 w-full border-b-2 rounded border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
-
-                <span className="text-center material-icons-outlined text-gray-400">
-            check_circle
-          </span>
-                <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg">
-                  Status
-                </button>
               </div>
 
               <div className="flex mt-5">

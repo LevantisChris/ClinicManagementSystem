@@ -74,8 +74,8 @@ export default function ActiveHoursModal({onClose}) {
                 setShowDeleteDialog(true)
                 setIsDragging(false);
                 dragItemRef.current = null;
-                console.log("CHECK: " + temp[0])
-                console.log("CHECK: " + temp[1])
+                //console.log("CHECK: " + temp[0])
+                //console.log("CHECK: " + temp[1])
                 showStartTimeRef.current = temp[0]
                 showEndTimeRef.current = temp[1]
             } else {
