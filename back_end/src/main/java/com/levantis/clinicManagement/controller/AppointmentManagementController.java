@@ -56,5 +56,11 @@ public class AppointmentManagementController {
         return ResponseEntity.ok(appointmentManagementService.searchAppointments(appointment));
     }
 
+    /* Get all appointments for a specific doctor */
+    @GetMapping("/appoint/getAll")
+    public ResponseEntity<AppointmentDTO> getAllAppointments() {
+        return ResponseEntity.ok(appointmentManagementService.getAllAppointments());
+    }
+
 
 }

@@ -559,6 +559,50 @@ public class AppointmentManagementService {
         return resp;
     }
 
+    /* Get all appointments that belong to particular doctor, the user is being validated from the token */
+    public AppointmentDTO getAllAppointments() {
+        AppointmentDTO resp = new AppointmentDTO();
+        List<Appointment> appointments;
+        try {
+            String jwtToken = getToken();
+            if (jwtToken == null) {
+                log.error("Empty/null token");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return resp;
+            }
+            jwtUtils.extractUsername(jwtToken);
+
+            User user = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
+                    .orElseThrow(() -> new RuntimeException("User (Doctor) Not found"));
+
+            if(!user.getRole_str().equals("USER_DOCTOR")) {
+                log.error("Not a doctor");
+                resp.setMessage("Not a doctor.");
+                resp.setStatusCode(404);
+                return resp;
+            }
+
+            Doctor doctor = user.getDoctor();
+
+            appointments = appointmentRepository.findByAppointmentDoctor(doctor);
+
+            if (!appointments.isEmpty()) {
+                resp.setAppointmentList(appointments.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
+                resp.setMessage("Appointments retrieved successfully for doctor "  + doctor.getUser().getEmail());
+                resp.setStatusCode(200);
+            } else {
+                resp.setMessage("No appointments found for doctor "  + doctor.getUser().getEmail());
+                resp.setStatusCode(404);
+            }
+        } catch (Exception e) {
+            log.error("Error searching appointments: {}", e.getMessage());
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
     /*------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     private AppointmentDTO mapToAppointmentDTO(Appointment appointment) {

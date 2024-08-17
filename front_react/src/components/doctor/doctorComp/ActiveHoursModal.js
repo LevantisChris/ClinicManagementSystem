@@ -384,7 +384,7 @@ export default function ActiveHoursModal({onClose}) {
                                         id={"00-" + hour.id}
                                         className={`border rounded-md p-2 
                                                 ${
-                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") ? "bg-slate-300" :
+                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") ? "bg-green-600" :
                                                 ((draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-400 transition duration-100 ease-in-outs" : "NOT"))
                                             }`
                                     }
@@ -425,7 +425,7 @@ export default function ActiveHoursModal({onClose}) {
                                         <div
                                             className={`border rounded-md p-2 text-xs 
                                                 ${
-                                                    (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") ? "bg-slate-300" :
+                                                    (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") ? "bg-green-400" :
                                                     ((draggedId === "15-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:15:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-300 ease-in-outs" : "NOT"))
                                                 }`
                                             }
@@ -445,7 +445,7 @@ export default function ActiveHoursModal({onClose}) {
                                             className={`border rounded-md p-2 text-xs 
                                                     ${() => "w-3/6"} 
                                                         ${
-                                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") ? "bg-slate-300" :
+                                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") ? "bg-green-400" :
                                                             ((draggedId === "30-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:30:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200" : "NOT"))
                                                     }`
                                             }
@@ -465,7 +465,7 @@ export default function ActiveHoursModal({onClose}) {
                                             className={`border rounded-md p-2 text-xs 
                                                     ${() => "w-3/6"} 
                                                         ${
-                                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") ? "bg-slate-300" :
+                                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") ? "bg-green-400" :
                                                             ((draggedId === "45-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:45:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-00 ease-in-outs" : "NOT"))
                                                 }`
                                             }

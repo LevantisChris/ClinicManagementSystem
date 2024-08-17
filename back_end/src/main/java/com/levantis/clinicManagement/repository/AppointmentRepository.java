@@ -2,6 +2,7 @@ package com.levantis.clinicManagement.repository;
 
 
 import com.levantis.clinicManagement.entity.Appointment;
+import com.levantis.clinicManagement.entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,4 +31,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
     @Query("SELECT a FROM Appointment a JOIN a.appointmentPatient p WHERE a.appointmentDate BETWEEN :startDate AND :endDate AND p.user.user_idNumber = :amka AND a.appointmentState.appointmentStateDescription = :status")
     List<Appointment> findByDateRangeAndPatientAMKAAndAppointmentState(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("amka") String amka, @Param("status") String status);
+
+    @Query("SELECT a FROM Appointment a WHERE a.appointmentDoctor = :doctor_id")
+    List<Appointment> findByAppointmentDoctor(@Param("doctor_id") Doctor doctor_id);
 }
