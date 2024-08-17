@@ -145,30 +145,30 @@ export default function DescriptionInsertModal({ props }) {
                 <span className="text-center material-icons-outlined text-gray-400">
             person
           </span>
-                <input
-                    type="text"
-                    name="patient_name"
-                    placeholder="Patient name"
-                    className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
-                    value={patientName}
-                    onChange={(e) => setPatientName(e.target.value)}
-                />
+          {/*      <input*/}
+          {/*          type="text"*/}
+          {/*          name="patient_name"*/}
+          {/*          placeholder="Patient name"*/}
+          {/*          className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"*/}
+          {/*          value={patientName}*/}
+          {/*          onChange={(e) => setPatientName(e.target.value)}*/}
+          {/*      />*/}
 
-                <span className="text-center material-icons-outlined text-gray-400">
-            person
-          </span>
-                <input
-                    type="text"
-                    name="patient_surname"
-                    placeholder="Patient surname"
-                    className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
-                    value={patientSurname}
-                    onChange={(e) => setPatientSurname(e.target.value)}
-                />
+          {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
+          {/*  person*/}
+          {/*</span>*/}
+          {/*      <input*/}
+          {/*          type="text"*/}
+          {/*          name="patient_surname"*/}
+          {/*          placeholder="Patient surname"*/}
+          {/*          className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"*/}
+          {/*          value={patientSurname}*/}
+          {/*          onChange={(e) => setPatientSurname(e.target.value)}*/}
+          {/*      />*/}
 
-                <span className="text-center material-icons-outlined text-gray-400">
-            medical_information
-          </span>
+          {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
+          {/*  medical_information*/}
+          {/*</span>*/}
                 <input
                     type="text"
                     name="patient_amka"
