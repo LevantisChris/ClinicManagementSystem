@@ -59,7 +59,7 @@ export default function InsertModal() {
       const temp = checkDateSimilarity(
           daySelected.format("YYYY-MM-DD"),
           (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")
-      if (temp !== null
+      if (temp === null
       ) {
         setIsDragging(false);
         dragItemRef.current = null;
@@ -260,9 +260,11 @@ export default function InsertModal() {
                               id={`00-${hour.id}`}
                               className={`border rounded-md p-2 
                                                 ${
-                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") ? "bg-green-600" :
-                                      ((draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00`)
-                                          ? "bg-blue-400 transition duration-300 ease-in-outs" : "NOT"))
+                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") 
+                                      ? ((draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00`)
+                                          ? "bg-blue-400 transition duration-300 ease-in-outs" : "NOT")
+                                          : "bg-slate-300"
+                                  )
                               }`
                               }
                               onMouseDown={(e) => handleMouseDown(e, hour.id, "00")}
@@ -305,11 +307,13 @@ export default function InsertModal() {
                               id={`15-${hour.id}`}
                               className={`border rounded-md p-2 text-xs 
                                                 ${
-                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") ? "bg-green-400" :
-                                      ((draggedId === "15-" + hour.id && isDragging) ||
-                                      selectedOptions.includes(`${hour.id}:15`)
-                                          ? "bg-blue-200 transition duration-300 ease-in-outs"
-                                          : "NOT"))
+                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") 
+                                          ? ((draggedId === "15-" + hour.id && isDragging) ||
+                                              selectedOptions.includes(`${hour.id}:15`)
+                                              ? "bg-blue-200 transition duration-300 ease-in-outs"
+                                              : "NOT")
+                                          : "bg-slate-300"
+                                  )
                               }`
                               }
                               onMouseDown={(e) => handleMouseDown(e, hour.id, 15)}
@@ -328,11 +332,13 @@ export default function InsertModal() {
                               className={`border rounded-md p-2 text-xs 
                                                     ${() => "w-3/6"} 
                                                         ${
-                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") ? "bg-green-400" :
-                                      ((draggedId === "30-" + hour.id && isDragging) ||
-                                      selectedOptions.includes(`${hour.id}:30`)
-                                          ? "bg-blue-200"
-                                          : "NOT"))
+                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") 
+                                      ? ((draggedId === "30-" + hour.id && isDragging) ||
+                                            selectedOptions.includes(`${hour.id}:30`)
+                                            ? "bg-blue-200"
+                                            : "NOT")
+                                          : "bg-slate-300"
+                                  )
                               }`
                               }
                               onMouseDown={(e) => handleMouseDown(e, hour.id, 30)}
@@ -351,11 +357,13 @@ export default function InsertModal() {
                               className={`border rounded-md p-2 text-xs 
                                                     ${() => "w-3/6"} 
                                                         ${
-                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") ? "bg-green-400" :
-                                      ((draggedId === "45-" + hour.id && isDragging) ||
-                                      selectedOptions.includes(`${hour.id}:45`)
-                                          ? "bg-blue-200 transition duration-00 ease-in-outs"
-                                          : "NOT"))
+                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") 
+                                          ? ((draggedId === "45-" + hour.id && isDragging) ||
+                                              selectedOptions.includes(`${hour.id}:45`)
+                                              ? "bg-blue-200 transition duration-00 ease-in-outs"
+                                              : "NOT")
+                                      : "bg-slate-300"
+                                  )
                               }`
                               }
                               onMouseDown={(e) => handleMouseDown(e, hour.id, 45)}
