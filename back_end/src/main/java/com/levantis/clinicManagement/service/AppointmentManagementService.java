@@ -184,7 +184,11 @@ public class AppointmentManagementService {
 
     public AppointmentDTO createAppointment(AppointmentDTO registrationRequest) {
         AppointmentDTO resp = new AppointmentDTO();
-        if(registrationRequest.getAppointmentDoctorEmail() == null
+
+        /* We need to token to extract the user and then take the email */
+        String jwtToken = getToken();
+
+        if(jwtToken == null
             || registrationRequest.getAppointmentDate() == null
             || registrationRequest.getAppointmentStartTime() == null
             || registrationRequest.getAppointmentEndTime() == null
@@ -197,9 +201,13 @@ public class AppointmentManagementService {
             return resp;
         }
         try {
+
+            User user = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
+                    .orElseThrow(() -> new RuntimeException("User (Doctor) Not found"));
+
             Appointment appointment = new Appointment();
 
-            Doctor doctor = doctorRepository.findByEmail(registrationRequest.getAppointmentDoctorEmail())
+            Doctor doctor = doctorRepository.findByEmail(user.getEmail())
                         .orElseThrow(() -> new RuntimeException("Doctor (Email) not found"));
             appointment.setAppointmentDoctor(doctor);
 

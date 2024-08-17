@@ -258,7 +258,7 @@ export default function ActiveHoursModal({onClose}) {
         return `${year}-${month}-${day}`;
     }
 
-// Usage in checkDateSimilarity
+    // Usage in checkDateSimilarity
     const formattedDate = formatDateToLocal(date);
 
 

@@ -128,6 +128,20 @@ class UserService {
         }
     }
 
+    static async createAppointment(data) {
+        const token = localStorage.getItem("token")
+        try {
+            const response = await axios.post(`${UserService.BASE_URL}/auth/login`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            })
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
 
     /* Check if its log in, role etc */
     static logout() {
