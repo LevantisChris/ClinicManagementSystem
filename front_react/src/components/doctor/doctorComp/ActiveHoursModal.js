@@ -258,10 +258,6 @@ export default function ActiveHoursModal({onClose}) {
         return `${year}-${month}-${day}`;
     }
 
-    // Usage in checkDateSimilarity
-    const formattedDate = formatDateToLocal(date);
-
-
     function isTimeInRange(time, time1, time2) {
         // Base date to compare times (using an arbitrary date since we only care about time)
         const baseDate = '1970-01-01';

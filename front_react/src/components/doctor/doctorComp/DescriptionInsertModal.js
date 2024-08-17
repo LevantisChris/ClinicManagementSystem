@@ -10,7 +10,7 @@ import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
 import {ChevronDownIcon} from "@heroicons/react/16/solid";
 /*-*/
 
-export default function DescriptionInsertModal({ props }) {
+export default function DescriptionInsertModal() {
 
   const componentRef = useRef(null);
 

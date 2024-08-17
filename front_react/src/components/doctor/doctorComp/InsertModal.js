@@ -2,11 +2,16 @@ import React, { useContext, useState, useRef } from "react";
 import GlobalContext from "../../../context/GlobalContext";
 import DescriptionInsertModal from "./DescriptionInsertModal";
 import { motion } from "framer-motion";
+import UserService from "../../../services/UserService";
+import LoadingApp from "../../Loading/LoadingApp";
+import SuccessApp from "../../Success/SuccessApp";
+import ErrorApp from "../../Error/ErrorApp";
 
 /* The modal that helps the user pick time slots */
 
 export default function InsertModal() {
   const {
+    showInsertModal,
     setShowInsertModal,
     daySelected,
     selectedOptions,
@@ -14,6 +19,10 @@ export default function InsertModal() {
     clearList,
     showDescriptionInsertModal,
     setShowDescriptionInsertModal,
+    successMessage,
+    setSuccessMessage,
+    errorMessage,
+    setErrorMessage
   } = useContext(GlobalContext);
 
   const [isDragging, setIsDragging] = useState(false);
@@ -21,12 +30,20 @@ export default function InsertModal() {
   const [draggedId, setDraggedId] = useState(null);
   const [hours, setHours] = useState([]);
 
+  /* The working hours that are already defined (if there are any, might be null) */
+  const [workingHours, setWorkingHours] = useState([]);
+
+  const [loading, setLoading] = useState(false)
+
+  const am_str = "AM";
+  const pm_str =  "PM";
+
   const handleMouseDown = (event, hourId, minute) => {
     event.preventDefault();
     clearList();
     setIsDragging(true);
     setShowDescriptionInsertModal(false);
-    console.log("TouchStart: " + hourId + "-" + minute);
+    //console.log("TouchStart: " + hourId + "-" + minute);
     //setDraggedId(minute + "-" + hourId);
     dragItemRef.current = { hourId, minute };
   };
@@ -34,9 +51,23 @@ export default function InsertModal() {
   const handleMouseMove = (event, hourId, minute) => {
     event.preventDefault();
     if (isDragging) {
-      setDraggedId(minute + "-" + hourId);
-      addToList(hourId + ":" + minute);
-      console.log("Dragging over MouseMove:", hourId, minute);
+      /* We have to check wheaten that hour the user
+            *  select is already selected.
+            *  If its already selected then
+            *  send request to the server to delete it.
+            *  */
+      const temp = checkDateSimilarity(
+          daySelected.format("YYYY-MM-DD"),
+          (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")
+      if (temp !== null
+      ) {
+        setIsDragging(false);
+        dragItemRef.current = null;
+      } else {
+        setDraggedId(minute + "-" + hourId);
+        addToList(hourId + ":" + minute);
+        //console.log("Dragging over MouseMove:", hourId, minute);
+      }
     }
   };
 
@@ -49,20 +80,20 @@ export default function InsertModal() {
     (isLater() ? true : clearList())
       ? setShowDescriptionInsertModal(true)
       : setShowDescriptionInsertModal(false);
-    console.log("dragging-mouseUp stopped");
+    //console.log("dragging-mouseUp stopped");
   };
 
   const handleMouseLeave = () => {
     setIsDragging(false);
     dragItemRef.current = null;
     //setDraggedId(null);
-    console.log("dragging-leaved stopped");
+    //console.log("dragging-leaved stopped");
   };
 
   const handleTouchStart = (event, hourId, minute) => {
     event.preventDefault();
     setIsDragging(true);
-    console.log("TouchStart: " + hourId + "-" + minute);
+    //console.log("TouchStart: " + hourId + "-" + minute);
     //setDraggedId(minute + "-" + hourId);
     dragItemRef.current = { hourId, minute };
   };
@@ -72,7 +103,7 @@ export default function InsertModal() {
     if (isDragging) {
       setDraggedId(minute + "-" + hourId);
       //addObjectToList(minute, hourId);
-      console.log("Dragging over TouchMove:", hourId, minute);
+      //console.log("Dragging over TouchMove:", hourId, minute);
     }
   };
 
@@ -80,20 +111,20 @@ export default function InsertModal() {
     setIsDragging(false);
     dragItemRef.current = null;
     //setDraggedId(null);
-    console.log("dragging-touchEnd stopped");
+    //console.log("dragging-touchEnd stopped");
   };
 
   const handleTouchCancel = () => {
     setIsDragging(false);
     dragItemRef.current = null;
     //setDraggedId(null);
-    console.log("dragging-touchCancel stopped");
+    //console.log("dragging-touchCancel stopped");
   };
 
   /* Manage the selected list */
   const addToList = (option) => {
     if (!selectedOptions.includes(option)) {
-      console.log("\nTOTAL SELECTED: " + selectedOptions);
+      //console.log("\nTOTAL SELECTED: " + selectedOptions);
       setSelectedOptions([...selectedOptions, option]);
     }
   };
@@ -112,12 +143,10 @@ export default function InsertModal() {
       .split(":")
       .map(Number);
     if (firstHours === secondHours) {
-      console.log("PROTO");
       const firstTotalMinutes = firstHours * 60 + firstMinutes;
       const secondTotalMinutes = secondHours * 60 + secondMinutes;
       return firstTotalMinutes < secondTotalMinutes;
     }
-    console.log("SECOND");
     return firstHours < secondHours;
   }
   /* ----------------------------------------------------------------------------------- */
@@ -134,173 +163,220 @@ export default function InsertModal() {
     setHours(generatedHours);
   }, []);
 
+  React.useEffect(() => {
+    const loadWorkingHours = async () => {
+      //setLoading(true)
+      const token = localStorage.getItem('token');
+      if(token) {
+        try {
+          const w_hours = await UserService.getWorkingHoursOfADoctor(token);
+          if(w_hours[0].statusCode !== 404) {
+            console.log("GOOTTT")
+            setWorkingHours(w_hours);
+            setLoading(false)
+          }
+        } catch (error) {
+          console.error('Failed to fetch working hours:', error);
+          setLoading(false)
+        }
+      }
+    }
+    loadWorkingHours();
+  }, []);
+
+  /* If there are any already predefined working hours we have to display them to the user
+*  In this function we will try to match them, in order to know which of them to "underline" */
+  function checkDateSimilarity(calendarDate, calendarTime) {
+    if (workingHours != null) {
+      const formattedDate = daySelected.format("YYYY-MM-DD")  // Local date formatting
+      for (const workingHour of workingHours) {
+        if (isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime) && formattedDate === workingHour.workingHoursDate) {
+          return [workingHour.startTime, workingHour.endTime];
+        }
+      }
+    }
+    return null;
+  }
+
+  function isTimeInRange(time, time1, time2) {
+    // Base date to compare times (using an arbitrary date since we only care about time)
+    const baseDate = '1970-01-01';
+    // Convert strings to Date objects
+    const timeDate = new Date(`${baseDate}T${time}`);
+    const time1Date = new Date(`${baseDate}T${time1}`);
+    const time2Date = new Date(`${baseDate}T${time2}`);
+    // Check if time is greater than or equal to time1 and less than or equal to time2
+    return timeDate >= time1Date && timeDate <= time2Date;
+  }
+
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.1, ease: "easeOut" }}
-      className="h-screen w-screen fixed flex justify-center items-center">
-      <form className="g-amber-50 rounded-lg shadow-2xl w-11/12
-      max-w-full max-h-screen overflow-auto">
-        <header
-            className={"bg-gray-100 px-4 py-2 flex justify-between items-center"}
-        >
-          <p className="text-slate-700 font-black hover:text-sky-700">
-            {daySelected.format("dddd, MMMM, DD")}
-          </p>
-          <div>
-            <button
-                onClick={() => {
-                  setShowDescriptionInsertModal(false);
-                  setShowInsertModal(false);
-                  clearList();
-                }}
-            >
-              <span
-                  className={
-                    "material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-outs"
-                  }
-              >
+      <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.1, ease: "easeOut" }}
+          className="h-screen w-screen fixed flex justify-center items-center"
+      >
+        {loading ? (
+            <LoadingApp />
+        ) : successMessage !== null ? (
+            <SuccessApp />
+        ) : errorMessage !== null ? (
+            <ErrorApp />
+        ) : (
+            <form className="bg-amber-50 rounded-lg shadow-2xl w-11/12 max-w-full max-h-screen overflow-auto">
+              <header className="bg-gray-100 px-4 py-2 flex justify-between items-center">
+                <p className="text-slate-700 font-black hover:text-sky-700">
+                  {daySelected.format("dddd, MMMM, DD")}
+                </p>
+                <div>
+                  <button
+                      onClick={() => {
+                        setShowDescriptionInsertModal(false);
+                        setShowInsertModal(false);
+                        clearList();
+                      }}
+                  >
+              <span className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out">
                 close
               </span>
-            </button>
-          </div>
-        </header>
+                  </button>
+                </div>
+              </header>
 
-        <div className={`${showDescriptionInsertModal ? "flex" : ""}`}>
-          <div
-            className={`grid grid-cols-1 gap-4 bg-white ${
-              showDescriptionInsertModal ? "w-3/6" : ""
-            }`}
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.75, ease: "easeOut" }}
-              className="overflow-y-auto"
-              style={{ maxHeight: "600px" }}
-            >
-              {hours.map((hour) => {
-                return (
-                  <React.Fragment key={hour.id}>
-                    <div
-                      id={"00-" + hour.id}
-                      className={`border rounded-md p-2 ${
-                        (draggedId === "00-" + hour.id && isDragging) ||
-                        selectedOptions.includes(`${hour.id}:00`)
-                          ? "bg-blue-400 transition duration-300 ease-in-outs"
-                          : "NOT"
-                      }`}
-                      onMouseDown={(e) => handleMouseDown(e, hour.id, "00")}
-                      onMouseMove={(e) => handleMouseMove(e, hour.id, "00")}
-                      onMouseUp={handleMouseUp}
-                      //onMouseLeave={handleMouseLeave}
-                      onTouchStart={(e) => handleTouchStart(e, hour.id, "00")}
-                      onTouchMove={(e) => handleTouchMove(e, hour.id, "00")}
-                      onTouchEnd={handleTouchEnd}
-                      onTouchCancel={handleTouchCancel}
-                    >
-                      <span className="text-slate-700 font-bold">
-                        {hour.hour === 12 && hour.ampm === "PM" ? (
+              <div className={showDescriptionInsertModal ? "flex" : ""}>
+                <div
+                    className={`grid grid-cols-1 gap-4 bg-white ${showDescriptionInsertModal ? "w-3/6" : ""}`}
+                >
+                  <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.75, ease: "easeOut" }}
+                      className="overflow-y-auto"
+                      style={{ maxHeight: "600px" }}
+                  >
+                    {hours.map((hour) => (
+                        <React.Fragment key={hour.id}>
+                          <div
+                              id={`00-${hour.id}`}
+                              className={`border rounded-md p-2 
+                                                ${
+                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") ? "bg-green-600" :
+                                      ((draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00`)
+                                          ? "bg-blue-400 transition duration-300 ease-in-outs" : "NOT"))
+                              }`
+                              }
+                              onMouseDown={(e) => handleMouseDown(e, hour.id, "00")}
+                              onMouseMove={(e) => handleMouseMove(e, hour.id, "00")}
+                              onMouseUp={handleMouseUp}
+                              onTouchStart={(e) => handleTouchStart(e, hour.id, "00")}
+                              onTouchMove={(e) => handleTouchMove(e, hour.id, "00")}
+                              onTouchEnd={handleTouchEnd}
+                              onTouchCancel={handleTouchCancel}
+                          >
+                    <span className="text-slate-700 font-bold">
+                      {hour.hour === 12 && hour.ampm === "PM" ? (
                           <>
-                            <span
+                          <span
                               className="material-icons-outlined text-yellow-600 mr-1"
                               style={{ verticalAlign: "middle" }}
-                            >
-                              light_mode
-                            </span>
+                          >
+                            light_mode
+                          </span>
                             {hour.hour}
                           </>
-                        ) : hour.hour === 12 && hour.ampm === "AM" ? (
+                      ) : hour.hour === 12 && hour.ampm === "AM" ? (
                           <>
-                            <span
+                          <span
                               className="material-icons-outlined text-blue-600 mr-1"
                               style={{ verticalAlign: "middle" }}
-                            >
-                              dark_mode
-                            </span>
+                          >
+                            dark_mode
+                          </span>
                             {hour.hour}
                           </>
-                        ) : (
+                      ) : (
                           hour.hour
-                        )}
-                      </span>
+                      )}
+                    </span>
+                            <span className="text-slate-600 ml-1">{hour.ampm}</span>
+                          </div>
 
-                      <span className="text-slate-600 ml-1">{hour.ampm}</span>
-                    </div>
-                    {
-                      <React.Fragment>
-                        <div
-                          className={`border rounded-md p-2 text-xs ${
-                            (draggedId === "15-" + hour.id && isDragging) ||
-                            selectedOptions.includes(`${hour.id}:15`)
-                              ? "bg-blue-200 transition duration-300 ease-in-outs"
-                              : "NOT"
-                          }`}
-                          id={"15-" + hour.id}
-                          onMouseDown={(e) => handleMouseDown(e, hour.id, 15)}
-                          onMouseMove={(e) => handleMouseMove(e, hour.id, 15)}
-                          onMouseUp={handleMouseUp}
-                          //onMouseLeave={handleMouseLeave}
-                          onTouchStart={(e) => handleTouchStart(e, hour.id, 15)}
-                          onTouchMove={(e) => handleTouchMove(e, hour.id, 15)}
-                          onTouchEnd={handleTouchEnd}
-                          onTouchCancel={handleTouchCancel}
-                        >
-                          {hour.hour}:15
-                        </div>
+                          <div
+                              id={`15-${hour.id}`}
+                              className={`border rounded-md p-2 text-xs 
+                                                ${
+                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") ? "bg-green-400" :
+                                      ((draggedId === "15-" + hour.id && isDragging) ||
+                                      selectedOptions.includes(`${hour.id}:15`)
+                                          ? "bg-blue-200 transition duration-300 ease-in-outs"
+                                          : "NOT"))
+                              }`
+                              }
+                              onMouseDown={(e) => handleMouseDown(e, hour.id, 15)}
+                              onMouseMove={(e) => handleMouseMove(e, hour.id, 15)}
+                              onMouseUp={handleMouseUp}
+                              onTouchStart={(e) => handleTouchStart(e, hour.id, 15)}
+                              onTouchMove={(e) => handleTouchMove(e, hour.id, 15)}
+                              onTouchEnd={handleTouchEnd}
+                              onTouchCancel={handleTouchCancel}
+                          >
+                            {hour.hour}:15
+                          </div>
 
-                        <div
-                          className={`border rounded-md p-2 text-xs ${() =>
-                            "w-3/6"} ${
-                            (draggedId === "30-" + hour.id && isDragging) ||
-                            selectedOptions.includes(`${hour.id}:30`)
-                              ? "bg-blue-200"
-                              : "NOT"
-                          }`}
-                          id={"30-" + hour.id}
-                          onMouseDown={(e) => handleMouseDown(e, hour.id, 30)}
-                          onMouseMove={(e) => handleMouseMove(e, hour.id, 30)}
-                          onMouseUp={handleMouseUp}
-                          //onMouseLeave={handleMouseLeave}
-                          onTouchStart={(e) => handleTouchStart(e, hour.id, 30)}
-                          onTouchMove={(e) => handleTouchMove(e, hour.id, 30)}
-                          onTouchEnd={handleTouchEnd}
-                          onTouchCancel={handleTouchCancel}
-                        >
-                          {hour.hour}:30
-                        </div>
+                          <div
+                              id={`30-${hour.id}`}
+                              className={`border rounded-md p-2 text-xs 
+                                                    ${() => "w-3/6"} 
+                                                        ${
+                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") ? "bg-green-400" :
+                                      ((draggedId === "30-" + hour.id && isDragging) ||
+                                      selectedOptions.includes(`${hour.id}:30`)
+                                          ? "bg-blue-200"
+                                          : "NOT"))
+                              }`
+                              }
+                              onMouseDown={(e) => handleMouseDown(e, hour.id, 30)}
+                              onMouseMove={(e) => handleMouseMove(e, hour.id, 30)}
+                              onMouseUp={handleMouseUp}
+                              onTouchStart={(e) => handleTouchStart(e, hour.id, 30)}
+                              onTouchMove={(e) => handleTouchMove(e, hour.id, 30)}
+                              onTouchEnd={handleTouchEnd}
+                              onTouchCancel={handleTouchCancel}
+                          >
+                            {hour.hour}:30
+                          </div>
 
-                        <div
-                          className={`border rounded-md p-2 text-xs ${() =>
-                            "w-3/6"} ${
-                            (draggedId === "45-" + hour.id && isDragging) ||
-                            selectedOptions.includes(`${hour.id}:45`)
-                              ? "bg-blue-200 transition duration-00 ease-in-outs"
-                              : "NOT"
-                          }`}
-                          id={"45-" + hour.id}
-                          onMouseDown={(e) => handleMouseDown(e, hour.id, 45)}
-                          onMouseMove={(e) => handleMouseMove(e, hour.id, 45)}
-                          onMouseUp={handleMouseUp}
-                          //onMouseLeave={handleMouseLeave}
-                          onTouchStart={(e) => handleTouchStart(e, hour.id, 45)}
-                          onTouchMove={(e) => handleTouchMove(e, hour.id, 45)}
-                          onTouchEnd={handleTouchEnd}
-                          onTouchCancel={handleTouchCancel}
-                        >
-                          {hour.hour}:45
-                        </div>
-                      </React.Fragment>
+                          <div
+                              id={`45-${hour.id}`}
+                              className={`border rounded-md p-2 text-xs 
+                                                    ${() => "w-3/6"} 
+                                                        ${
+                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") ? "bg-green-400" :
+                                      ((draggedId === "45-" + hour.id && isDragging) ||
+                                      selectedOptions.includes(`${hour.id}:45`)
+                                          ? "bg-blue-200 transition duration-00 ease-in-outs"
+                                          : "NOT"))
+                              }`
+                              }
+                              onMouseDown={(e) => handleMouseDown(e, hour.id, 45)}
+                              onMouseMove={(e) => handleMouseMove(e, hour.id, 45)}
+                              onMouseUp={handleMouseUp}
+                              onTouchStart={(e) => handleTouchStart(e, hour.id, 45)}
+                              onTouchMove={(e) => handleTouchMove(e, hour.id, 45)}
+                              onTouchEnd={handleTouchEnd}
+                              onTouchCancel={handleTouchCancel}
+                          >
+                            {hour.hour}:45
+                          </div>
+                        </React.Fragment>
+                      ))
                     }
-                  </React.Fragment>
-                );
-              })}
-            </motion.div>
-          </div>
-          {showDescriptionInsertModal ? <DescriptionInsertModal /> : ""}
-        </div>
-      </form>
-    </motion.div>
+                  </motion.div>
+                </div>
+                {showDescriptionInsertModal && <DescriptionInsertModal />}
+              </div>
+            </form>
+        )}
+      </motion.div>
   );
 }
