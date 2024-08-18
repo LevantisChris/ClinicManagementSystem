@@ -2,12 +2,14 @@ package com.levantis.clinicManagement.controller;
 
 import com.levantis.clinicManagement.dto.AppointmentDTO;
 import com.levantis.clinicManagement.dto.WorkingHoursDTO;
-import com.levantis.clinicManagement.entity.WorkingHours;
 import com.levantis.clinicManagement.service.AppointmentManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -58,8 +60,20 @@ public class AppointmentManagementController {
 
     /* Get all appointments for a specific doctor */
     @GetMapping("/appoint/getAll")
-    public ResponseEntity<AppointmentDTO> getAllAppointments() {
-        return ResponseEntity.ok(appointmentManagementService.getAllAppointments());
+    public ResponseEntity<AppointmentDTO> getAllAppointments(@RequestBody AppointmentDTO appointment) {
+        return ResponseEntity.ok(appointmentManagementService.getAllAppointments_doctor(appointment));
+    }
+
+    /*------------------------------------------------------------------------------------------------------------------*/
+
+    private Date strToDate(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return formatter.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

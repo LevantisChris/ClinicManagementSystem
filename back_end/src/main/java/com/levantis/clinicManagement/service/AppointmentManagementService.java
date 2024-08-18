@@ -559,13 +559,13 @@ public class AppointmentManagementService {
         return resp;
     }
 
-    /* Get all appointments that belong to particular doctor, the user is being validated from the token */
-    public AppointmentDTO getAllAppointments() {
+    /* Get all appointments that belong to particular doctor for a particular date, the user is being validated from the token */
+    public AppointmentDTO getAllAppointments_doctor(AppointmentDTO request) {
         AppointmentDTO resp = new AppointmentDTO();
         List<Appointment> appointments;
         try {
             String jwtToken = getToken();
-            if (jwtToken == null) {
+            if (jwtToken == null || request.getAppointmentDate() == null) {
                 log.error("Empty/null token");
                 resp.setMessage("Empty/null token.");
                 resp.setStatusCode(500);
@@ -585,14 +585,17 @@ public class AppointmentManagementService {
 
             Doctor doctor = user.getDoctor();
 
-            appointments = appointmentRepository.findByAppointmentDoctor(doctor);
+            System.out.println("TETST --> " + request.getAppointmentDate());
+
+            appointments = appointmentRepository.findByAppointmentDoctorAndAppointmentDate(doctor, request.getAppointmentDate());
 
             if (!appointments.isEmpty()) {
                 resp.setAppointmentList(appointments.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
                 resp.setMessage("Appointments retrieved successfully for doctor "  + doctor.getUser().getEmail());
                 resp.setStatusCode(200);
             } else {
-                resp.setMessage("No appointments found for doctor "  + doctor.getUser().getEmail());
+                resp.setMessage("No appointments found for doctor "  + doctor.getUser().getEmail() + " and date: " + request.getAppointmentDate());
+                resp.setError("No appointments found for doctor "  + doctor.getUser().getEmail() + " and date: " + request.getAppointmentDate());
                 resp.setStatusCode(404);
             }
         } catch (Exception e) {

@@ -146,14 +146,14 @@ class UserService {
     /* Get all appointments that belong
     *  to a particular user (Doctor), we
     *  check the user based on the token */
-    static async getAllAppointments() {
-        const token = localStorage.getItem("token")
+    static async getAllAppointments(data) {
+        const token = localStorage.getItem("token");
         try {
-            const response = await axios.get(`${UserService.BASE_URL}/appoint/getAll`, {
+            const response = await axios.post(`${UserService.BASE_URL}/appoint/getAll`, data, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
-            })
+            });
             return response.data;
         } catch (err) {
             console.error(err);

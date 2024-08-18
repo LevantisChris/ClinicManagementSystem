@@ -32,6 +32,8 @@ export default function InsertModal() {
 
   /* The working hours that are already defined (if there are any, might be null) */
   const [workingHours, setWorkingHours] = useState([]);
+  /* Thea appointments for the logged in doctor, for the day he/she select */
+  const [appointments, setAppointments] = useState([]);
 
   const [loading, setLoading] = useState(false)
 
@@ -171,7 +173,6 @@ export default function InsertModal() {
         try {
           const w_hours = await UserService.getWorkingHoursOfADoctor(token);
           if(w_hours[0].statusCode !== 404) {
-            console.log("GOOTTT")
             setWorkingHours(w_hours);
             setLoading(false)
           }
@@ -183,6 +184,26 @@ export default function InsertModal() {
     }
     loadWorkingHours();
   }, []);
+
+  React.useEffect(() => {
+    const loadAppointments = async () => {
+      const params = {
+        appointmentDate: daySelected.format("YYYY-MM-DD")
+      };
+      try {
+        setLoading(true); // Set loading to true when starting to fetch data
+        const appointments = await UserService.getAllAppointments(params);
+        if (appointments && appointments.statusCode !== 404) {
+          setAppointments(appointments);
+        }
+      } catch (error) {
+        console.log("Error to fetch appointments: ", error);
+      } finally {
+        setLoading(false); // Ensure loading is set to false regardless of success or failure
+      }
+    };
+    loadAppointments();
+  }, [appointments.length]);
 
   /* If there are any already predefined working hours we have to display them to the user
 *  In this function we will try to match them, in order to know which of them to "underline" */

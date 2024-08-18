@@ -6,6 +6,7 @@ import com.levantis.clinicManagement.entity.Appointment;
 import lombok.Data;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class AppointmentDTO {
     private Integer appointmentId;
     private String appointmentDoctorEmail;
     private String appointmentPatientAMKA; // AMKA is unique in the database
-    private Date appointmentDate;
+    private LocalDate appointmentDate;
     private Time appointmentStartTime;
     private Time appointmentEndTime;
     private String appointmentJustification;

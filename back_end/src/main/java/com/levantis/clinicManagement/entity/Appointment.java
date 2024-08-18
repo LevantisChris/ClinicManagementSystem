@@ -3,6 +3,7 @@ package com.levantis.clinicManagement.entity;
 import jakarta.persistence.*;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -14,7 +15,7 @@ public class Appointment {
     private Integer appointmentId;
 
     @Column(name = "appointment_date", nullable = false)
-    private Date appointmentDate;
+    private LocalDate appointmentDate;
 
     @Column(name = "appointment_start_time", nullable = false)
     private Time appointmentStartTime;
@@ -49,11 +50,11 @@ public class Appointment {
         this.appointmentId = appointmentId;
     }
 
-    public Date getAppointmentDate() {
+    public LocalDate getAppointmentDate() {
         return appointmentDate;
     }
 
-    public void setAppointmentDate(Date appointmentDate) {
+    public void setAppointmentDate(LocalDate appointmentDate) {
         this.appointmentDate = appointmentDate;
     }
 

@@ -64,50 +64,49 @@ export default function DescriptionInsertModal() {
 
   /* Here we will take the values of the fields and send them as JSON in the backend */
   async function handleClickSave() {
-    setLoading(true)
-    // Extracting the start and end time
-    const startTime = selectedOptions[0];
-    const endTime = selectedOptions[selectedOptions.length - 1];
+      setLoading(true)
+      // Extracting the start and end time
+      const startTime = selectedOptions[0];
+      const endTime = selectedOptions[selectedOptions.length - 1];
 
-    /* Extract the Date from the State */
-    const date = daySelected.format("YYYY-MM-DD");
+      /* Extract the Date from the State */
+      const date = daySelected.format("YYYY-MM-DD");
 
-    const formattedStartTime = convertTo24HourFormat(startTime);
-    const formattedEndTime = convertTo24HourFormat(endTime);
+      const formattedStartTime = convertTo24HourFormat(startTime);
+      const formattedEndTime = convertTo24HourFormat(endTime);
 
-    const formData = {
-      appointmentPatientAMKA: patientAmka,
-      appointmentDate: date,
-      appointmentStartTime: formattedStartTime + ":00",
-      appointmentEndTime: formattedEndTime + ":00",
-      appointmentJustification: description,
-      appointmentStateId: getStateId()
-  };
+      const formData = {
+        appointmentPatientAMKA: patientAmka,
+        appointmentDate: date,
+        appointmentStartTime: formattedStartTime + ":00",
+        appointmentEndTime: formattedEndTime + ":00",
+        appointmentJustification: description,
+        appointmentStateId: getStateId()
+      };
 
-    console.log("JSON: ", formData)
+        console.log("JSON: ", formData)
 
-    function getStateId() {
-      if(stateSelected === "Created")
-        return 1
-      else if(stateSelected === "Respected")
-        return 2
-      else if(stateSelected === "Completed")
-        return 3
-      else
-        return 4
-    }
+        function getStateId() {
+          if(stateSelected === "Created")
+            return 1
+          else if(stateSelected === "Respected")
+            return 2
+          else if(stateSelected === "Completed")
+            return 3
+          else
+            return 4
+        }
 
 
-    /* Send the request to the backend */
-    const response = await UserService.createAppointment(formData)
-    if (response.statusCode === 200) {
-      setLoading(false)
-      setShowSubmitDialog(false);
-      setSuccessMessage(response.message)
-    } else {
-      setLoading(false)
-      setErrorMessage(response.message)
-    }
+        /* Send the request to the backend */
+        const response = await UserService.createAppointment(formData)
+        if (response.statusCode === 200) {
+          setLoading(false)
+          setSuccessMessage(response.message)
+        } else {
+          setLoading(false)
+          setErrorMessage(response.message)
+        }
   }
 
   const convertTo24HourFormat = (time12h) => {
