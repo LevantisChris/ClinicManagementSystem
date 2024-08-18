@@ -162,6 +162,20 @@ class UserService {
         }
     }
 
+    static async updateAppointment(data) {
+        const token = localStorage.getItem("token")
+        try {
+            const response = await axios.put(`${UserService.BASE_URL}/appoint/update`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            })
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
 
     /* Check if its log in, role etc */
     static logout() {

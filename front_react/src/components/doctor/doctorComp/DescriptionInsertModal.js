@@ -94,21 +94,6 @@ export default function DescriptionInsertModal({appointmentClicked}) {
         appointmentJustification: description,
         appointmentStateId: getStateId()
       };
-
-        console.log("JSON: ", formData)
-
-        function getStateId() {
-          if(stateSelected === "Created")
-            return 1
-          else if(stateSelected === "Respected")
-            return 2
-          else if(stateSelected === "Completed")
-            return 3
-          else
-            return 4
-        }
-
-
         /* Send the request to the backend */
         const response = await UserService.createAppointment(formData)
         if (response.statusCode === 200) {
@@ -120,8 +105,35 @@ export default function DescriptionInsertModal({appointmentClicked}) {
         }
   }
 
-  async function handleClickUpdate() {
+  function getStateId() {
+    if(stateSelected === "Created")
+      return 1
+    else if(stateSelected === "Respected")
+      return 2
+    else if(stateSelected === "Completed")
+      return 3
+    else
+      return 4
+  }
 
+  async function handleClickUpdate() {
+    setLoading(true)
+    /* Create the data JSON response */
+    const data = {
+      appointmentId: appointmentClicked.appointmentId,
+      appointmentDate: appointmentClicked.appointmentDate,
+      appointmentStartTime: appointmentClicked.appointmentStartTime,
+      appointmentEndTime: appointmentClicked.appointmentEndTime,
+      appointmentStateId: getStateId()
+    }
+    const response = await UserService.updateAppointment(data)
+    if (response.statusCode === 200) {
+      setLoading(false)
+      setSuccessMessage(response.message)
+    } else {
+      setLoading(false)
+      setErrorMessage(response.message)
+    }
   }
 
   const convertTo24HourFormat = (time12h) => {
@@ -197,6 +209,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                     type="text"
                     name="patient_amka"
                     placeholder="AMKA"
+                    disabled={!!appointmentClicked}
                     className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
                     value={appointmentClicked ? appointmentClicked.appointmentPatientAMKA : patientAmka}
                     onChange={(e) => setPatientAmka(e.target.value)}
@@ -284,6 +297,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                     name="description"
                     placeholder="Reason for the appointment"
                     style={{height: "200px", resize: "none"}}
+                    disabled={!!appointmentClicked}
                     className="pt-3 border-0 text-gray-600 bg-gray-200 pd-2 w-full border-b-2 rounded border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
                     value={appointmentClicked ? appointmentClicked.appointmentJustification : description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -298,7 +312,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                           onClick={handleClickUpdate}
                           className="bg-purple-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
                       >
-                        Update
+                        Update state
                       </button>
                       :
                       <button
