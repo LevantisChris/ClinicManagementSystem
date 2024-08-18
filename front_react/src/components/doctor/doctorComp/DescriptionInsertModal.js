@@ -98,8 +98,10 @@ export default function DescriptionInsertModal({appointmentClicked}) {
         const response = await UserService.createAppointment(formData)
         if (response.statusCode === 200) {
           setLoading(false)
+          setShowDescriptionInsertModal(false);
           setSuccessMessage(response.message)
         } else {
+          setShowDescriptionInsertModal(false);
           setLoading(false)
           setErrorMessage(response.message)
         }
@@ -129,9 +131,31 @@ export default function DescriptionInsertModal({appointmentClicked}) {
     const response = await UserService.updateAppointment(data)
     if (response.statusCode === 200) {
       setLoading(false)
+      setShowDescriptionInsertModal(false);
       setSuccessMessage(response.message)
     } else {
       setLoading(false)
+      setShowDescriptionInsertModal(false);
+      setErrorMessage(response.message)
+    }
+  }
+
+  /* NOTE: THIS IS NOT DELETION OF THE APPOINTMENT, THIS IS JUST CANCELLATION.
+  *  BUT THE APPOINTMENT WILL NOT BE SEEING IN THE CALENDAR VIEW, BECAUSE THE
+  *  USER CAN OBVIOUSLY ADD A NEW ONE, IN THE SAME TIME.*/
+  async function handleClickDelete() {
+    setLoading(true)
+    const data = {
+      appointmentId: appointmentClicked.appointmentId
+    }
+    const response = await UserService.cancelAppointment(data)
+    if (response.statusCode === 200) {
+      setLoading(false)
+      setShowDescriptionInsertModal(false);
+      setSuccessMessage(response.message)
+    } else {
+      setLoading(false)
+      setShowDescriptionInsertModal(false);
       setErrorMessage(response.message)
     }
   }
@@ -272,20 +296,6 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                           }
                         </a>
                       </MenuItem>
-                      <MenuItem>
-                        <a
-                            href="#"
-                            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                            onClick={() => setStateSelected("Cancelled")}
-                        >
-                          Cancelled
-                          { stateSelected === "Cancelled" ?
-                              <span className="material-icons-outlined text-gray-400">
-                              check
-                            </span> : ""
-                          }
-                        </a>
-                      </MenuItem>
                     </div>
                   </MenuItems>
                 </Menu>
@@ -304,7 +314,22 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                 />
               </div>
 
-              <div className="flex mt-5">
+              <div className="flex mt-5 gap-5">
+                {/* This button will be for the cancellation of an appointment
+                    the appointment will not be deleted from the DB, but the user can not see it
+                    in the calendar View.*/}
+                {
+                  appointmentClicked ?
+                      <button
+                          type="button"
+                          onClick={handleClickDelete}
+                          className="bg-red-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
+                      >
+                        Cancel appointment
+                      </button>
+                      : ""
+                }
+
                 {
                   appointmentClicked ?
                       <button

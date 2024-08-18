@@ -378,7 +378,7 @@ public class AppointmentManagementService {
             *  patient or doctor. */
 
             appointment.setAppointmentState(
-                    appointmentStateRepository.findByAppointmentStateId(3)); // hard coded the state id to 3
+                    appointmentStateRepository.findByAppointmentStateId(4)); // hard coded the state id to 4 (Cancelled)
 
             Appointment updatedAppointmentResult = appointmentRepository.save(appointment);
 

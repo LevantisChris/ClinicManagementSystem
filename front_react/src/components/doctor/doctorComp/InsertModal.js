@@ -208,7 +208,7 @@ export default function InsertModal() {
         appointmentDate: daySelected.format("YYYY-MM-DD")
       };
       try {
-        setLoading(true); // Set loading to true when starting to fetch data
+        //setLoading(true); // Set loading to true when starting to fetch data
         const appointments = await UserService.getAllAppointments(params);
         if (appointments && appointments.statusCode !== 404) {
           setAppointments(appointments.appointmentList);
@@ -241,7 +241,10 @@ export default function InsertModal() {
     if (appointments != null) {
       const formattedDate = daySelected.format("YYYY-MM-DD")  // Local date formatting
       for (const appointment of appointments) {
-        if (isTimeInRange(calendarTime, appointment.appointmentStartTime, appointment.appointmentEndTime) && formattedDate === appointment.appointmentDate) {
+        if (
+            isTimeInRange(calendarTime, appointment.appointmentStartTime, appointment.appointmentEndTime)
+            && formattedDate === appointment.appointmentDate
+            && appointment.appointmentStateId !== 4) {
           return appointment;
         }
       }
