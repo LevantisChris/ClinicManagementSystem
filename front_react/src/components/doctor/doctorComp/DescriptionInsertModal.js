@@ -10,7 +10,7 @@ import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
 import {ChevronDownIcon} from "@heroicons/react/16/solid";
 /*-*/
 
-export default function DescriptionInsertModal() {
+export default function DescriptionInsertModal({appointmentClicked}) {
 
   const componentRef = useRef(null);
 
@@ -32,11 +32,22 @@ export default function DescriptionInsertModal() {
   const [description, setDescription] = useState('');
   /* For loading screen and  */
   const [loading, setLoading] = useState(false)
-  const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   /* To handle the state selection */
-  const [stateSelected, setStateSelected] = useState("Created");
+  const [stateSelected, setStateSelected] = useState(
+      appointmentClicked !== null
+          ? (
+              appointmentClicked.appointmentStateId === 4
+                  ? "Canceled"
+                  : appointmentClicked.appointmentStateId === 2
+                      ? "Respected"
+                      : appointmentClicked.appointmentStateId === 3
+                          ? "Completed"
+                          : "Created"
+          )
+          : "Created"
+  );
 
   /* In this function we will destruct from the selectedOption list
        the hours that the user has selected */
@@ -107,6 +118,10 @@ export default function DescriptionInsertModal() {
           setLoading(false)
           setErrorMessage(response.message)
         }
+  }
+
+  async function handleClickUpdate() {
+
   }
 
   const convertTo24HourFormat = (time12h) => {
@@ -183,7 +198,7 @@ export default function DescriptionInsertModal() {
                     name="patient_amka"
                     placeholder="AMKA"
                     className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
-                    value={patientAmka}
+                    value={appointmentClicked ? appointmentClicked.appointmentPatientAMKA : patientAmka}
                     onChange={(e) => setPatientAmka(e.target.value)}
                 />
                 <span className="text-center material-icons-outlined text-gray-400">
@@ -270,19 +285,30 @@ export default function DescriptionInsertModal() {
                     placeholder="Reason for the appointment"
                     style={{height: "200px", resize: "none"}}
                     className="pt-3 border-0 text-gray-600 bg-gray-200 pd-2 w-full border-b-2 rounded border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
-                    value={description}
+                    value={appointmentClicked ? appointmentClicked.appointmentJustification : description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
 
               <div className="flex mt-5">
-                <button
-                    type="button"
-                    onClick={handleClickSave}
-                    className="bg-blue-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
-                >
-                  Save
-                </button>
+                {
+                  appointmentClicked ?
+                      <button
+                          type="button"
+                          onClick={handleClickUpdate}
+                          className="bg-purple-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
+                      >
+                        Update
+                      </button>
+                      :
+                      <button
+                          type="button"
+                          onClick={handleClickSave}
+                          className="bg-blue-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
+                      >
+                        Save
+                      </button>
+                }
                 <button
                     type="button"
                     onClick={handleClickCancel}

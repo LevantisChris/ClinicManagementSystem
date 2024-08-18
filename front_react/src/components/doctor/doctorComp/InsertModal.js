@@ -37,6 +37,8 @@ export default function InsertModal() {
 
   const [loading, setLoading] = useState(false)
 
+  const [appointClicked, setAppointClicked] = useState(null)
+
   const am_str = "AM";
   const pm_str =  "PM";
 
@@ -53,16 +55,18 @@ export default function InsertModal() {
   const handleMouseMove = (event, hourId, minute) => {
     event.preventDefault();
     if (isDragging) {
+      setAppointClicked(null)
       /* We have to check wheaten that hour the user
             *  select is already selected.
             *  If its already selected then
             *  send request to the server to delete it.
             *  */
-      const temp = checkDateSimilarity(
+      const temp1 = checkDateSimilarity_WH(
           daySelected.format("YYYY-MM-DD"),
           (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")
-      if (temp === null
-      ) {
+      const temp2 = checkDateSimilarity_APP(
+          (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")
+      if (temp1 === null || temp2 !== null) {
         setIsDragging(false);
         dragItemRef.current = null;
       } else {
@@ -131,6 +135,19 @@ export default function InsertModal() {
     }
   };
 
+  function handleHourClick(hourClicked) {
+    console.log("The user click the hour: ", hourClicked)
+    /* Now we have to check whether the hour he clicks in is about an appointment */
+    const appoint = checkDateSimilarity_APP(hourClicked);
+    if(appoint) {
+      console.log("YESS IS INSIDE: ", appoint)
+      setAppointClicked(appoint)
+      setShowDescriptionInsertModal(true)
+    } else {
+      console.log("NO IS NOT INSIDE ANYTHING")
+    }
+  }
+
   /* We need to check if the start time is bigger than the finish time,
      because if the start time > than the finsih time we must not 
      allow the DescriptionInsertModal to appear */
@@ -194,7 +211,7 @@ export default function InsertModal() {
         setLoading(true); // Set loading to true when starting to fetch data
         const appointments = await UserService.getAllAppointments(params);
         if (appointments && appointments.statusCode !== 404) {
-          setAppointments(appointments);
+          setAppointments(appointments.appointmentList);
         }
       } catch (error) {
         console.log("Error to fetch appointments: ", error);
@@ -206,13 +223,26 @@ export default function InsertModal() {
   }, [appointments.length]);
 
   /* If there are any already predefined working hours we have to display them to the user
-*  In this function we will try to match them, in order to know which of them to "underline" */
-  function checkDateSimilarity(calendarDate, calendarTime) {
+   * In this function we will try to match them, in order to know which of them to "underline" */
+  function checkDateSimilarity_WH(calendarDate, calendarTime) {
     if (workingHours != null) {
       const formattedDate = daySelected.format("YYYY-MM-DD")  // Local date formatting
       for (const workingHour of workingHours) {
         if (isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime) && formattedDate === workingHour.workingHoursDate) {
           return [workingHour.startTime, workingHour.endTime];
+        }
+      }
+    }
+    return null;
+  }
+
+  /* The same with the checkDateSimilarity_WH but for appointments */
+  function checkDateSimilarity_APP(calendarTime) {
+    if (appointments != null) {
+      const formattedDate = daySelected.format("YYYY-MM-DD")  // Local date formatting
+      for (const appointment of appointments) {
+        if (isTimeInRange(calendarTime, appointment.appointmentStartTime, appointment.appointmentEndTime) && formattedDate === appointment.appointmentDate) {
+          return appointment;
         }
       }
     }
@@ -279,15 +309,20 @@ export default function InsertModal() {
                         <React.Fragment key={hour.id}>
                           <div
                               id={`00-${hour.id}`}
-                              className={`border rounded-md p-2 
-                                                ${
-                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") 
-                                      ? ((draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00`)
-                                          ? "bg-blue-400 transition duration-300 ease-in-outs" : "NOT")
-                                          : "bg-slate-300"
+                              className={`border rounded-md p-2 ${
+                                  checkDateSimilarity_APP(
+                                      `${hour.id >= 0 && hour.id <= 10 ? `0${hour.id}` : hour.id}:00:00`
                                   )
-                              }`
-                              }
+                                      ? "bg-amber-300"
+                                      : checkDateSimilarity_WH(
+                                          daySelected.toISOString().split('T')[0],
+                                          `${hour.id >= 0 && hour.id <= 10 ? `0${hour.id}` : hour.id}:00:00`
+                                      )
+                                          ? draggedId === `00-${hour.id}` && isDragging || selectedOptions.includes(`${hour.id}:00`)
+                                              ? "bg-blue-400 transition duration-300 ease-in-out"
+                                              : "NOT"
+                                          : "bg-slate-300"
+                              }`}
                               onMouseDown={(e) => handleMouseDown(e, hour.id, "00")}
                               onMouseMove={(e) => handleMouseMove(e, hour.id, "00")}
                               onMouseUp={handleMouseUp}
@@ -295,6 +330,9 @@ export default function InsertModal() {
                               onTouchMove={(e) => handleTouchMove(e, hour.id, "00")}
                               onTouchEnd={handleTouchEnd}
                               onTouchCancel={handleTouchCancel}
+                              onClick={() => handleHourClick(
+                                  `${hour.id >= 0 && hour.id <= 10 ? `0${hour.id}` : hour.id}:00:00`
+                              )}
                           >
                     <span className="text-slate-700 font-bold">
                       {hour.hour === 12 && hour.ampm === "PM" ? (
@@ -328,13 +366,14 @@ export default function InsertModal() {
                               id={`15-${hour.id}`}
                               className={`border rounded-md p-2 text-xs 
                                                 ${
-                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") 
+                                  checkDateSimilarity_APP((hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00")
+                                      ? "bg-amber-300" :
+                                      checkDateSimilarity_WH(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") 
                                           ? ((draggedId === "15-" + hour.id && isDragging) ||
                                               selectedOptions.includes(`${hour.id}:15`)
                                               ? "bg-blue-200 transition duration-300 ease-in-outs"
                                               : "NOT")
                                           : "bg-slate-300"
-                                  )
                               }`
                               }
                               onMouseDown={(e) => handleMouseDown(e, hour.id, 15)}
@@ -344,6 +383,9 @@ export default function InsertModal() {
                               onTouchMove={(e) => handleTouchMove(e, hour.id, 15)}
                               onTouchEnd={handleTouchEnd}
                               onTouchCancel={handleTouchCancel}
+                              onClick={() => handleHourClick(
+                                  (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00"
+                              )}
                           >
                             {hour.hour}:15
                           </div>
@@ -353,13 +395,14 @@ export default function InsertModal() {
                               className={`border rounded-md p-2 text-xs 
                                                     ${() => "w-3/6"} 
                                                         ${
-                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") 
+                                  checkDateSimilarity_APP((hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00")
+                                      ? "bg-amber-300" :
+                                      checkDateSimilarity_WH(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") 
                                       ? ((draggedId === "30-" + hour.id && isDragging) ||
                                             selectedOptions.includes(`${hour.id}:30`)
                                             ? "bg-blue-200"
                                             : "NOT")
                                           : "bg-slate-300"
-                                  )
                               }`
                               }
                               onMouseDown={(e) => handleMouseDown(e, hour.id, 30)}
@@ -369,6 +412,9 @@ export default function InsertModal() {
                               onTouchMove={(e) => handleTouchMove(e, hour.id, 30)}
                               onTouchEnd={handleTouchEnd}
                               onTouchCancel={handleTouchCancel}
+                              onClick={() => handleHourClick(
+                                  (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00"
+                              )}
                           >
                             {hour.hour}:30
                           </div>
@@ -378,13 +424,14 @@ export default function InsertModal() {
                               className={`border rounded-md p-2 text-xs 
                                                     ${() => "w-3/6"} 
                                                         ${
-                                  (checkDateSimilarity(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") 
+                                  checkDateSimilarity_APP((hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00")
+                                      ? "bg-amber-300" :
+                                      checkDateSimilarity_WH(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") 
                                           ? ((draggedId === "45-" + hour.id && isDragging) ||
                                               selectedOptions.includes(`${hour.id}:45`)
                                               ? "bg-blue-200 transition duration-00 ease-in-outs"
                                               : "NOT")
                                       : "bg-slate-300"
-                                  )
                               }`
                               }
                               onMouseDown={(e) => handleMouseDown(e, hour.id, 45)}
@@ -394,6 +441,9 @@ export default function InsertModal() {
                               onTouchMove={(e) => handleTouchMove(e, hour.id, 45)}
                               onTouchEnd={handleTouchEnd}
                               onTouchCancel={handleTouchCancel}
+                              onClick={() => handleHourClick(
+                                  (hour.id >= 0 && hour.id <= 10 ? `0${hour.id}` : hour.id) + ":45:00"
+                              )}
                           >
                             {hour.hour}:45
                           </div>
@@ -402,7 +452,7 @@ export default function InsertModal() {
                     }
                   </motion.div>
                 </div>
-                {showDescriptionInsertModal && <DescriptionInsertModal />}
+                {showDescriptionInsertModal && <DescriptionInsertModal appointmentClicked={appointClicked} />}
               </div>
             </form>
         )}

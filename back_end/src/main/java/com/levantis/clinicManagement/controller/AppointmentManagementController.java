@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -60,16 +62,19 @@ public class AppointmentManagementController {
 
     /* Get all appointments for a specific doctor */
     @GetMapping("/appoint/getAll")
-    public ResponseEntity<AppointmentDTO> getAllAppointments(@RequestBody AppointmentDTO appointment) {
+    public ResponseEntity<AppointmentDTO> getAllAppointments(@RequestParam String appointmentDate) {
+        AppointmentDTO appointment = new AppointmentDTO();
+        appointment.setAppointmentDate(strToDate(appointmentDate));
         return ResponseEntity.ok(appointmentManagementService.getAllAppointments_doctor(appointment));
     }
 
     /*------------------------------------------------------------------------------------------------------------------*/
 
-    private Date strToDate(String dateString) {
+    private LocalDate strToDate(String dateString) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            return formatter.parse(dateString);
+            Date date = formatter.parse(dateString);
+            return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         } catch (ParseException e) {
             e.printStackTrace();
         }
