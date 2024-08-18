@@ -220,7 +220,7 @@ export default function InsertModal() {
       }
     };
     loadAppointments();
-  }, [appointments.length]);
+  }, [appointments.length, showDescriptionInsertModal]);
 
   /* If there are any already predefined working hours we have to display them to the user
    * In this function we will try to match them, in order to know which of them to "underline" */
