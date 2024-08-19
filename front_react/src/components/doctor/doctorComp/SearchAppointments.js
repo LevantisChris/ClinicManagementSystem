@@ -1,12 +1,16 @@
 import React, {useState} from 'react';
 import {motion} from 'framer-motion';
 import Calendar from "react-calendar";
+import UserService from "../../../services/UserService";
 
 
-export default function SearchAppointments({ onChange, placeholder }) {
+export default function SearchAppointments() {
 
     /* To keep track of the filter selected */
     const [selectedFilter, setSelectedFilter] = useState('surname');
+    /* For the input value */
+    const [inputAMKAValue, setInputAMKAValue] = useState('');
+    const [inputSurnameValue, setInputSurnameValue] = useState('');
 
     /* This state is for handling the option
     *  selected for the filter Appointment state
@@ -20,12 +24,6 @@ export default function SearchAppointments({ onChange, placeholder }) {
     const [showEndDateCalendar, setShowEndDateCalendar] =
         useState(false);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // Handle form submission if needed
-        console.log('Form submitted');
-    };
-
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
 
@@ -35,6 +33,11 @@ export default function SearchAppointments({ onChange, placeholder }) {
 
     const handleSelectedState = (event) => {
         setFilterAppointStateSelectedOption(event.target.value);
+        /* NULL to everyone else */
+        setStartDate("")
+        setEndDate("")
+        setInputAMKAValue("")
+        setInputSurnameValue("")
     };
 
     /* Start date calendar */
@@ -50,19 +53,77 @@ export default function SearchAppointments({ onChange, placeholder }) {
         setShowStartDateCalendar(false); // This function closes the calendar modal
     };
 
-    const handleStartDateChange = newDate => {
-        setStartDate(newDate);
-        handleStartDateCloseCalendar()
+    const handleStartDateChange = (newDate) => {
+        setStartDate(formatDateToLocal(newDate));
+        handleStartDateCloseCalendar();
+        /* NULL to everyone else */
+        setFilterAppointStateSelectedOption("")
+        setInputAMKAValue("")
+        setInputSurnameValue("")
     };
 
     function handleEndDateCloseCalendar() {
         setShowEndDateCalendar(false);
     }
 
-    const handleEndDateChange = newDate => {
-        setEndDate(newDate);
+    const handleEndDateChange = (newDate) => {
+        setEndDate(formatDateToLocal(newDate));
         handleEndDateCloseCalendar()
+        /* NULL to everyone else */
+        setFilterAppointStateSelectedOption("")
+        setInputAMKAValue("")
+        setInputSurnameValue("")
     };
+
+    const handleInputAMKAChange = (event) => {
+        setInputAMKAValue(event.target.value);
+        /* NULL to everyone else */
+        setFilterAppointStateSelectedOption("")
+        setEndDate("")
+        setStartDate("")
+        setInputSurnameValue("")
+    };
+
+    const handleInputSurnameChange = (event) => {
+        setInputSurnameValue(event.target.value)
+        /* NULL to everyone else */
+        setFilterAppointStateSelectedOption("")
+        setEndDate("")
+        setStartDate("")
+        setInputAMKAValue("")
+    }
+
+    function formatDateToLocal(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    /* Create the JSON request object and send it in the backend  */
+    async function handleSubmitButtonClick() {
+        const searchCriteria = {
+            patientSurname: inputSurnameValue,
+            appointmentPatientAMKA: inputAMKAValue,
+            appointmentStateId:
+                filterAppointStateSelectedOption === "appointState_Canceled" ? 4
+                    : filterAppointStateSelectedOption === "appointState_Created" ? 1
+                        : filterAppointStateSelectedOption === "appointState_Respected" ? 2
+                            : filterAppointStateSelectedOption === "appointState_Completed" ? 3
+                                : "",
+            startDate: startDate,
+            endDate: endDate
+        };
+        console.log("JSON: ", searchCriteria)
+
+        const response = await UserService.searchAppointment(searchCriteria)
+        console.log("TESTTT: ", response)
+        if (response.statusCode === 200) {
+            //setLoading(false)
+        } else {
+            //setLoading(false)
+        }
+    }
 
     return (
         <div className="flex flex-col h-min border">
@@ -87,7 +148,7 @@ export default function SearchAppointments({ onChange, placeholder }) {
                         <div className="w-full">
                             <select
                                 className="border p-2 rounded w-full shadow-sm"
-                                value={selectedFilter}
+                                value={filterAppointStateSelectedOption}
                                 onChange={handleSelectedState}
                             >
                                 <option value="appointState_Created">Created</option>
@@ -122,12 +183,12 @@ export default function SearchAppointments({ onChange, placeholder }) {
                     </>
                 ) : (
                     <div className="col-span-1 w-full">
-                        <form onSubmit={handleSubmit} className="w-full">
+                        <form className="w-full">
                         <div className="relative">
                                 <input
                                     type="text"
-                                    onChange={onChange}
-                                    placeholder={placeholder}
+                                    onChange={ selectedFilter === 'AMKA' ? handleInputAMKAChange : handleInputSurnameChange }
+                                    placeholder={selectedFilter === 'AMKA' ? "Enter the AMKA" : "Enter the surname"}
                                     className="bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full"
                                 />
                             </div>
@@ -139,11 +200,12 @@ export default function SearchAppointments({ onChange, placeholder }) {
 
                 {/* Search Button */}
                 <div className="flex justify-center w-full">
-                    <form onSubmit={handleSubmit} className="w-full">
+                    <form className="w-full">
                         <input
-                            type="submit"
+                            type={"button"}
                             value="Search"
                             className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 w-full"
+                            onClick={handleSubmitButtonClick}
                         />
                     </form>
                 </div>

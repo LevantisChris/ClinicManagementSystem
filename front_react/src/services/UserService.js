@@ -205,6 +205,28 @@ class UserService {
         }
     }
 
+    static async searchAppointment(data) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.post(`${UserService.BASE_URL}/appoint/search`, data,{
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
+
+
+
+
+
+
+
     /* Check if its log in, role etc */
     static logout() {
         localStorage.removeItem("token");
