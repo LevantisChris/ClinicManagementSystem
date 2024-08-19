@@ -162,14 +162,13 @@ class UserService {
         }
     }
 
-    static async getAllForAMonthAppointments(params) {
+    static async getAllForAMonthAppointments(data) {
         const token = localStorage.getItem("token");
         try {
-            const response = await axios.get(`${UserService.BASE_URL}/appoint/getAllForMonth`, {
+            const response = await axios.post(`${UserService.BASE_URL}/appoint/getAllForMonth`, data, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
-                params: params
             });
             return response.data;
         } catch (err) {

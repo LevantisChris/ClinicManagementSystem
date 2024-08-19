@@ -71,7 +71,10 @@ public class AppointmentManagementController {
 
     /* Extract all the appointments for each day of a month.
     *  We need to have a request body. The JSON will have all
-    *  the dates.*/
+    *  the dates.
+    *  The response is a JSON List, with List's represented
+    *  each day. Each list will have the appointments for
+    *  that day */
     @PostMapping("/appoint/getAllForMonth")
     public ResponseEntity<List<List<AppointmentDTO>>> getAllForAMonthAppointments(@RequestBody List<String> appointments) {
         return ResponseEntity.ok(appointmentManagementService.getAllAppointmentsForAMonth(appointments));

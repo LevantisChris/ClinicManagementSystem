@@ -49,8 +49,15 @@ function DoctorApp() {
     /* We need to fetch the appointments for the current month (the user is viewing).
     *  These appointments will be displayed as boxes in each day */
     React.useEffect(() => {
-        console.log("Current month: ", currentMonth)
-        extractDate();
+        const fetchAppointmentsForMonth = async () => {
+            try {
+                const appointments = await UserService.getAllForAMonthAppointments(extractDate());
+                console.log(appointments)
+            } catch (error) {
+                console.error('Failed to fetch appointments for the month:', error);
+            }
+        }
+        fetchAppointmentsForMonth();
     }, [currentMonth])
 
     /* Create a JSON with all the dates that are in the current Month */
@@ -61,7 +68,6 @@ function DoctorApp() {
                 dates.push(day.format('YYYY-MM-DD'));
             }
         }
-        console.log(dates);
         return dates;
     }
 
