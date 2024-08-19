@@ -13,13 +13,15 @@ import LoadingApp from "../Loading/LoadingApp";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
+    const [appointmentsMonth, setAppointmentsMonth] = useState(null)
     const {
         monthIndex,
         showEventModal,
         showInsertModal,
         showSearchAppointments,
         userAuthed,
-        setUserAuthed
+        setUserAuthed,
+        reloadDoctorApp
     } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -44,6 +46,7 @@ function DoctorApp() {
             }
         };
         fetchUserData()
+        console.log(currentMonth)
     }, [monthIndex])
 
     /* We need to fetch the appointments for the current month (the user is viewing).
@@ -52,13 +55,13 @@ function DoctorApp() {
         const fetchAppointmentsForMonth = async () => {
             try {
                 const appointments = await UserService.getAllForAMonthAppointments(extractDate());
-                console.log(appointments)
+                setAppointmentsMonth(appointments)
             } catch (error) {
                 console.error('Failed to fetch appointments for the month:', error);
             }
         }
         fetchAppointmentsForMonth();
-    }, [currentMonth])
+    }, [currentMonth, extractDate, reloadDoctorApp])
 
     /* Create a JSON with all the dates that are in the current Month */
     function extractDate() {
@@ -83,7 +86,7 @@ function DoctorApp() {
                         <CalendarHeader />
                         <div className={'flex flex-1'}>
                             <SideBar />
-                            {showSearchAppointments === false ? <Month month={currentMonth} /> : <SearchAppointments />}
+                            {showSearchAppointments === false ? <Month appointmentsMonth={appointmentsMonth} month={currentMonth} /> : <SearchAppointments />}
                         </div>
                     </div>
                 </>

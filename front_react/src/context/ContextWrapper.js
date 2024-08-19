@@ -58,6 +58,9 @@ export default function ContextWrapper(props) {
     const [errorMessage, setErrorMessage]
         = useState(null)
 
+    const [reloadDoctorApp, setReloadDoctorApp]
+        = useState(false)
+
 
   const filteredEvents = useMemo(() => {
     return savedEvents.filter((evt) =>
@@ -142,6 +145,9 @@ export default function ContextWrapper(props) {
 
         errorMessage,
         setErrorMessage,
+
+        reloadDoctorApp,
+        setReloadDoctorApp,
 
         selectedOptions,
         setSelectedOptions,

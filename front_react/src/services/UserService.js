@@ -6,13 +6,11 @@ class UserService {
     static async getUserDetails(token) {
         try {
             if (token) {
-                console.log("In getUserDetails");
                 const response = await axios.get(`${UserService.BASE_URL}/user-details`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                console.log(response.data);
                 return response.data;
             } else {
                 throw new Error('Token is required');

@@ -22,7 +22,8 @@ export default function DescriptionInsertModal({appointmentClicked}) {
     successMessage,
     setSuccessMessage,
     errorMessage,
-    setErrorMessage
+    setErrorMessage,
+    setReloadDoctorApp
   } = useContext(GlobalContext);
 
   /* States to access the filed values */
@@ -100,6 +101,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
           setLoading(false)
           setShowDescriptionInsertModal(false);
           setSuccessMessage(response.message)
+          setReloadDoctorApp(true);
         } else {
           setShowDescriptionInsertModal(false);
           setLoading(false)
@@ -133,6 +135,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
       setLoading(false)
       setShowDescriptionInsertModal(false);
       setSuccessMessage(response.message)
+      setReloadDoctorApp(true);
     } else {
       setLoading(false)
       setShowDescriptionInsertModal(false);
@@ -152,6 +155,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
     if (response.statusCode === 200) {
       setLoading(false)
       setShowDescriptionInsertModal(false);
+      setReloadDoctorApp(true);
       setSuccessMessage(response.message)
     } else {
       setLoading(false)
