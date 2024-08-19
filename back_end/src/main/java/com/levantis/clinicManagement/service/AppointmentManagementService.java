@@ -482,7 +482,7 @@ public class AppointmentManagementService {
        the user's search criteria will be displayed.
        Also, if the role is patient we must check if the patient has the permission
        to view the returned appointments.*/
-    public AppointmentDTO searchAppointments(AppointmentDTO searchCriteria) {
+    public AppointmentDTO   searchAppointments(AppointmentDTO searchCriteria) {
         AppointmentDTO resp = new AppointmentDTO();
         List<Appointment> appointments;
 
@@ -542,7 +542,18 @@ public class AppointmentManagementService {
                     }
                 }
                 appointments = appointmentsPatient;
+            } else if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) {
+                List<Appointment> appointmentsDoctor = new ArrayList<>();
+                log.info("The role is USER_DOCTOR, must return only the one that belong to him");
+                for(int i = 0;i < appointments.size();i++) {
+                    if(appointments.get(i).getAppointmentDoctor().getUser().getEmail()
+                            .equals(jwtUtils.extractUsername(jwtToken))) {
+                        appointmentsDoctor.add(appointments.get(i));
+                    }
+                }
+                appointments = appointmentsDoctor;
             }
+            /* A secretary can view everyone's appointments */
 
             if (!appointments.isEmpty()) {
                 resp.setAppointmentList(appointments.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
@@ -667,7 +678,6 @@ public class AppointmentManagementService {
                 Doctor doctor = user.getDoctor();
                 /* Handle the JSON with all the dates */
                 for (int i = 0;i < request.size();i++) {
-                    System.out.println("TEST --> " + request.get(i));
                     List<Appointment> temp = appointmentRepository.findByAppointmentDoctorAndAppointmentDate(doctor, LocalDate.parse(request.get(i)));
                     appointments.add(i, temp.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
                 }

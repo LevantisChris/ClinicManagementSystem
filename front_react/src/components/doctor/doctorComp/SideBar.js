@@ -26,7 +26,7 @@ export default function SideBar() {
                     <div className="p-4">
                         <h1 className="text-2xl font-bold">Functions</h1>
                     </div>
-                    <nav className="">
+                    <nav className="cursor-pointer">
                         <div>
                             <a
                                 onClick={() => handleCategoryClick('home')}
@@ -48,7 +48,7 @@ export default function SideBar() {
                                     <a
                                         className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
                                         onClick={() => (showSearchAppointments === false ? setShowSearchAppointments(true) : setShowSearchAppointments(false))}>
-                                        Search Appointments
+                                        Search & View Appointments
                                     </a>
                                 </div>
                             </div>)}

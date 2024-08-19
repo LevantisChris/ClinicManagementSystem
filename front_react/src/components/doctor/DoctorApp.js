@@ -61,7 +61,7 @@ function DoctorApp() {
             }
         }
         fetchAppointmentsForMonth();
-    }, [currentMonth, extractDate, reloadDoctorApp])
+    }, [currentMonth, reloadDoctorApp])
 
     /* Create a JSON with all the dates that are in the current Month */
     function extractDate() {
