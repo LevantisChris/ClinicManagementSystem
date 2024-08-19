@@ -38,13 +38,12 @@ export default function Day({day, rowIdx}) {
                 className="flex-1 cursor-pointer"
                 onClick={() => {
                     setDaySelected(day);
-                    console.log("TRIGGER MODAL FROM DAY")
                     setShowEventModal(true);
                 }}>
                 {dayEvents.map((evt, idx) => (
                     <div
                         key={idx}
-                        onClick={() => {setSelectedEvent(evt); console.log(evt)}}
+                        onClick={() => {setSelectedEvent(evt)}}
                         className={`bg-${evt.label || 'default'}-200 p-1 mr-3 text-gray-600 text-sm rounded mb-1 truncate`}
                     >
                         {evt.title}

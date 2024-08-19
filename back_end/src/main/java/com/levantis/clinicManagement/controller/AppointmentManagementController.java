@@ -2,6 +2,7 @@ package com.levantis.clinicManagement.controller;
 
 import com.levantis.clinicManagement.dto.AppointmentDTO;
 import com.levantis.clinicManagement.dto.WorkingHoursDTO;
+import com.levantis.clinicManagement.entity.Appointment;
 import com.levantis.clinicManagement.service.AppointmentManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,11 +62,19 @@ public class AppointmentManagementController {
     }
 
     /* Get all appointments for a specific doctor */
-    @GetMapping("/appoint/getAll")
-    public ResponseEntity<AppointmentDTO> getAllAppointments(@RequestParam String appointmentDate) {
+    @GetMapping("/appoint/getAllForDay")
+    public ResponseEntity<AppointmentDTO> getAllForADayAppointments(@RequestParam String appointmentDate) {
         AppointmentDTO appointment = new AppointmentDTO();
         appointment.setAppointmentDate(strToDate(appointmentDate));
-        return ResponseEntity.ok(appointmentManagementService.getAllAppointments_doctor(appointment));
+        return ResponseEntity.ok(appointmentManagementService.getAllAppointmentsForADay_doctor(appointment));
+    }
+
+    /* Extract all the appointments for each day of a month.
+    *  We need to have a request body. The JSON will have all
+    *  the dates.*/
+    @PostMapping("/appoint/getAllForMonth")
+    public ResponseEntity<List<List<AppointmentDTO>>> getAllForAMonthAppointments(@RequestBody List<String> appointments) {
+        return ResponseEntity.ok(appointmentManagementService.getAllAppointmentsForAMonth(appointments));
     }
 
     /*------------------------------------------------------------------------------------------------------------------*/

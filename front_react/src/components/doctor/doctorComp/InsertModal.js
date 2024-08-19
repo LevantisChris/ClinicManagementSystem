@@ -209,7 +209,7 @@ export default function InsertModal() {
       };
       try {
         //setLoading(true); // Set loading to true when starting to fetch data
-        const appointments = await UserService.getAllAppointments(params);
+        const appointments = await UserService.getAllForADayAppointments(params);
         if (appointments && appointments.statusCode !== 404) {
           setAppointments(appointments.appointmentList);
         }

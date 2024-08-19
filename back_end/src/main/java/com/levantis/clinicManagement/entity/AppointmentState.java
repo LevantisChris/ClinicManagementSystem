@@ -1,5 +1,6 @@
 package com.levantis.clinicManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -16,6 +17,7 @@ public class AppointmentState {
     private String appointmentStateDescription;
 
     @OneToMany(mappedBy = "appointmentState")
+    @JsonIgnore
     private Set<Appointment> appointments;
 
     public Integer getAppointmentStateId() {

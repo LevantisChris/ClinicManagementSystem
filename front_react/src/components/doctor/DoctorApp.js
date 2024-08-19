@@ -9,6 +9,7 @@ import EventModal from "./doctorComp/EventModal";
 import InsertModal from "./doctorComp/InsertModal";
 import SearchAppointments from "./doctorComp/SearchAppointments";
 import UserService from "../../services/UserService";
+import LoadingApp from "../Loading/LoadingApp";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
@@ -42,8 +43,29 @@ function DoctorApp() {
                 console.log("No token found");
             }
         };
-        fetchUserData();
+        fetchUserData()
     }, [monthIndex])
+
+    /* We need to fetch the appointments for the current month (the user is viewing).
+    *  These appointments will be displayed as boxes in each day */
+    React.useEffect(() => {
+        console.log("Current month: ", currentMonth)
+        extractDate();
+    }, [currentMonth])
+
+    /* Create a JSON with all the dates that are in the current Month */
+    function extractDate() {
+        const dates = [];
+        for (let week of currentMonth) {
+            for (let day of week) {
+                dates.push(day.format('YYYY-MM-DD'));
+            }
+        }
+        console.log(dates);
+        return dates;
+    }
+
+
 
     return (
         <>
@@ -60,7 +82,7 @@ function DoctorApp() {
                     </div>
                 </>
             ) : (
-                <div>Loading...</div>
+                <LoadingApp/>
             )}
         </>
     );

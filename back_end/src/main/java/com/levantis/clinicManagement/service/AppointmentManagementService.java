@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -560,7 +561,7 @@ public class AppointmentManagementService {
     }
 
     /* Get all appointments that belong to particular doctor for a particular date, the user is being validated from the token */
-    public AppointmentDTO getAllAppointments_doctor(AppointmentDTO request) {
+    public AppointmentDTO getAllAppointmentsForADay_doctor(AppointmentDTO request) {
         AppointmentDTO resp = new AppointmentDTO();
         List<Appointment> appointments;
         try {
@@ -585,8 +586,6 @@ public class AppointmentManagementService {
 
             Doctor doctor = user.getDoctor();
 
-            System.out.println("TETST --> " + request.getAppointmentDate());
-
             appointments = appointmentRepository.findByAppointmentDoctorAndAppointmentDate(doctor, request.getAppointmentDate());
 
             if (!appointments.isEmpty()) {
@@ -604,6 +603,87 @@ public class AppointmentManagementService {
             resp.setError(e.getMessage());
         }
         return resp;
+    }
+
+    /* The JSON request will be like this:
+    *  [
+    "2024-09-29",
+    "2024-09-30",
+    "2024-10-01",
+    "2024-10-02",
+    "2024-10-03",
+    "2024-10-04",
+    "2024-10-05",
+    "2024-10-06",
+    "2024-10-07",
+    "2024-10-08",
+    "2024-10-09",
+    "2024-10-10",
+    "2024-10-11",
+    "2024-10-12",
+    "2024-10-13",
+    "2024-10-14",
+    "2024-10-15",
+    "2024-10-16",
+    "2024-10-17",
+    "2024-10-18",
+    "2024-10-19",
+    "2024-10-20",
+    "2024-10-21",
+    "2024-10-22",
+    "2024-10-23",
+    "2024-10-24",
+    "2024-10-25",
+    "2024-10-26",
+    "2024-10-27",
+    "2024-10-28",
+    "2024-10-29",
+    "2024-10-30",
+    "2024-10-31",
+    "2024-11-01",
+    "2024-11-02"
+]
+*   For each date we will get the appointments for the day. This function
+*   is called get appointments for a month, but in the calendar view sometimes
+*   days of the previous or next month are displayed.*/
+    public List<List<AppointmentDTO>> getAllAppointmentsForAMonth(List<String> request) {
+        AppointmentDTO resp = new AppointmentDTO();
+        List<List<AppointmentDTO>> appointments = new ArrayList<>();
+        try {
+            String jwtToken = getToken();
+            if (jwtToken == null || request == null || request.isEmpty()) {
+                log.error("Empty/null token");
+//                resp.setMessage("Empty/null token.");
+//                resp.setStatusCode(500);
+                return null;
+            }
+            jwtUtils.extractUsername(jwtToken);
+
+            User user = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
+                    .orElseThrow(() -> new RuntimeException("User (Doctor) Not found"));
+
+            if(user.getRole_str().equals("USER_DOCTOR")) {
+                /* Get the user that is doctor */
+                Doctor doctor = user.getDoctor();
+                /* Handle the JSON with all the dates */
+                for (int i = 0;i < request.size();i++) {
+                    System.out.println("TEST --> " + request.get(i));
+                    List<Appointment> temp = appointmentRepository.findByAppointmentDoctorAndAppointmentDate(doctor, LocalDate.parse(request.get(i)));
+                    appointments.add(i, temp.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
+                }
+                return appointments;
+            } else {
+                log.error("Not appropriate role: " + user.getRole_str());
+//                resp.setMessage("Not appropriate role: " + user.getRole_str());
+//                resp.setStatusCode(500);
+                return null;
+            }
+        } catch (Exception e) {
+            log.error("Error searching appointments: {}", e.getMessage());
+//            resp.setStatusCode(500);
+//            resp.setError(e.getMessage());
+        }
+        return null;
     }
 
     /*------------------------------------------------------------------------------------------------------------------------------------------------*/
