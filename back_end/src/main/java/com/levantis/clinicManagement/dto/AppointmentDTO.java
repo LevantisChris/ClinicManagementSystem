@@ -32,8 +32,8 @@ public class AppointmentDTO {
     private Integer appointmentStateId;
 
     // For the search ++
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String patientSurname;
     private List<AppointmentDTO> appointmentList;
 

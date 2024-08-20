@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {motion} from 'framer-motion';
 import Calendar from "react-calendar";
 import UserService from "../../../services/UserService";
@@ -11,6 +11,8 @@ export default function SearchAppointments() {
     /* For the input value */
     const [inputAMKAValue, setInputAMKAValue] = useState('');
     const [inputSurnameValue, setInputSurnameValue] = useState('');
+    /* List with all the appointments resolved from the search */
+    const [appointmentsResolvedList, setAppointmentsResolvedList] = useState([])
 
     /* This state is for handling the option
     *  selected for the filter Appointment state
@@ -28,16 +30,29 @@ export default function SearchAppointments() {
     const [endDate, setEndDate] = useState(new Date());
 
     const handleSelectedFilter = (event) => {
+        console.log("EVENT: ", event.target.value)
+        if(event.target.value === "surname") {
+            console.log("RECOVERED")
+            setInputAMKAValue("")
+            setFilterAppointStateSelectedOption("")
+        } else if(event.target.value === "AMKA") {
+            console.log("RECOVERED")
+            setInputSurnameValue("")
+            setFilterAppointStateSelectedOption("")
+        } else if(event.target.value === "appointState") {
+            console.log("RECOVERED")
+            setInputSurnameValue("")
+            setInputAMKAValue("")
+        } else if(event.target.value === "date") {
+            setInputSurnameValue("")
+            setInputAMKAValue("")
+            setFilterAppointStateSelectedOption("")
+        }
         setSelectedFilter(event.target.value);
     };
 
     const handleSelectedState = (event) => {
         setFilterAppointStateSelectedOption(event.target.value);
-        /* NULL to everyone else */
-        setStartDate("")
-        setEndDate("")
-        setInputAMKAValue("")
-        setInputSurnameValue("")
     };
 
     /* Start date calendar */
@@ -54,12 +69,9 @@ export default function SearchAppointments() {
     };
 
     const handleStartDateChange = (newDate) => {
-        setStartDate(formatDateToLocal(newDate));
+        console.log("newDate: ", newDate)
+        setStartDate(newDate);
         handleStartDateCloseCalendar();
-        /* NULL to everyone else */
-        setFilterAppointStateSelectedOption("")
-        setInputAMKAValue("")
-        setInputSurnameValue("")
     };
 
     function handleEndDateCloseCalendar() {
@@ -67,30 +79,16 @@ export default function SearchAppointments() {
     }
 
     const handleEndDateChange = (newDate) => {
-        setEndDate(formatDateToLocal(newDate));
+        setEndDate(newDate);
         handleEndDateCloseCalendar()
-        /* NULL to everyone else */
-        setFilterAppointStateSelectedOption("")
-        setInputAMKAValue("")
-        setInputSurnameValue("")
     };
 
     const handleInputAMKAChange = (event) => {
         setInputAMKAValue(event.target.value);
-        /* NULL to everyone else */
-        setFilterAppointStateSelectedOption("")
-        setEndDate("")
-        setStartDate("")
-        setInputSurnameValue("")
     };
 
     const handleInputSurnameChange = (event) => {
         setInputSurnameValue(event.target.value)
-        /* NULL to everyone else */
-        setFilterAppointStateSelectedOption("")
-        setEndDate("")
-        setStartDate("")
-        setInputAMKAValue("")
     }
 
     function formatDateToLocal(date) {
@@ -111,22 +109,27 @@ export default function SearchAppointments() {
                         : filterAppointStateSelectedOption === "appointState_Respected" ? 2
                             : filterAppointStateSelectedOption === "appointState_Completed" ? 3
                                 : "",
-            startDate: startDate,
-            endDate: endDate
+            startDate:
+                inputSurnameValue === "" && inputAMKAValue === "" && filterAppointStateSelectedOption === "" ?
+                (startDate !== null && startDate !== undefined ? formatDateToLocal(startDate) : "") : "",
+            endDate: inputSurnameValue === "" && inputAMKAValue === "" && filterAppointStateSelectedOption === "" ?
+                (endDate !== null && endDate !== undefined ? formatDateToLocal(endDate) : "") : ""
         };
         console.log("JSON: ", searchCriteria)
 
         const response = await UserService.searchAppointment(searchCriteria)
-        console.log("TESTTT: ", response)
+        console.log("TEST --> ", response)
         if (response.statusCode === 200) {
+            setAppointmentsResolvedList(response.appointmentList)
             //setLoading(false)
         } else {
+            setAppointmentsResolvedList([]) // empty
             //setLoading(false)
         }
     }
 
     return (
-        <div className="flex flex-col h-min border">
+        <div className="flex flex-col h-min w-full border">
             <div className={`grid ${selectedFilter === 'date' ? 'grid-cols-4' : 'grid-cols-3'} p-4 gap-4 h-min`}>
                 {/* Choice Box */}
                 <div className="w-full">
@@ -168,7 +171,7 @@ export default function SearchAppointments() {
                             >
                                 edit_calendar
                             </span>
-                            { startDate.getDate() ? startDate.toDateString() : "Select starting date"}
+                            { startDate === null ? setStartDate(new Date()): startDate.getDate() ? startDate.toDateString() : "Select starting date"}
                         </div>
                         {/* Ending Date */}
                         <div className="flex items-center border-2 bg-white">
@@ -178,7 +181,7 @@ export default function SearchAppointments() {
                             >
                                 edit_calendar
                             </span>
-                            { endDate.getDate() ? endDate.toDateString() : "Select end date"}
+                            { endDate === null ? setEndDate(new Date()) : endDate.getDate() ? endDate.toDateString() : "Select end date"}
                         </div>
                     </>
                 ) : (
@@ -217,169 +220,35 @@ export default function SearchAppointments() {
                 {/* This is an example of a result */}
                 <div className="items-center w-full h-min">
 
-                    <div
-                        className="flex flex-col w-full h-full border p-4 rounded-2xl bg-green-400 hover:shadow-lg transition-shadow duration-300  mb-4">
-                        <div className="grid grid-cols-2 w-full h-full">
-                            <div className="flex flex-col justify-start">
-                                {/* Code */}
-                                <div className="text-lg font-semibold">QPSK12354687898465142132</div>
-                                {/* Name (patient) */}
-                                <div className="text-md">Christos Christakis</div>
-                                {/* Time */}
-                                <div className="text-sm text-gray-500">Tuesday 12 August, 12 AM - 5 PM</div>
-                            </div>
-                            <div className="flex flex-col justify-start">
-                                {/* Code */}
-                                <div className="text-lg font-semibold">Reason for the appointment</div>
-                                <div className="text-md">
-                                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {/*{appointmentsResolvedList !== null && appointmentsResolvedList.length !== 0 ? getAppointments() : null}*/}
+                    <div className={"flex flex-col w-full h-full border"}>
 
-                    {/* This is an example of a result */}
-                    <div className="items-center w-full h-min">
-                        <div
-                            className="flex flex-col w-full h-full border p-4 rounded-2xl bg-red-500 hover:shadow-lg transition-shadow duration-300 mb-4">
-                            <div className="grid grid-cols-2 w-full h-full">
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">QPSK12354687898465142132</div>
-                                    {/* Name (patient) */}
-                                    <div className="text-md">Christos Christakis</div>
-                                    {/* Time */}
-                                    <div className="text-sm text-gray-500">Tuesday 12 August, 12 AM - 5 PM</div>
-                                </div>
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">Reason for the appointment</div>
-                                    <div className="text-md">
-                                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                        {
+                            appointmentsResolvedList !== null && appointmentsResolvedList.length !== 0 ? appointmentsResolvedList.map(appointment => (
+                                    <div
+                                        className="flex flex-col w-full h-full border p-4 rounded-2xl bg-green-400 hover:shadow-lg transition-shadow duration-300  mb-4">
+                                        <div className="grid grid-cols-2 w-max h-full">
+                                            <div className="flex flex-col justify-start">
+                                                {/* Code */}
+                                                <div className="text-lg font-semibold">{appointment.appointmentId}</div>
+                                                {/* Name (patient) */}
+                                                <div className="text-md">{appointment.appointmentPatientAMKA}</div>
+                                                {/* Time */}
+                                                <div className="text-sm text-gray-500">
+                                                    {appointment.appointmentDate}, {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col justify-start">
+                                                {/* Code */}
+                                                <div className="text-lg font-semibold">Reason for the appointment</div>
+                                                <div className="text-md">
+                                                    {appointment.appointmentJustification}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* This is an example of a result */}
-                    <div className="items-center w-full h-min">
-                        <div
-                            className="flex flex-col w-full h-full border p-4 rounded-2xl bg-red-500 hover:shadow-lg transition-shadow duration-300 mb-4">
-                            <div className="grid grid-cols-2 w-full h-full">
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">QPSK12354687898465142132</div>
-                                    {/* Name (patient) */}
-                                    <div className="text-md">Christos Christakis</div>
-                                    {/* Time */}
-                                    <div className="text-sm text-gray-500">Tuesday 12 August, 12 AM - 5 PM</div>
-                                </div>
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">Reason for the appointment</div>
-                                    <div className="text-md">
-                                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* This is an example of a result */}
-                    <div className="items-center w-full h-min">
-                        <div
-                            className="flex flex-col w-full h-full border p-4 rounded-2xl bg-red-500 hover:shadow-lg transition-shadow duration-300 mb-4">
-                            <div className="grid grid-cols-2 w-full h-full">
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">QPSK12354687898465142132</div>
-                                    {/* Name (patient) */}
-                                    <div className="text-md">Christos Christakis</div>
-                                    {/* Time */}
-                                    <div className="text-sm text-gray-500">Tuesday 12 August, 12 AM - 5 PM</div>
-                                </div>
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">Reason for the appointment</div>
-                                    <div className="text-md">
-                                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* This is an example of a result */}
-                    <div className="items-center w-full h-min">
-                        <div
-                            className="flex flex-col w-full h-full border p-4 rounded-2xl bg-red-500 hover:shadow-lg transition-shadow duration-300 mb-4">
-                            <div className="grid grid-cols-2 w-full h-full">
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">QPSK12354687898465142132</div>
-                                    {/* Name (patient) */}
-                                    <div className="text-md">Christos Christakis</div>
-                                    {/* Time */}
-                                    <div className="text-sm text-gray-500">Tuesday 12 August, 12 AM - 5 PM</div>
-                                </div>
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">Reason for the appointment</div>
-                                    <div className="text-md">
-                                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* This is an example of a result */}
-                    <div className="items-center w-full h-min">
-                        <div
-                            className="flex flex-col w-full h-full border p-4 rounded-2xl bg-red-500 hover:shadow-lg transition-shadow duration-300 mb-4">
-                            <div className="grid grid-cols-2 w-full h-full">
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">QPSK12354687898465142132</div>
-                                    {/* Name (patient) */}
-                                    <div className="text-md">Christos Christakis</div>
-                                    {/* Time */}
-                                    <div className="text-sm text-gray-500">Tuesday 12 August, 12 AM - 5 PM</div>
-                                </div>
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">Reason for the appointment</div>
-                                    <div className="text-md">
-                                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* This is an example of a result */}
-                    <div className="items-center w-full h-min">
-                        <div
-                            className="flex flex-col w-full h-full border p-4 rounded-2xl bg-red-500 hover:shadow-lg transition-shadow duration-300 mb-4">
-                            <div className="grid grid-cols-2 w-full h-full">
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">QPSK12354687898465142132</div>
-                                    {/* Name (patient) */}
-                                    <div className="text-md">Christos Christakis</div>
-                                    {/* Time */}
-                                    <div className="text-sm text-gray-500">Tuesday 12 August, 12 AM - 5 PM</div>
-                                </div>
-                                <div className="flex flex-col justify-start">
-                                    {/* Code */}
-                                    <div className="text-lg font-semibold">Reason for the appointment</div>
-                                    <div className="text-md">
-                                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                )) : "No appointments found"
+                        }
                     </div>
 
                     {/* Calendar Modal */}
@@ -390,7 +259,8 @@ export default function SearchAppointments() {
                             animate={{opacity: 1}}
                             transition={{duration: 0.3, ease: 'easeOut'}}
                         >
-                            <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                            <div className="relative z-10" aria-labelledby="modal-title" role="dialog"
+                                 aria-modal="true">
                                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
                                      aria-hidden="true"></div>
 
@@ -420,7 +290,8 @@ export default function SearchAppointments() {
                             animate={{opacity: 1}}
                             transition={{duration: 0.3, ease: 'easeOut'}}
                         >
-                            <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                            <div className="relative z-10" aria-labelledby="modal-title" role="dialog"
+                                 aria-modal="true">
                                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
                                      aria-hidden="true"></div>
 
@@ -442,8 +313,6 @@ export default function SearchAppointments() {
                         </motion.div>
 
                     )}
-
-
                 </div>
             </div>
         </div>
