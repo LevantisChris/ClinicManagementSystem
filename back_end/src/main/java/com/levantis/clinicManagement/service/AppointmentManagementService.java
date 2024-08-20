@@ -531,26 +531,18 @@ public class AppointmentManagementService {
             if (!hasDateRange && !hasPatientSurname && !hasPatientAMKA && !hasAppointmentStatus) {
                 log.info("Inside Search, condition: !hasDateRange && !hasPatientSurname && !hasPatientAMKA && !hasAppointmentStatus");
                 LocalDate today = LocalDate.now();
-                appointments = appointmentRepository.findByAppointmentDateAndAppointmentState(today, status_description);
+                appointments = appointmentRepository.findByAppointmentDate(today);
             } else if (hasAppointmentStatus) {
                 log.info("Inside Search, condition: hasAppointmentStatus");
                 appointments = appointmentRepository.findByAppointmentState(searchCriteria.getAppointmentStateId());
-            } else if (hasDateRange && hasPatientSurname) {
-                log.info("Inside Search, condition: hasDateRange && hasPatientSurname");
-                appointments = appointmentRepository.findByDateRangeAndPatientSurnameAndAppointmentState(
-                        searchCriteria.getStartDate(), searchCriteria.getEndDate(), searchCriteria.getPatientSurname(), status_description);
-            } else if (hasDateRange && hasPatientAMKA) {
-                log.info("Inside Search, condition: hasDateRange && hasPatientAMKA");
-                appointments = appointmentRepository.findByDateRangeAndPatientAMKAAndAppointmentState(
-                        searchCriteria.getStartDate(), searchCriteria.getEndDate(), searchCriteria.getAppointmentPatientAMKA(), status_description);
             } else if (hasDateRange) {
                 log.info("Inside Search, condition: hasDateRange");
                 appointments = appointmentRepository.findByAppointmentDateBetweenAndAppointmentState(
-                        searchCriteria.getStartDate(), searchCriteria.getEndDate(), status_description);
+                        searchCriteria.getStartDate(), searchCriteria.getEndDate());
             } else if (hasPatientSurname) {
                 log.info("Inside Search, condition: hasPatientSurname");
                 appointments = appointmentRepository.findByPatientSurnameAndAppointmentState(
-                        searchCriteria.getPatientSurname(), status_description);
+                        searchCriteria.getPatientSurname());
             } else {
                 log.info("Inside Search, condition: else");
                 appointments = appointmentRepository.findByPatientAMKA(searchCriteria.getAppointmentPatientAMKA());

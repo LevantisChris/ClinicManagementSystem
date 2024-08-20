@@ -14,14 +14,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     @Query("SELECT a FROM Appointment a WHERE a.appointmentState.appointmentStateId = :status")
     List<Appointment> findByAppointmentState(@Param("status") Integer status);
 
-    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate = :date AND a.appointmentState.appointmentStateDescription = :status")
-    List<Appointment> findByAppointmentDateAndAppointmentState(@Param("date") LocalDate date, @Param("status") String status);
+    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate = :date")
+    List<Appointment> findByAppointmentDate(@Param("date") LocalDate date);
 
-    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate BETWEEN :startDate AND :endDate AND a.appointmentState.appointmentStateDescription = :status")
-    List<Appointment> findByAppointmentDateBetweenAndAppointmentState(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("status") String status);
+    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate BETWEEN :startDate AND :endDate")
+    List<Appointment> findByAppointmentDateBetweenAndAppointmentState(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    @Query("SELECT a FROM Appointment a JOIN a.appointmentPatient p JOIN p.user u WHERE u.user_surname LIKE %:surname% AND a.appointmentState.appointmentStateDescription = :status")
-    List<Appointment> findByPatientSurnameAndAppointmentState(@Param("surname") String surname, @Param("status") String status);
+    @Query("SELECT a FROM Appointment a JOIN a.appointmentPatient p JOIN p.user u WHERE u.user_surname LIKE %:surname%")
+    List<Appointment> findByPatientSurnameAndAppointmentState(@Param("surname") String surname);
 
     @Query("SELECT a FROM Appointment a JOIN a.appointmentPatient p WHERE p.user.patient.patient_AMKA = :amka")
     List<Appointment> findByPatientAMKA(@Param("amka") String amka);

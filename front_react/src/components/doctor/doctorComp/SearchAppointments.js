@@ -15,7 +15,7 @@ export default function SearchAppointments() {
     } = useContext(GlobalContext);
 
     /* To keep track of the filter selected */
-    const [selectedFilter, setSelectedFilter] = useState('surname');
+    const [selectedFilter, setSelectedFilter] = useState('none');
     /* For the input value */
     const [inputAMKAValue, setInputAMKAValue] = useState('');
     const [inputSurnameValue, setInputSurnameValue] = useState('');
@@ -105,21 +105,29 @@ export default function SearchAppointments() {
 
     /* Create the JSON request object and send it in the backend  */
     async function handleSubmitButtonClick() {
-        const searchCriteria = {
-            patientSurname: inputSurnameValue,
-            appointmentPatientAMKA: inputAMKAValue,
-            appointmentStateId:
-                filterAppointStateSelectedOption === "appointState_Canceled" ? 4
-                    : filterAppointStateSelectedOption === "appointState_Created" ? 1
-                        : filterAppointStateSelectedOption === "appointState_Respected" ? 2
-                            : filterAppointStateSelectedOption === "appointState_Completed" ? 3
-                                : "",
-            startDate:
-                inputSurnameValue === "" && inputAMKAValue === "" && filterAppointStateSelectedOption === "" ?
-                (startDate !== null && startDate !== undefined ? formatDateToLocal(startDate) : "") : "",
-            endDate: inputSurnameValue === "" && inputAMKAValue === "" && filterAppointStateSelectedOption === "" ?
-                (endDate !== null && endDate !== undefined ? formatDateToLocal(endDate) : "") : ""
-        };
+        let searchCriteria = {}
+        if (selectedFilter !== "none") {
+            searchCriteria = {
+                patientSurname: inputSurnameValue,
+                appointmentPatientAMKA: inputAMKAValue,
+                appointmentStateId:
+                    filterAppointStateSelectedOption === "appointState_Canceled" ? 4
+                        : filterAppointStateSelectedOption === "appointState_Created" ? 1
+                            : filterAppointStateSelectedOption === "appointState_Respected" ? 2
+                                : filterAppointStateSelectedOption === "appointState_Completed" ? 3
+                                    : "",
+                startDate:
+                    inputSurnameValue === "" && inputAMKAValue === "" && filterAppointStateSelectedOption === "" ?
+                        (startDate !== null && startDate !== undefined ? formatDateToLocal(startDate) : "") : "",
+                endDate: inputSurnameValue === "" && inputAMKAValue === "" && filterAppointStateSelectedOption === "" ?
+                    (endDate !== null && endDate !== undefined ? formatDateToLocal(endDate) : "") : ""
+            };
+        } else {
+            alert("You have not selected any search criteria, searching any appointments for today.")
+            searchCriteria = {patientSurname: "", appointmentPatientAMKA: "", startDate: "", endDate: ""}
+        }
+
+        console.log("TEST ==> ", searchCriteria)
 
         const response = await UserService.searchAppointment(searchCriteria)
         if (response.statusCode === 200) {
@@ -155,6 +163,7 @@ export default function SearchAppointments() {
                         value={selectedFilter}
                         onChange={handleSelectedFilter}
                     >
+                        <option value="none">None</option>
                         <option value="surname">By Surname</option>
                         <option value="AMKA">By AMKA</option>
                         <option value="appointState">By Appoin. state</option>
@@ -241,48 +250,54 @@ export default function SearchAppointments() {
 
                         {
                             appointmentsResolvedList !== null && appointmentsResolvedList.length !== 0 ? appointmentsResolvedList.map(appointment => (
-                                    <div
-                                        key={appointment.appointmentId}
-                                        className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-green-400 hover:shadow-lg transition-shadow duration-300  mb-4"
-                                        onClick={() => handleViewAppointment(appointment.appointmentId)}
-                                    >
-                                        <div className="grid grid-cols-3 w-max h-full">
-                                            <div className="flex flex-col justify-start">
-                                                {/* Appointment Code */}
-                                                <div className="text-lg font-semibold">
+                                <div
+                                    key={appointment.appointmentId}
+                                    className={
+                                    appointment.appointmentStateId === 1 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                        : appointment.appointmentStateId === 2 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-yellow-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                            : appointment.appointmentStateId === 3 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-green-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                                : appointment.appointmentStateId === 4 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-red-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                                    : `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-purple-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                }
+                                    onClick={() => handleViewAppointment(appointment.appointmentId)}
+                                >
+                                    <div className="grid grid-cols-3 w-max h-full">
+                                        <div className="flex flex-col justify-start">
+                                            {/* Appointment Code */}
+                                            <div className="text-lg font-semibold">
                                                     <span
                                                         className="material-icons-outlined text-gray-600 mx-2 align-text-top"
                                                     >
                                                         fact_check
                                                     </span>
-                                                    {"ID: " + appointment.appointmentId}
-                                                </div>
-                                                {/* AMKA (patient) */}
-                                                <div
-                                                    className="text-md">{"AMKA: " + appointment.appointmentPatientAMKA}</div>
-                                                {/* Time */}
-                                                <div className="text-sm text-gray-500">
-                                                    In {appointment.appointmentDate}
-                                                </div>
-                                                <div className="text-sm text-gray-500">
-                                                    From {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
-                                                </div>
-                                                {/* Click to view more info about the appointment */}
-                                                <span
-                                                    className="material-icons-outlined text-gray-600"
-                                                >
+                                                {"ID: " + appointment.appointmentId}
+                                            </div>
+                                            {/* AMKA (patient) */}
+                                            <div
+                                                className="text-md">{"AMKA: " + appointment.appointmentPatientAMKA}</div>
+                                            {/* Time */}
+                                            <div className="text-sm text-gray-500">
+                                                In {appointment.appointmentDate}
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                From {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
+                                            </div>
+                                            {/* Click to view more info about the appointment */}
+                                            <span
+                                                className="material-icons-outlined text-gray-600"
+                                            >
                                                         more_horiz
                                                 </span>
-                                            </div>
-                                            <div className="flex flex-col justify-start">
-                                                {/* Code */}
-                                                <div className="text-lg font-semibold">Reason for the appointment</div>
-                                                <div className="text-md">
-                                                    {appointment.appointmentJustification}
-                                                </div>
+                                        </div>
+                                        <div className="flex flex-col justify-start">
+                                            {/* Code */}
+                                            <div className="text-lg font-semibold">Reason for the appointment</div>
+                                            <div className="text-md">
+                                                {appointment.appointmentJustification}
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                             )) : "No appointments found"
                         }
                     </div>
