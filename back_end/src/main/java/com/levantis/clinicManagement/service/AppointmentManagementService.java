@@ -455,17 +455,41 @@ public class AppointmentManagementService {
                             +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
                     resp.setStatusCode(500);
                 }
-            } else { // the role is secretary and doctor, we don't need to make any permission check
-                resp.setAppointmentId(appointment.getAppointmentId());
-                resp.setAppointmentDoctorEmail(appointment.getAppointmentDoctor().getUser().getEmail());
-                resp.setAppointmentPatientAMKA(appointment.getAppointmentPatient().getPatient_AMKA());
-                resp.setAppointmentDate(appointment.getAppointmentDate());
-                resp.setAppointmentStartTime(appointment.getAppointmentStartTime());
-                resp.setAppointmentEndTime(appointment.getAppointmentEndTime());
-                resp.setAppointmentJustification(appointment.getAppointmentJustification());
-                resp.setAppointmentStateId(appointment.getAppointmentState().getAppointmentStateId());
-                resp.setMessage("Appointment successfully found.");
-                resp.setStatusCode(200);
+            } else if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) { // the role is doctor, return if it belongs to him/her
+                if(Objects.equals(appointment.getAppointmentDoctor().getUser().getEmail()
+                        , jwtUtils.extractUsername(jwtToken))) {
+                    /* Info about the appointment */
+                    resp.setAppointmentId(appointment.getAppointmentId());
+                    resp.setAppointmentDate(appointment.getAppointmentDate());
+                    resp.setAppointmentStartTime(appointment.getAppointmentStartTime());
+                    resp.setAppointmentEndTime(appointment.getAppointmentEndTime());
+                    resp.setAppointmentJustification(appointment.getAppointmentJustification());
+                    resp.setAppointmentStateId(appointment.getAppointmentState().getAppointmentStateId());
+                    resp.setMessage("Appointment successfully found.");
+
+                    /* Include also the doctor information */
+                    resp.setAppointmentDoctorId(appointment.getAppointmentDoctor().getDoctor_id());
+                    resp.setAppointmentDoctorName(appointment.getAppointmentDoctor().getUser().getUser_name());
+                    resp.setAppointmentDoctorSurname(appointment.getAppointmentDoctor().getUser().getUser_surname());
+                    resp.setAppointmentDoctorEmail(appointment.getAppointmentDoctor().getUser().getEmail());
+                    resp.setAppointmentDoctorSpeciality(appointment.getAppointmentDoctor().getDoctorSpeciality().getSpecialityDescription());
+
+                    /* Include more info about the patient */
+                    resp.setAppointmentPatientAMKA(appointment.getAppointmentPatient().getPatient_AMKA());
+                    resp.setAppointmentPatient(appointment.getAppointmentPatient()); // add the patient object
+
+                    resp.setStatusCode(200);
+                } else {
+                    log.error("Failed to display appointment with id: "
+                            +  appointment.getAppointmentId() + ", because the user with username: "
+                            +  jwtUtils.extractUsername(jwtToken) + " dont have the permission to view it, "
+                            +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
+                    resp.setMessage("Failed to display appointment with id: "
+                            +  appointment.getAppointmentId() + ", because the user with username: "
+                            +  jwtUtils.extractUsername(jwtToken) + " dont have the permission to view it, "
+                            +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
+                    resp.setStatusCode(500);
+                }
             }
         } catch (Exception e) {
             log.error("Error in displaying appointment: {}", e.getMessage());

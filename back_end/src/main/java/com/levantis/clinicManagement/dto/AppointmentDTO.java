@@ -2,7 +2,7 @@ package com.levantis.clinicManagement.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.levantis.clinicManagement.entity.Appointment;
+import com.levantis.clinicManagement.entity.Patient;
 import lombok.Data;
 
 import java.sql.Time;
@@ -36,5 +36,13 @@ public class AppointmentDTO {
     private LocalDate endDate;
     private String patientSurname;
     private List<AppointmentDTO> appointmentList;
+    // for the search (based on ID), to include more info
+    /* Info for the appointment */
+    private Integer appointmentDoctorId;
+    private String appointmentDoctorName;
+    private String appointmentDoctorSurname;
+    private String appointmentDoctorSpeciality;
+    /* Info for the Patient */
+    private Patient appointmentPatient;
 
 }

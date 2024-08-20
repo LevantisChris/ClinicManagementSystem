@@ -30,17 +30,13 @@ export default function SearchAppointments() {
     const [endDate, setEndDate] = useState(new Date());
 
     const handleSelectedFilter = (event) => {
-        console.log("EVENT: ", event.target.value)
         if(event.target.value === "surname") {
-            console.log("RECOVERED")
             setInputAMKAValue("")
             setFilterAppointStateSelectedOption("")
         } else if(event.target.value === "AMKA") {
-            console.log("RECOVERED")
             setInputSurnameValue("")
             setFilterAppointStateSelectedOption("")
         } else if(event.target.value === "appointState") {
-            console.log("RECOVERED")
             setInputSurnameValue("")
             setInputAMKAValue("")
         } else if(event.target.value === "date") {
@@ -69,7 +65,6 @@ export default function SearchAppointments() {
     };
 
     const handleStartDateChange = (newDate) => {
-        console.log("newDate: ", newDate)
         setStartDate(newDate);
         handleStartDateCloseCalendar();
     };
@@ -115,10 +110,8 @@ export default function SearchAppointments() {
             endDate: inputSurnameValue === "" && inputAMKAValue === "" && filterAppointStateSelectedOption === "" ?
                 (endDate !== null && endDate !== undefined ? formatDateToLocal(endDate) : "") : ""
         };
-        console.log("JSON: ", searchCriteria)
 
         const response = await UserService.searchAppointment(searchCriteria)
-        console.log("TEST --> ", response)
         if (response.statusCode === 200) {
             setAppointmentsResolvedList(response.appointmentList)
             //setLoading(false)
@@ -126,6 +119,11 @@ export default function SearchAppointments() {
             setAppointmentsResolvedList([]) // empty
             //setLoading(false)
         }
+    }
+
+    function handleViewAppointment(appointmentId) {
+        console.log("ID: ", appointmentId)
+        return undefined;
     }
 
     return (
@@ -220,23 +218,42 @@ export default function SearchAppointments() {
                 {/* This is an example of a result */}
                 <div className="items-center w-full h-min">
 
-                    {/*{appointmentsResolvedList !== null && appointmentsResolvedList.length !== 0 ? getAppointments() : null}*/}
-                    <div className={"flex flex-col w-full h-full border"}>
+                    <div className={"flex flex-col w-full h-full"}>
 
                         {
                             appointmentsResolvedList !== null && appointmentsResolvedList.length !== 0 ? appointmentsResolvedList.map(appointment => (
                                     <div
-                                        className="flex flex-col w-full h-full border p-4 rounded-2xl bg-green-400 hover:shadow-lg transition-shadow duration-300  mb-4">
-                                        <div className="grid grid-cols-2 w-max h-full">
+                                        key={appointment.appointmentId}
+                                        className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-green-400 hover:shadow-lg transition-shadow duration-300  mb-4"
+                                        onClick={() => handleViewAppointment(appointment.appointmentId)}
+                                    >
+                                        <div className="grid grid-cols-3 w-max h-full">
                                             <div className="flex flex-col justify-start">
-                                                {/* Code */}
-                                                <div className="text-lg font-semibold">{appointment.appointmentId}</div>
-                                                {/* Name (patient) */}
-                                                <div className="text-md">{appointment.appointmentPatientAMKA}</div>
+                                                {/* Appointment Code */}
+                                                <div className="text-lg font-semibold">
+                                                    <span
+                                                        className="material-icons-outlined text-gray-600 mx-2 align-text-top"
+                                                    >
+                                                        fact_check
+                                                    </span>
+                                                    {"ID: " + appointment.appointmentId}
+                                                </div>
+                                                {/* AMKA (patient) */}
+                                                <div
+                                                    className="text-md">{"AMKA: " + appointment.appointmentPatientAMKA}</div>
                                                 {/* Time */}
                                                 <div className="text-sm text-gray-500">
-                                                    {appointment.appointmentDate}, {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
+                                                    In {appointment.appointmentDate}
                                                 </div>
+                                                <div className="text-sm text-gray-500">
+                                                    From {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
+                                                </div>
+                                                {/* Click to view more info about the appointment */}
+                                                <span
+                                                    className="material-icons-outlined text-gray-600"
+                                                >
+                                                        more_horiz
+                                                </span>
                                             </div>
                                             <div className="flex flex-col justify-start">
                                                 {/* Code */}
@@ -247,7 +264,7 @@ export default function SearchAppointments() {
                                             </div>
                                         </div>
                                     </div>
-                                )) : "No appointments found"
+                            )) : "No appointments found"
                         }
                     </div>
 
