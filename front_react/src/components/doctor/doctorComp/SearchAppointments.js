@@ -121,8 +121,15 @@ export default function SearchAppointments() {
         }
     }
 
-    function handleViewAppointment(appointmentId) {
-        console.log("ID: ", appointmentId)
+    async function handleViewAppointment(appointmentId) {
+        const response = await UserService.displayAppointmentBasedOnId(appointmentId)
+        if (response.statusCode === 200) {
+            console.log(response)
+            //setLoading(false)
+        } else {
+            console.log("ERROR")
+            //setLoading(false)
+        }
         return undefined;
     }
 

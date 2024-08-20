@@ -52,8 +52,10 @@ public class AppointmentManagementController {
     }
 
     @GetMapping("/appoint/display-by-id")
-    public ResponseEntity<AppointmentDTO> displayAppointmentById(@RequestBody AppointmentDTO appointment) {
-        return ResponseEntity.ok(appointmentManagementService.displayAppointmentById(appointment));
+    public ResponseEntity<AppointmentDTO> displayAppointmentById(@RequestParam Integer appointmentId) {
+        AppointmentDTO appointmentDTO = new AppointmentDTO();
+        appointmentDTO.setAppointmentId(appointmentId);
+        return ResponseEntity.ok(appointmentManagementService.displayAppointmentById(appointmentDTO));
     }
 
     @PostMapping("/appoint/search")

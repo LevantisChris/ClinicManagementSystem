@@ -220,6 +220,25 @@ class UserService {
         }
     }
 
+    static async displayAppointmentBasedOnId(appointmentId) {
+        const params = {
+            appointmentId:appointmentId
+        }
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/appoint/display-by-id`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params: params
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
 
 
 
