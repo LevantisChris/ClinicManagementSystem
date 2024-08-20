@@ -26,6 +26,9 @@ const GlobalContext = React.createContext({
     reloadDoctorApp: false,
     setReloadDoctorApp: () => {},
 
+    viewDisplayAppointmentComponent: false,
+    setViewDisplayAppointmentComponent: () => {},
+
     userAuthed: null,
     setUserAuthed: () => {},
 

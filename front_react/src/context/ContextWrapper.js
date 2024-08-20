@@ -62,7 +62,11 @@ export default function ContextWrapper(props) {
         = useState(false)
 
 
-  const filteredEvents = useMemo(() => {
+    const [viewDisplayAppointmentComponent, setViewDisplayAppointmentComponent]
+        = useState(false)
+
+
+    const filteredEvents = useMemo(() => {
     return savedEvents.filter((evt) =>
       labels
         .filter((lbl) => lbl.checked)
@@ -145,6 +149,9 @@ export default function ContextWrapper(props) {
 
         errorMessage,
         setErrorMessage,
+
+        viewDisplayAppointmentComponent,
+        setViewDisplayAppointmentComponent,
 
         reloadDoctorApp,
         setReloadDoctorApp,

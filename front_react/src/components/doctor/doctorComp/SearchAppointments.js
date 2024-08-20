@@ -1,10 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {motion} from 'framer-motion';
 import Calendar from "react-calendar";
 import UserService from "../../../services/UserService";
+import DescriptionInsertModal from "./DescriptionInsertModal";
+import DisplayInfoAppointment from "./DisplayInfoAppointment";
+import GlobalContext from "../../../context/GlobalContext";
 
 
 export default function SearchAppointments() {
+
+    const {
+        viewDisplayAppointmentComponent,
+        setViewDisplayAppointmentComponent
+    } = useContext(GlobalContext);
 
     /* To keep track of the filter selected */
     const [selectedFilter, setSelectedFilter] = useState('surname');
@@ -13,6 +21,8 @@ export default function SearchAppointments() {
     const [inputSurnameValue, setInputSurnameValue] = useState('');
     /* List with all the appointments resolved from the search */
     const [appointmentsResolvedList, setAppointmentsResolvedList] = useState([])
+    /* The appointment the user wants to see the details */
+    const [appointmentToView, setAppointmentToView] = useState(false)
 
     /* This state is for handling the option
     *  selected for the filter Appointment state
@@ -125,6 +135,8 @@ export default function SearchAppointments() {
         const response = await UserService.displayAppointmentBasedOnId(appointmentId)
         if (response.statusCode === 200) {
             console.log(response)
+            setAppointmentToView(response)
+            setViewDisplayAppointmentComponent(true)
             //setLoading(false)
         } else {
             console.log("ERROR")
@@ -339,6 +351,7 @@ export default function SearchAppointments() {
                     )}
                 </div>
             </div>
+            {viewDisplayAppointmentComponent && <DisplayInfoAppointment appointment={appointmentToView}/>}
         </div>
     );
 }
