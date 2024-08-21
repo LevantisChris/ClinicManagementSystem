@@ -39,12 +39,7 @@ public class AppointmentManagementService {
     private JwtUtils jwtUtils;
     @Autowired
     private PatientRepository patientRepository;
-
-
-    public AppointmentManagementService(DoctorRepository doctorRepository) {
-        this.doctorRepository = doctorRepository;
-    }
-
+    
     public WorkingHoursDTO defineWorkingHours(WorkingHoursDTO registrationRequest) {
         log.info("Define Working Hours");
         WorkingHoursDTO resp = new WorkingHoursDTO();

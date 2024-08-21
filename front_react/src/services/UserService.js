@@ -239,6 +239,42 @@ class UserService {
         }
     }
 
+    static async getAllPatients() {
+        const params = {
+            AMKA:"",
+            surname:""
+        }
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/patient-mangt/search`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params: params
+            });
+            console.log("IN: ", response.data)
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
+    static async registerPatient(data) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.post(`${UserService.BASE_URL}/patient-mangt/create`, data,{
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
 
 
 

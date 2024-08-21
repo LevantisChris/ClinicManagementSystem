@@ -13,7 +13,9 @@ export default function SideBar() {
 
     const {
         showSearchAppointments,
-        setShowSearchAppointments
+        setShowSearchAppointments,
+        showRegisterPatient,
+        setShowRegisterPatient
     } = useContext(GlobalContext);
 
     return (
@@ -40,18 +42,20 @@ export default function SideBar() {
                                 </div>
                             </a>
 
-                            {activeCategory === 'home' && (<div className="ml-4">
-                                <div className={"flex items-center ml-5"}>
-                                    <span className="material-icons-outlined text-sm">
-                                        arrow_forward_ios
-                                    </span>
-                                    <a
-                                        className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
-                                        onClick={() => (showSearchAppointments === false ? setShowSearchAppointments(true) : setShowSearchAppointments(false))}>
-                                        Search & View Appointments
-                                    </a>
-                                </div>
-                            </div>)}
+                            {activeCategory === 'home' && (
+                                    <div className="ml-4">
+                                        <div className={"flex items-center ml-5"}>
+                                            <span className="material-icons-outlined text-sm">
+                                                arrow_forward_ios
+                                            </span>
+                                            <a
+                                                className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                onClick={() => (showSearchAppointments === false ? setShowSearchAppointments(true) : setShowSearchAppointments(false))}>
+                                                Search & View Appointments
+                                            </a>
+                                        </div>
+                                    </div>
+                            )}
                         </div>
                         <div>
                             <a
@@ -67,16 +71,21 @@ export default function SideBar() {
                                 </div>
                             </a>
 
-                            {activeCategory === 'about' && (<div className="ml-4">
-                                <a href="#"
-                                   className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white">
-                                    Sub-About 1
-                                </a>
-                                <a href="#"
-                                   className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white">
-                                    Sub-About 2
-                                </a>
-                            </div>)}
+                            {activeCategory === 'about' && (
+                                <div className="ml-4">
+                                    <div className={"flex items-center ml-5"}>
+                                            <span className="material-icons-outlined text-sm">
+                                                arrow_forward_ios
+                                            </span>
+                                        <a
+                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            onClick={() => (showRegisterPatient === false ? setShowRegisterPatient(true) : setShowRegisterPatient(false))}
+                                        >
+                                            Register patients
+                                        </a>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                         <div>
 
@@ -94,7 +103,7 @@ export default function SideBar() {
                             </a>
 
                             {activeCategory === 'services' && (<div className="ml-4">
-                                <a href="#"
+                            <a href="#"
                                    className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white">
                                     Sub-Services 1
                                 </a>

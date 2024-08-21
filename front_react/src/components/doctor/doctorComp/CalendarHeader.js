@@ -16,6 +16,7 @@ export default function CalendarHeader() {
         showActiveHoursModal,
         setShowActiveHoursModal,
         showSearchAppointments,
+        showRegisterPatient,
         userAuthed,
         setUserAuthed
     } = useContext(GlobalContext);
@@ -57,7 +58,7 @@ export default function CalendarHeader() {
                 <h1 className={'mr-10 text-xl text-gray-500 font-bold'}>HealthSyS</h1>
 
                 {
-                    showSearchAppointments === false ? (
+                    showSearchAppointments === false && showRegisterPatient === false ? (
                         <>
                             <button className="border rounded py-2 px-4 mr-5" onClick={handleReset}>
                                 Today

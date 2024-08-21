@@ -49,6 +49,9 @@ export default function ContextWrapper(props) {
    const [showSearchAppointments, setShowSearchAppointments]
     = useState(false); /* This is for the switching between the Calendar (Month) and the view for the Search Appointments */
 
+    const [showRegisterPatient, setShowRegisterPatient]
+        = useState(false)
+
     const [userAuthed, setUserAuthed]
         = useState(null) /* The details of the user that has been authenticated */
 
@@ -64,7 +67,6 @@ export default function ContextWrapper(props) {
 
     const [viewDisplayAppointmentComponent, setViewDisplayAppointmentComponent]
         = useState(false)
-
 
     const filteredEvents = useMemo(() => {
     return savedEvents.filter((evt) =>
@@ -140,6 +142,9 @@ export default function ContextWrapper(props) {
 
         showSearchAppointments,
         setShowSearchAppointments,
+
+        showRegisterPatient,
+        setShowRegisterPatient,
 
         userAuthed,
         setUserAuthed,

@@ -23,6 +23,9 @@ const GlobalContext = React.createContext({
     showSearchAppointments: false,
     setShowSearchAppointments: () => {},
 
+    showRegisterPatient: false,
+    setShowRegisterPatient: () => {},
+
     reloadDoctorApp: false,
     setReloadDoctorApp: () => {},
 

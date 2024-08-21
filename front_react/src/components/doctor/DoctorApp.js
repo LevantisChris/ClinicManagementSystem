@@ -10,6 +10,7 @@ import InsertModal from "./doctorComp/InsertModal";
 import SearchAppointments from "./doctorComp/SearchAppointments";
 import UserService from "../../services/UserService";
 import LoadingApp from "../Loading/LoadingApp";
+import RegisterPatient from "./doctorComp/RegisterPatient";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
@@ -19,9 +20,12 @@ function DoctorApp() {
         showEventModal,
         showInsertModal,
         showSearchAppointments,
+        setShowSearchAppointments,
         userAuthed,
         setUserAuthed,
-        reloadDoctorApp
+        reloadDoctorApp,
+        showRegisterPatient,
+        setShowRegisterPatient
     } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -82,11 +86,23 @@ function DoctorApp() {
                 <>
                     {showEventModal && <EventModal />}
                     {showInsertModal && <InsertModal />}
-                    <div className={'h-screen flex flex-col'}>
+                    <div className={'h-screen flex flex-col bg-gradient-to-l from-slate-300'}>
                         <CalendarHeader />
                         <div className={'flex flex-1'}>
                             <SideBar />
-                            {showSearchAppointments === false ? <Month appointmentsMonth={appointmentsMonth} month={currentMonth} /> : <SearchAppointments />}
+                            {(() => {
+                                if (!showSearchAppointments && !showRegisterPatient) {
+                                    return <Month appointmentsMonth={appointmentsMonth} month={currentMonth} />;
+                                } else if (showSearchAppointments) {
+                                    setShowRegisterPatient(false)
+                                    return <SearchAppointments />;
+                                } else if (showRegisterPatient) {
+                                    setShowSearchAppointments(false)
+                                    return <RegisterPatient />;
+                                } else {
+                                    return null;
+                                }
+                            })()}
                         </div>
                     </div>
                 </>
