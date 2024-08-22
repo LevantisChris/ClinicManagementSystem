@@ -2,12 +2,10 @@ package com.levantis.clinicManagement.service;
 
 import com.levantis.clinicManagement.dto.PatientDTO;
 import com.levantis.clinicManagement.dto.UserDTO;
-import com.levantis.clinicManagement.dto.WorkingHoursDTO;
 import com.levantis.clinicManagement.entity.*;
 import com.levantis.clinicManagement.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,8 +129,8 @@ public class PatientManagementService {
 
         try {
             String jwtToken = getToken();
-            if (jwtToken == null) {
-                log.error("Empty/null token");
+            if (jwtToken == null || patientDTO.getPatientAMKA() == null || patientDTO.getPatientUser().getUser_surname() == null) {
+                log.error("Empty/null token or fields.");
                 resp.setMessage("Empty/null token.");
                 resp.setStatusCode(500);
                 return List.of(resp);
@@ -150,30 +148,43 @@ public class PatientManagementService {
                 return List.of(resp);
             }
 
-            /* If everything is empty returne the last 20 patients */
-            if(patientDTO.getPatientAMKA() == null || patientDTO.getPatientAMKA().isEmpty()
-                    || patientDTO.getPatientUser().getUser_surname() == null || patientDTO.getPatientUser().getUser_surname().isEmpty()) {
+            /* If every parameter is empty return all the patients */
+            List<Patient> patients = null;
+            if(patientDTO.getPatientAMKA().isEmpty() && patientDTO.getPatientUser().getUser_surname().isEmpty()) {
                 log.info("Empty/null fields, so returning the last 20 patients");
-                List<Patient> patients = patientRepository.findAll();
-                if (patients.isEmpty()) {
-                    log.warn("No patients found (findAll).");
-                    resp.setMessage("No patients found (findAll).");
-                    resp.setStatusCode(404);
-                    return List.of(resp);
-                } else {
-                    log.info("Successful search, patients found (findAll).");
-                    return patients.stream().map(patient -> {
-                        PatientDTO dto = new PatientDTO();
-                        dto.setPatientId(patient.getPatient_id());
-                        dto.setPatientRegistrationDate(patient.getPatientRegistrationDate());
-                        dto.setPatientAMKA(patient.getPatient_AMKA());
-                        dto.setPatientUser(patient.getUser());
-                        dto.setStatusCode(200);
-                        dto.setMessage("Successful search, patients found (findAll).");
-                        return dto;
-                    }).collect(Collectors.toList());
+                patients = patientRepository.findAll();
 
-                }
+            } else if(!patientDTO.getPatientAMKA().isEmpty() && !patientDTO.getPatientUser().getUser_surname().isEmpty()) {
+                System.out.println("NONE IS EMPTY: " + patientDTO.getPatientUser().getUser_surname() + ", " + patientDTO.getPatientAMKA());
+                patients = patientRepository.findByPatient_AMKAAndUser(patientDTO.getPatientUser().getUser_surname(), patientDTO.getPatientAMKA());
+
+            } else if(patientDTO.getPatientAMKA().isEmpty() && !patientDTO.getPatientUser().getUser_surname().isEmpty()) {
+                System.out.println("The AMKA is empty, " + patientDTO.getPatientUser().getUser_surname());
+                patients = patientRepository.findByPatientUser(patientDTO.getPatientUser().getUser_surname());
+
+            } else {
+                System.out.println("The surname is empty, " + patientDTO.getPatientAMKA());
+                patients = patientRepository.findByPatient_AMKA_list(patientDTO.getPatientAMKA());
+
+            }
+            if (patients == null || patients.isEmpty()) {
+                log.warn("No patients found (findAll).");
+                resp.setMessage("No patients found (findAll).");
+                resp.setStatusCode(404);
+                return List.of(resp);
+            } else {
+                log.info("Successful search, patients found (findAll).");
+                return patients.stream().map(patient -> {
+                    PatientDTO dto = new PatientDTO();
+                    dto.setPatientId(patient.getPatient_id());
+                    dto.setPatientRegistrationDate(patient.getPatientRegistrationDate());
+                    dto.setPatientAMKA(patient.getPatient_AMKA());
+                    dto.setPatientUser(patient.getUser());
+                    dto.setStatusCode(200);
+                    dto.setMessage("Successful search, patients found (findAll).");
+                    return dto;
+                }).collect(Collectors.toList());
+
             }
         } catch (Exception e) {
             log.error("Error searching patient", e);
