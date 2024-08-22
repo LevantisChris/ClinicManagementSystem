@@ -11,6 +11,7 @@ import SearchAppointments from "./doctorComp/SearchAppointments";
 import UserService from "../../services/UserService";
 import LoadingApp from "../Loading/LoadingApp";
 import RegisterPatient from "./doctorComp/RegisterPatient";
+import SearchPatients from "./doctorComp/SearchPatients";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
@@ -25,7 +26,9 @@ function DoctorApp() {
         setUserAuthed,
         reloadDoctorApp,
         showRegisterPatient,
-        setShowRegisterPatient
+        setShowRegisterPatient,
+        showSearchPatients,
+        setShowSearchPatients
     } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -91,14 +94,20 @@ function DoctorApp() {
                         <div className={'flex flex-1'}>
                             <SideBar />
                             {(() => {
-                                if (!showSearchAppointments && !showRegisterPatient) {
+                                if (!showSearchAppointments && !showRegisterPatient && !showSearchPatients) {
                                     return <Month appointmentsMonth={appointmentsMonth} month={currentMonth} />;
                                 } else if (showSearchAppointments) {
                                     setShowRegisterPatient(false)
+                                    setShowSearchPatients(false)
                                     return <SearchAppointments />;
                                 } else if (showRegisterPatient) {
                                     setShowSearchAppointments(false)
+                                    setShowSearchPatients(false)
                                     return <RegisterPatient />;
+                                } else if(showSearchPatients){
+                                    setShowSearchAppointments(false)
+                                    setShowRegisterPatient(false)
+                                    return <SearchPatients/>;
                                 } else {
                                     return null;
                                 }

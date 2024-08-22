@@ -1,0 +1,142 @@
+import React, {useContext, useState} from 'react';
+import UserService from "../../../services/UserService";
+import DisplayInfoAppointment from "./DisplayInfoAppointment";
+import GlobalContext from "../../../context/GlobalContext";
+import DisplayInfoPatient from "./DisplayInfoPatient";
+
+export default function SearchPatients() {
+
+    const {
+        viewDisplayPatientComponent,
+        setViewDisplayPatientComponent
+    } = useContext(GlobalContext);
+
+    const [inputAMKAValue, setInputAMKAValue] = useState('');
+    const [inputSurnameValue, setInputSurnameValue] = useState('');
+
+    const [patientResultsList, setPatientResultsList] = useState('');
+
+    const [patientToView, setPatientToView] = useState(false)
+
+
+    const handleInputAMKAChange = (event) => {
+        setInputAMKAValue(event.target.value);
+    };
+
+    const handleInputSurnameChange = (event) => {
+        setInputSurnameValue(event.target.value)
+    }
+
+    async function handleButtonClick() {
+        if(inputAMKAValue.length === 0 && inputSurnameValue.length === 0) {
+            alert("No search parameters, returning all the patients")
+        }
+        const params = {
+            AMKA: inputAMKAValue,
+            surname: inputSurnameValue
+        }
+        const responseList = await UserService.searchPatients(params)
+        if (responseList.length !== 0) {
+            console.log(responseList)
+            setPatientResultsList(responseList)
+        } else
+            setPatientResultsList("")
+    }
+
+    async function handleViewPatient(patientId) {
+        const params = {
+            ID: patientId
+        }
+        const responseDetails = await UserService.displayPatientsById(params)
+        if (responseDetails.statusCode === 200) {
+            console.log(responseDetails)
+            setPatientToView(responseDetails)
+            setViewDisplayPatientComponent(true)
+        } else
+           console.log("ERROR")
+    }
+
+    return (
+        <div className="flex flex-col h-min w-full p-4">
+            <p className={"font-light text-5xl"}>
+                Search patients based on criteria
+            </p>
+            <p className={"mt-2 font-light text-slate-400"}>
+                If you dont give any search criteria, all the patients will be returned
+            </p>
+            <div className={`grid grid-cols-3 p-4 gap-4 h-min`}>
+
+                <div className="col-span-1 w-full">
+                    <form className="w-full">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                onChange={handleInputAMKAChange}
+                                placeholder={"Patient AMKA"}
+                                className="bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full"
+                            />
+                        </div>
+                    </form>
+                </div>
+                <div className="col-span-1 w-full">
+                    <form className="w-full">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                onChange={handleInputSurnameChange}
+                                placeholder={"Patient surname"}
+                                className="bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full"
+                            />
+                        </div>
+                    </form>
+                </div>
+
+                {/* Search Button */}
+                <div className="flex justify-center w-full">
+                    <form className="w-full">
+                        <input
+                            type={"button"}
+                            value="Search"
+                            className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 w-full"
+                            onClick={handleButtonClick}
+                        />
+                    </form>
+                </div>
+            </div>
+
+            {/* Map the results */}
+            <div className="items-center w-full h-min">
+                <div className={"flex flex-col w-full h-full"}>
+                    {
+                        patientResultsList !== null && patientResultsList.length !== 0
+                            ? patientResultsList.map(patient => (
+                                <div
+                                    key={patient.patientId}
+                                    className={'flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4'}
+                                    onClick={() => handleViewPatient(patient.patientId)}
+                                >
+                                    <div className="grid grid-cols-3 w-max h-full">
+                                        <div className="flex flex-col justify-start">
+                                            <div className="text-lg font-semibold">
+                                                    <span
+                                                        className="material-icons-outlined text-gray-600 mx-2 align-text-top"
+                                                    >
+                                                        person
+                                                    </span>
+                                                {patient.patientUser.user_name} {patient.patientUser.user_surname}
+                                            </div>
+                                            {/* AMKA (patient) */}
+                                            <div
+                                                className="text-sm">{"AMKA: " + patient.patientAMKA}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )) : "No patients found, try again"
+                    }
+                </div>
+            </div>
+            {viewDisplayPatientComponent && <DisplayInfoPatient patient={patientToView}/>}
+        </div>
+    );
+}

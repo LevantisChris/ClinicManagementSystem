@@ -32,4 +32,21 @@ public class PatientManagementController {
         return ResponseEntity.ok(patientManagementService.searchPatient(patientDTO));
     }
 
+    @GetMapping("/searchById")
+    public ResponseEntity<PatientDTO> searchPatientById(@RequestParam Integer ID) {
+        PatientDTO patientDTO = new PatientDTO();
+        patientDTO.setPatientId(ID);
+        return ResponseEntity.ok(patientManagementService.displayPatientById(patientDTO));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patientDTO) {
+        return ResponseEntity.ok(patientManagementService.updatePatientById(patientDTO));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<PatientDTO> deletePatient(@RequestBody PatientDTO patientDTO) {
+        return ResponseEntity.ok(patientManagementService.deletePatient(patientDTO));
+    }
+
 }

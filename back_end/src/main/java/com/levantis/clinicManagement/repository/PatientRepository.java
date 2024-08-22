@@ -15,7 +15,10 @@ public interface PatientRepository extends JpaRepository<Patient, Integer> {
     List<Patient> findByPatient_AMKA_list(String amka);
 
     @Query("SELECT p from Patient p WHERE p.user.user_surname = :surname")
-    List<Patient> findByPatientUser(String surname);
+    List<Patient> findByPatientUser_List(String surname);
+
+    @Query("SELECT p from Patient p WHERE p.user.user_surname = :surname")
+    Patient findByPatientUser(String surname);
 
     @Query("SELECT p FROM Patient p WHERE p.patient_AMKA = :amka AND p.user.user_surname = :surname")
     List<Patient> findByPatient_AMKAAndUser(String surname, String amka);

@@ -52,6 +52,9 @@ export default function ContextWrapper(props) {
     const [showRegisterPatient, setShowRegisterPatient]
         = useState(false)
 
+    const [showSearchPatients, setShowSearchPatients]
+        = useState(false)
+
     const [userAuthed, setUserAuthed]
         = useState(null) /* The details of the user that has been authenticated */
 
@@ -66,6 +69,9 @@ export default function ContextWrapper(props) {
 
 
     const [viewDisplayAppointmentComponent, setViewDisplayAppointmentComponent]
+        = useState(false)
+
+    const [viewDisplayPatientComponent, setViewDisplayPatientComponent]
         = useState(false)
 
     const filteredEvents = useMemo(() => {
@@ -146,6 +152,9 @@ export default function ContextWrapper(props) {
         showRegisterPatient,
         setShowRegisterPatient,
 
+        showSearchPatients,
+        setShowSearchPatients,
+
         userAuthed,
         setUserAuthed,
 
@@ -157,6 +166,9 @@ export default function ContextWrapper(props) {
 
         viewDisplayAppointmentComponent,
         setViewDisplayAppointmentComponent,
+
+        viewDisplayPatientComponent,
+        setViewDisplayPatientComponent,
 
         reloadDoctorApp,
         setReloadDoctorApp,

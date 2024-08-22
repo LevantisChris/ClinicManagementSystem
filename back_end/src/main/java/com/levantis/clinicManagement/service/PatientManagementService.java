@@ -123,6 +123,42 @@ public class PatientManagementService {
         return resp;
     }
 
+    public PatientDTO deletePatient(PatientDTO patientDTO) {
+        PatientDTO resp = new PatientDTO();
+        try {
+            String jwtToken = getToken();
+            if (jwtToken == null || patientDTO.getPatientId() == null) {
+                log.error("Empty/null token");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return resp;
+            } else if(jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                log.error("The user requesting the function delete patient dont have the permission.");
+                resp.setMessage("The user requesting the function delete patient dont have the permission.");
+                resp.setStatusCode(405);
+                return resp;
+            }
+            /* At first, we have to find the patient based on the provided ID, and then delete him */
+            Patient patientToDelete = patientRepository.findById(patientDTO.getPatientId())
+                    .orElseThrow(() -> new RuntimeException("Patient not found"));
+
+            userRepository.delete(patientToDelete.getUser());
+            userRepository.flush();
+            resp.setMessage("Patient successfully deleted.");
+            resp.setStatusCode(200);
+        } catch (RuntimeException e) {
+            log.error(e.getMessage());
+            resp.setMessage(e.getMessage());
+            resp.setStatusCode(404);
+        } catch (Exception e) {
+            log.error("Error deleting patient: ", e);
+            resp.setMessage("An error occurred while deleting the patient: " + e.getMessage());
+            resp.setStatusCode(500);
+        }
+
+        return resp;
+    }
+
     public List<PatientDTO> searchPatient(PatientDTO patientDTO) {
         log.info("Searching for patient");
         PatientDTO resp = new PatientDTO();
@@ -160,7 +196,7 @@ public class PatientManagementService {
 
             } else if(patientDTO.getPatientAMKA().isEmpty() && !patientDTO.getPatientUser().getUser_surname().isEmpty()) {
                 System.out.println("The AMKA is empty, " + patientDTO.getPatientUser().getUser_surname());
-                patients = patientRepository.findByPatientUser(patientDTO.getPatientUser().getUser_surname());
+                patients = patientRepository.findByPatientUser_List(patientDTO.getPatientUser().getUser_surname());
 
             } else {
                 System.out.println("The surname is empty, " + patientDTO.getPatientAMKA());
@@ -193,6 +229,106 @@ public class PatientManagementService {
             resp.setError(e.getMessage());
         }
         return List.of(resp);
+    }
+
+    public PatientDTO displayPatientById(PatientDTO patientDTO) {
+        PatientDTO resp = new PatientDTO();
+        try {
+            String jwtToken = getToken();
+            if (jwtToken == null || patientDTO.getPatientId() == null) {
+                log.error("Empty/null token or fields.");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return resp;
+            }
+            Patient patient = patientRepository.findById(patientDTO.getPatientId())
+                .orElseThrow(() -> new RuntimeException("Patient with ID: " + patientDTO.getPatientId() + " don't exist."));
+
+            resp.setPatientId(patient.getPatient_id());
+            resp.setPatientAMKA(patient.getPatient_AMKA());
+            resp.setPatientRegistrationDate(patient.getPatientRegistrationDate());
+            resp.setPatientUser(patient.getUser());
+            resp.setStatusCode(200);
+            resp.setMessage("Successful display patient.");
+        } catch (Exception e) {
+            log.error("Error displaying patient", e);
+            e.printStackTrace();
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
+    /* The ID is patient ID */
+    public PatientDTO updatePatientById(PatientDTO updateRequest) {
+        PatientDTO resp = new PatientDTO();
+        try {
+            Patient patientNew = null;
+            User patientUser = null;
+
+            String jwtToken = getToken();
+            if (jwtToken == null || updateRequest.getPatientId() == null) {
+                log.error("Empty/null token or fields.");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return resp;
+            }
+            if(jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                /* The update must be done in the info about him */
+                /* At first we need to find the user with that the patient requesting represents */
+                patientUser = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
+                        .orElseThrow(() -> new RuntimeException("User (in update patient) with email: " + jwtToken + " don't exist."));
+                /* Now return the patient object */
+                patientNew = patientRepository.findByPatientUser(patientUser.getUser_surname());
+            } else {
+                patientNew = patientRepository.findById(updateRequest.getPatientId())
+                        .orElseThrow(() -> new RuntimeException("Patient with ID: " + updateRequest.getPatientId() + " don't exist."));
+            }
+
+            if(patientNew != null) {
+                /* Update the fields */
+                if(!updateRequest.getPatientName().isEmpty()) {
+                    patientNew.getUser().setUser_name(updateRequest.getPatientName());
+                }
+                if(!updateRequest.getPatientSurname().isEmpty()) {
+                    patientNew.getUser().setUser_surname(updateRequest.getPatientSurname());
+                }
+                if(!updateRequest.getPatientEmail().isEmpty()) {
+                    patientNew.getUser().setEmail(updateRequest.getPatientEmail());
+                }
+                if(updateRequest.getPatientId() == null) {
+                    patientNew.getUser().setUser_idNumber(updateRequest.getPatientIdNumber());
+                }
+                if(!updateRequest.getPatientAMKA().isEmpty()) {
+                    patientNew.setPatient_AMKA(updateRequest.getPatientAMKA());
+                }
+
+                Patient patientResult = patientRepository.save(patientNew);
+
+                if (patientResult.getPatient_id() > 0) {
+                    resp.setPatientId(patientNew.getPatient_id());
+                    resp.setPatientAMKA(patientNew.getPatient_AMKA());
+                    resp.setPatientRegistrationDate(patientNew.getPatientRegistrationDate());
+                    resp.setPatientUser(patientNew.getUser());
+                    resp.setStatusCode(200);
+                    resp.setMessage("Successful update patient.");
+                } else {
+                    log.error("Error updating patient.");
+                    resp.setStatusCode(500);
+                    resp.setError("Error updating patient.");
+                }
+            } else {
+                log.error("Error updating patient.");
+                resp.setStatusCode(500);
+                resp.setError("Error updating patient.");
+            }
+        } catch (Exception e) {
+            log.error("Error updating patient, ", e);
+            e.printStackTrace();
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
     }
 
 

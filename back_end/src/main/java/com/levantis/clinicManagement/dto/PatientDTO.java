@@ -23,5 +23,10 @@ public class PatientDTO {
     private User patientUser;
     private String patientAMKA;
     private Date patientRegistrationDate;
+    // For the update method, because we cannot pass a user object, and we gonna get NullPointerException
+    private String patientName;
+    private String patientSurname;
+    private String patientIdNumber;
+    private String patientEmail;
 
 }

@@ -252,7 +252,6 @@ class UserService {
                 },
                 params: params
             });
-            console.log("IN: ", response.data)
             return response.data;
         } catch (err) {
             console.error(err);
@@ -275,8 +274,37 @@ class UserService {
         }
     }
 
+    static async searchPatients(params) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/patient-mangt/search`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params: params
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
 
-
+    static async displayPatientsById(params) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/patient-mangt/searchById`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params: params
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
 
 
 

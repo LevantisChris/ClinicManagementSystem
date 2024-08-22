@@ -23,6 +23,9 @@ const GlobalContext = React.createContext({
     showSearchAppointments: false,
     setShowSearchAppointments: () => {},
 
+    showSearchPatients: false,
+    setShowSearchPatients: () => {},
+
     showRegisterPatient: false,
     setShowRegisterPatient: () => {},
 
@@ -31,6 +34,9 @@ const GlobalContext = React.createContext({
 
     viewDisplayAppointmentComponent: false,
     setViewDisplayAppointmentComponent: () => {},
+
+    viewDisplayPatientComponent: false,
+    setViewDisplayPatientComponent: () => {},
 
     userAuthed: null,
     setUserAuthed: () => {},

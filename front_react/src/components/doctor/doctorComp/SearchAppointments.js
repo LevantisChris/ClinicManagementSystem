@@ -127,8 +127,6 @@ export default function SearchAppointments() {
             searchCriteria = {patientSurname: "", appointmentPatientAMKA: "", startDate: "", endDate: ""}
         }
 
-        console.log("TEST ==> ", searchCriteria)
-
         const response = await UserService.searchAppointment(searchCriteria)
         if (response.statusCode === 200) {
             setAppointmentsResolvedList(response.appointmentList)
@@ -154,7 +152,13 @@ export default function SearchAppointments() {
     }
 
     return (
-        <div className="flex flex-col h-min w-full border">
+        <div className="flex flex-col h-min w-full">
+            <p className={"font-light text-5xl"}>
+                Search & View appointments
+            </p>
+            <p className={"mt-2 font-light text-slate-400"}>
+                If you dont give any search criteria, all the appointments for the current day will be returned
+            </p>
             <div className={`grid ${selectedFilter === 'date' ? 'grid-cols-4' : 'grid-cols-3'} p-4 gap-4 h-min`}>
                 {/* Choice Box */}
                 <div className="w-full">
@@ -197,7 +201,7 @@ export default function SearchAppointments() {
                             >
                                 edit_calendar
                             </span>
-                            { startDate === null ? setStartDate(new Date()): startDate.getDate() ? startDate.toDateString() : "Select starting date"}
+                            {startDate === null ? setStartDate(new Date()) : startDate.getDate() ? startDate.toDateString() : "Select starting date"}
                         </div>
                         {/* Ending Date */}
                         <div className="flex items-center border-2 bg-white">
@@ -207,16 +211,16 @@ export default function SearchAppointments() {
                             >
                                 edit_calendar
                             </span>
-                            { endDate === null ? setEndDate(new Date()) : endDate.getDate() ? endDate.toDateString() : "Select end date"}
+                            {endDate === null ? setEndDate(new Date()) : endDate.getDate() ? endDate.toDateString() : "Select end date"}
                         </div>
                     </>
                 ) : (
                     <div className="col-span-1 w-full">
                         <form className="w-full">
-                        <div className="relative">
+                            <div className="relative">
                                 <input
                                     type="text"
-                                    onChange={ selectedFilter === 'AMKA' ? handleInputAMKAChange : handleInputSurnameChange }
+                                    onChange={selectedFilter === 'AMKA' ? handleInputAMKAChange : handleInputSurnameChange}
                                     placeholder={selectedFilter === 'AMKA' ? "Enter the AMKA" : "Enter the surname"}
                                     className="bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full"
                                 />
@@ -243,7 +247,7 @@ export default function SearchAppointments() {
             {/* Results */}
             <div className="flex flex-auto m-2">
 
-                {/* This is an example of a result */}
+                {/* Map the results */}
                 <div className="items-center w-full h-min">
 
                     <div className={"flex flex-col w-full h-full"}>
@@ -253,12 +257,12 @@ export default function SearchAppointments() {
                                 <div
                                     key={appointment.appointmentId}
                                     className={
-                                    appointment.appointmentStateId === 1 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4`
-                                        : appointment.appointmentStateId === 2 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-yellow-300 hover:shadow-lg transition-shadow duration-300 mb-4`
-                                            : appointment.appointmentStateId === 3 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-green-300 hover:shadow-lg transition-shadow duration-300 mb-4`
-                                                : appointment.appointmentStateId === 4 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-red-300 hover:shadow-lg transition-shadow duration-300 mb-4`
-                                                    : `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-purple-300 hover:shadow-lg transition-shadow duration-300 mb-4`
-                                }
+                                        appointment.appointmentStateId === 1 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                            : appointment.appointmentStateId === 2 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-yellow-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                                : appointment.appointmentStateId === 3 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-green-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                                    : appointment.appointmentStateId === 4 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-red-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                                        : `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-purple-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                    }
                                     onClick={() => handleViewAppointment(appointment.appointmentId)}
                                 >
                                     <div className="grid grid-cols-3 w-max h-full">
