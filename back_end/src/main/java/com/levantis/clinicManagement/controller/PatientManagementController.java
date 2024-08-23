@@ -45,7 +45,9 @@ public class PatientManagementController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<PatientDTO> deletePatient(@RequestBody PatientDTO patientDTO) {
+    public ResponseEntity<PatientDTO> deletePatient(@RequestParam Integer patientId) {
+        PatientDTO patientDTO = new PatientDTO();
+        patientDTO.setPatientId(patientId);
         return ResponseEntity.ok(patientManagementService.deletePatient(patientDTO));
     }
 

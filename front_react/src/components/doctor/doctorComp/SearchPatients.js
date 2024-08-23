@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import UserService from "../../../services/UserService";
 import DisplayInfoAppointment from "./DisplayInfoAppointment";
 import GlobalContext from "../../../context/GlobalContext";
@@ -28,9 +28,6 @@ export default function SearchPatients() {
     }
 
     async function handleButtonClick() {
-        if(inputAMKAValue.length === 0 && inputSurnameValue.length === 0) {
-            alert("No search parameters, returning all the patients")
-        }
         const params = {
             AMKA: inputAMKAValue,
             surname: inputSurnameValue
@@ -42,6 +39,11 @@ export default function SearchPatients() {
         } else
             setPatientResultsList("")
     }
+
+    useEffect(() => {
+        console.log("The component rerendered.")
+        handleButtonClick()
+    }, [viewDisplayPatientComponent]);
 
     async function handleViewPatient(patientId) {
         const params = {

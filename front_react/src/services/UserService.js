@@ -306,6 +306,36 @@ class UserService {
         }
     }
 
+    static async updatePatient(data) {
+        const token = localStorage.getItem("token")
+        try {
+            const response = await axios.put(`${UserService.BASE_URL}/patient-mangt/update`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            })
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
+    static async deletePatient(params) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.delete(`${UserService.BASE_URL}/patient-mangt/delete`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params: params
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
 
 
 

@@ -147,9 +147,10 @@ public class PatientManagementService {
             resp.setMessage("Patient successfully deleted.");
             resp.setStatusCode(200);
         } catch (RuntimeException e) {
+            String exceptionType = e.getClass().getSimpleName();
             log.error(e.getMessage());
-            resp.setMessage(e.getMessage());
-            resp.setStatusCode(404);
+            resp.setMessage(exceptionType);
+            resp.setStatusCode(500);
         } catch (Exception e) {
             log.error("Error deleting patient: ", e);
             resp.setMessage("An error occurred while deleting the patient: " + e.getMessage());
@@ -323,10 +324,12 @@ public class PatientManagementService {
                 resp.setError("Error updating patient.");
             }
         } catch (Exception e) {
-            log.error("Error updating patient, ", e);
+            String exceptionType = e.getClass().getSimpleName();
+            log.error("Error updating patient: " + exceptionType, e);  // Logs the type of the exception
             e.printStackTrace();
             resp.setStatusCode(500);
-            resp.setError(e.getMessage());
+            resp.setMessage(exceptionType);
+            resp.setError(exceptionType);
         }
         return resp;
     }
