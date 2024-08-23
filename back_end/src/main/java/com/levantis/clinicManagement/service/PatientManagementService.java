@@ -115,10 +115,12 @@ public class PatientManagementService {
                 return resp;
             }
         } catch (Exception e) {
+            String exceptionType = e.getClass().getSimpleName();
             log.error("Error registering user", e);
-            e.printStackTrace();
             resp.setStatusCode(500);
-            resp.setError("Error occurred registering the patient.");
+            resp.setMessage(exceptionType);
+            resp.setError(exceptionType);
+            return resp;
         }
         return resp;
     }

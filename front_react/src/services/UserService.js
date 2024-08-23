@@ -269,7 +269,6 @@ class UserService {
             });
             return response.data;
         } catch (err) {
-            console.error(err);
             return err.response ? err.response.data : err;
         }
     }
