@@ -55,6 +55,9 @@ export default function ContextWrapper(props) {
     const [showSearchPatients, setShowSearchPatients]
         = useState(false)
 
+    const [showRegisterPatientMassively, setShowRegisterPatientMassively]
+        = useState(false)
+
     const [userAuthed, setUserAuthed]
         = useState(null) /* The details of the user that has been authenticated */
 
@@ -169,6 +172,9 @@ export default function ContextWrapper(props) {
 
         viewDisplayPatientComponent,
         setViewDisplayPatientComponent,
+
+        showRegisterPatientMassively,
+        setShowRegisterPatientMassively,
 
         reloadDoctorApp,
         setReloadDoctorApp,

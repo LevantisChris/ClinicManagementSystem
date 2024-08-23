@@ -17,7 +17,9 @@ export default function SideBar() {
         showRegisterPatient,
         setShowRegisterPatient,
         showSearchPatients,
-        setShowSearchPatients
+        setShowSearchPatients,
+        showRegisterPatientMassively,
+        setShowRegisterPatientMassively
     } = useContext(GlobalContext);
 
     return (
@@ -95,6 +97,17 @@ export default function SideBar() {
                                             onClick={() => (showSearchPatients === false ? setShowSearchPatients(true) : setShowSearchPatients(false))}
                                         >
                                             Search patients
+                                        </a>
+                                    </div>
+                                    <div className={"flex items-center ml-5"}>
+                                            <span className="material-icons-outlined text-sm">
+                                                arrow_forward_ios
+                                            </span>
+                                        <a
+                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            onClick={() => (showRegisterPatientMassively === false ? setShowRegisterPatientMassively(true) : setShowRegisterPatientMassively(false))}
+                                        >
+                                            Register patients massively
                                         </a>
                                     </div>
                                 </div>

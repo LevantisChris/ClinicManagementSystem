@@ -41,7 +41,6 @@ export default function SearchPatients() {
     }
 
     useEffect(() => {
-        console.log("The component rerendered.")
         handleButtonClick()
     }, [viewDisplayPatientComponent]);
 

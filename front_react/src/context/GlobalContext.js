@@ -26,6 +26,9 @@ const GlobalContext = React.createContext({
     showSearchPatients: false,
     setShowSearchPatients: () => {},
 
+    showRegisterPatientMassively: false,
+    setShowRegisterPatientMassively: () => {},
+
     showRegisterPatient: false,
     setShowRegisterPatient: () => {},
 

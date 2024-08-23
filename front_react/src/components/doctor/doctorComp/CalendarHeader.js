@@ -19,6 +19,7 @@ export default function CalendarHeader() {
         showRegisterPatient,
         userAuthed,
         showSearchPatients,
+        showRegisterPatientMassively
     } = useContext(GlobalContext);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -58,7 +59,7 @@ export default function CalendarHeader() {
                 <h1 className={'mr-10 text-xl text-gray-500 font-bold'}>HealthSyS</h1>
 
                 {
-                    showSearchAppointments === false && showRegisterPatient === false && showSearchPatients === false ? (
+                    showSearchAppointments === false && showRegisterPatient === false && showSearchPatients === false && showRegisterPatientMassively === false ? (
                         <>
                             <button className="border rounded py-2 px-4 mr-5" onClick={handleReset}>
                                 Today
