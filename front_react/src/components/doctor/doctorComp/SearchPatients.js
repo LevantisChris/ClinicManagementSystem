@@ -33,11 +33,10 @@ export default function SearchPatients() {
             surname: inputSurnameValue
         }
         const responseList = await UserService.searchPatients(params)
-        if (responseList.length !== 0) {
-            console.log(responseList)
-            setPatientResultsList(responseList)
+        if (responseList[0].statusCode === 404) {
+            setPatientResultsList([])
         } else
-            setPatientResultsList("")
+            setPatientResultsList(responseList)
     }
 
     useEffect(() => {

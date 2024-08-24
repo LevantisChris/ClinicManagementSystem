@@ -7,7 +7,7 @@ const TABLE_HEAD = ["Full-name", "Email", "AMKA", "Date registered"];
 
 export default function RegisterPatient() {
 
-    const [patientRegisteredList, setPatientRegisteredList] = useState("");
+    const [patientRegisteredList, setPatientRegisteredList] = useState([]);
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -66,10 +66,10 @@ export default function RegisterPatient() {
     React.useEffect(() => {
         const getRegisterPatients = async () => {
             const response = await UserService.getAllPatients() // response is a list
-            if (response.length !== 0) {
-                setPatientRegisteredList(response)
+            if (response[0].statusCode === 404) {
+                setPatientRegisteredList([])
             } else
-                setPatientRegisteredList("")
+                setPatientRegisteredList(response)
         }
         getRegisterPatients();
     }, [success])
@@ -236,34 +236,57 @@ export default function RegisterPatient() {
                     </thead>
                     <tbody>
                     {
-                        patientRegisteredList && patientRegisteredList.length > 0 ? (
-                            patientRegisteredList
-                                .slice(0, 20) // Limit to the first 20 elements
-                                .map((patient) => (
-                                    <tr key={patient.patientId} className="even:bg-blue-gray-50/50">
-                                        <td className="p-4">
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {patient.patientUser.user_name} {patient.patientUser.user_surname}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {patient.patientUser.email}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {patient.patientAMKA}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {patient.patientRegistrationDate}
-                                            </Typography>
-                                        </td>
-                                    </tr>
-                                ))
-                        ) : null
+                        patientRegisteredList !== null && patientRegisteredList.length > 0 ? (
+                                patientRegisteredList
+                                    .slice(0, 20) // Limit to the first 20 elements
+                                    .map((patient) => (
+                                        <tr key={patient.patientId} className="even:bg-blue-gray-50/50">
+                                            <td className="p-4">
+                                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                                    {patient.patientUser.user_name} {patient.patientUser.user_surname}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                                    {patient.patientUser.email}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                                    {patient.patientAMKA}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                                    {patient.patientRegistrationDate}
+                                                </Typography>
+                                            </td>
+                                        </tr>
+                                    ))
+                            )
+                            :
+                            <tr key={1} className="even:bg-blue-gray-50/50">
+                                <td className="p-4">
+                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                        -
+                                    </Typography>
+                                </td>
+                                <td className="p-4">
+                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                        -
+                                    </Typography>
+                                </td>
+                                <td className="p-4">
+                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                       -
+                                    </Typography>
+                                </td>
+                                <td className="p-4">
+                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                        -
+                                    </Typography>
+                                </td>
+                            </tr>
                     }
                     </tbody>
                 </table>
