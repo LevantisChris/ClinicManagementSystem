@@ -12,8 +12,9 @@ public class PatientHistory {
     @Column(name = "history_id")
     private Integer historyId;
 
+    /* Every patient has only one history, but of course many history registrations */
     @OneToOne
-    @JoinColumn(name = "history_patient_id", referencedColumnName = "patient_id", nullable = false)
+    @JoinColumn(name = "history_patient_id", referencedColumnName = "patient_id", unique = true, nullable = false)
     private Patient patient;
 
     @OneToMany(mappedBy = "patientHistory", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -2,6 +2,7 @@ package com.levantis.clinicManagement.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -13,7 +14,7 @@ public class PatientHistoryRegistration {
     private int patientHistoryRegistrationId;
 
     @Column(name = "p_History_registration_dateRegister", nullable = false)
-    private Date patientHistoryRegistrationDateRegister;
+    private LocalDate patientHistoryRegistrationDateRegister;
 
     @Column(name = "p_History_registration_health_problems", nullable = false)
     private String patientHistoryRegistrationHealthProblems;
@@ -33,11 +34,11 @@ public class PatientHistoryRegistration {
         this.patientHistoryRegistrationId = patientHistoryRegistrationId;
     }
 
-    public Date getPatientHistoryRegistrationDateRegister() {
+    public LocalDate getPatientHistoryRegistrationDateRegister() {
         return patientHistoryRegistrationDateRegister;
     }
 
-    public void setPatientHistoryRegistrationDateRegister(Date patientHistoryRegistrationDateRegister) {
+    public void setPatientHistoryRegistrationDateRegister(LocalDate patientHistoryRegistrationDateRegister) {
         this.patientHistoryRegistrationDateRegister = patientHistoryRegistrationDateRegister;
     }
 
