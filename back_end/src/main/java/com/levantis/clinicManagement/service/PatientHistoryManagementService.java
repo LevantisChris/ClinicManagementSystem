@@ -108,6 +108,93 @@ public class PatientHistoryManagementService {
         return resp;
     }
 
+    /* The request must have the registration ID, the updated health problems and the updated treatment */
+    public PatientHistoryDTO updateHistory(PatientHistoryDTO reguest) {
+        PatientHistoryDTO resp = new PatientHistoryDTO();
+        /* Must access the token and check for null fields */
+        String jwtToken = getToken();
+        if (jwtToken == null
+                || reguest.getPatientHistoryRegistrationId() == null
+                || reguest.getPatientHistoryRegistrationHealthProblems() == null
+                || reguest.getPatientHistoryRegistrationTreatment() == null
+        ) {
+            log.error("Empty/null token");
+            resp.setMessage("Empty/null token.");
+            resp.setStatusCode(500);
+            return resp;
+        }
+
+        try {
+            if(!jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) {
+                log.error("The user requesting the function update Patient history dont have the permission");
+                resp.setMessage("The user requesting the function update Patient history dont have the permission");
+                resp.setStatusCode(406);
+                return resp;
+            }
+
+            /* Based on the registration ID in the request find the actual object, if not throw an exception */
+            PatientHistoryRegistration patientHistoryRegistration = patientHistoryRegistrationRepository.findById(reguest.getPatientHistoryRegistrationId())
+                    .orElseThrow(() -> new RuntimeException("The registration with ID: " + reguest.getPatientHistoryRegistrationId() + " cannot be found."));
+
+            if(reguest.getPatientHistoryRegistrationHealthProblems() != null && !reguest.getPatientHistoryRegistrationHealthProblems().isEmpty()) {
+                patientHistoryRegistration.setPatientHistoryRegistrationHealthProblems(reguest.getPatientHistoryRegistrationHealthProblems());
+            }
+            if(reguest.getPatientHistoryRegistrationTreatment() != null && !reguest.getPatientHistoryRegistrationTreatment().isEmpty()) {
+                patientHistoryRegistration.setPatientHistoryRegistrationTreatment(reguest.getPatientHistoryRegistrationTreatment());
+            }
+
+            PatientHistoryRegistration patientHistoryRegistrationResult = patientHistoryRegistrationRepository.save(patientHistoryRegistration);
+
+            resp.setMessage("The registration update has been done with success.");
+            resp.setStatusCode(200);
+        } catch (Exception e) {
+            String exceptionType = e.getClass().getSimpleName();
+            e.printStackTrace();
+            log.error("{}: {}", e.getMessage(), exceptionType);
+            resp.setMessage(exceptionType + ": " + e.getMessage());
+            resp.setStatusCode(500);
+        }
+        return resp;
+    }
+
+    public PatientHistoryDTO deleteHistory(PatientHistoryDTO reguest) {
+        PatientHistoryDTO resp = new PatientHistoryDTO();
+        /* Must access the token and check for null fields */
+        String jwtToken = getToken();
+        if (jwtToken == null
+                || reguest.getPatientHistoryRegistrationId() == null
+        ) {
+            log.error("Empty/null token");
+            resp.setMessage("Empty/null token.");
+            resp.setStatusCode(500);
+            return resp;
+        }
+
+        try {
+            if(!jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) {
+                log.error("The user requesting the function delete Patient history dont have the permission");
+                resp.setMessage("The user requesting the function delete Patient history dont have the permission");
+                resp.setStatusCode(406);
+                return resp;
+            }
+
+            /* Based on the registration ID in the request find the actual object, if not throw an exception */
+            PatientHistoryRegistration patientHistoryRegistration = patientHistoryRegistrationRepository.findById(reguest.getPatientHistoryRegistrationId())
+                    .orElseThrow(() -> new RuntimeException("The registration with ID: " + reguest.getPatientHistoryRegistrationId() + " cannot be found."));
+
+            patientHistoryRegistrationRepository.delete(patientHistoryRegistration);
+
+            resp.setMessage("The registration deletion has been done with success.");
+            resp.setStatusCode(200);
+        } catch (Exception e) {
+            String exceptionType = e.getClass().getSimpleName();
+            e.printStackTrace();
+            log.error("{}: {}", e.getMessage(), exceptionType);
+            resp.setMessage(exceptionType + ": " + e.getMessage());
+            resp.setStatusCode(500);
+        }
+        return resp;
+    }
 
 
 
