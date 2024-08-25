@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/history-patient-mangt")
 public class PatientHistoryManagementController {
@@ -36,6 +38,13 @@ public class PatientHistoryManagementController {
         PatientHistoryDTO patientHistoryDTO = new PatientHistoryDTO();
         patientHistoryDTO.setPatientHistoryRegistrationId(patientHistoryRegistrationId);
         return ResponseEntity.ok(patientHistoryManagementService.deleteHistory(patientHistoryDTO));
+    }
+
+    @GetMapping("/displayAllHistory")
+    public ResponseEntity<PatientHistoryDTO> displayAllHistory(@RequestParam Integer patientId) {
+        PatientHistoryDTO patientHistoryDTO = new PatientHistoryDTO();
+        patientHistoryDTO.setPatientId(patientId);
+        return ResponseEntity.ok(patientHistoryManagementService.displayAllHistoryOfPatient(patientHistoryDTO));
     }
 
 }
