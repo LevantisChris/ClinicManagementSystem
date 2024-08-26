@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PatientRepository extends JpaRepository<Patient, Integer> {
+
+    @Query("SELECT p FROM Patient p WHERE p.user.email = :email")
+    Patient findByUser(String email);
+
     @Query("SELECT p FROM Patient p WHERE p.patient_AMKA = :amka")
     Optional<Patient> findByPatient_AMKA(String amka);
 

@@ -207,20 +207,28 @@ public class PatientHistoryManagementService {
         }
 
         try {
-            if(!jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) {
-                log.error("The user requesting the function display Patient history dont have the permission");
-                resp.setMessage("The user requesting the function display Patient history dont have the permission");
+            Patient patient;
+            if(jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                log.info("The use requesting the function display all the registrations history is PATIENT");
+                /* If the user requesting is a patient, we don't need to use the patient ID
+                *  from th request. We use the username (email) from the token */
+                String username = jwtUtils.extractUsername(jwtToken);
+                patient = patientRepository.findByUser(username); // find by username (email)
+            } else if(jwtUtils.extractRole(jwtToken).equals("USER_SECRETARY")) {
+                log.error("The user requesting the function display Patient history dont have the permission, is SECRETARY.");
+                resp.setMessage("The user requesting the function display Patient history dont have the permission, is SECRETARY.");
                 resp.setStatusCode(406);
                 return resp;
+            } else {
+                /* Here is the doctor that will use the request patient ID
+                 * At first find the patient */
+                patient = patientRepository.findById(request.getPatientId())
+                        .orElseThrow(() -> new RuntimeException("Patient with ID: " + request.getPatientId() + " not found"));
             }
-
-            /* At first find the patient */
-            Patient patient = patientRepository.findById(request.getPatientId())
-                    .orElseThrow(() -> new RuntimeException("Patient with ID: " + request.getPatientId() + " not found"));
 
             /* Now take all the registrations done for that patient.
              * NOTE: if the user dont have any history at all the list will be empty */
-            List<PatientHistoryRegistration> patientHistoryRegistration = patientHistoryRepository.findByPatientId(request.getPatientId());
+            List<PatientHistoryRegistration> patientHistoryRegistration = patientHistoryRepository.findByPatientId(patient.getPatient_id());
             if(patientHistoryRegistration.isEmpty()) {
                 log.error("Not any registrations found, for patient: " + patient.getPatient_id());
                 resp.setMessage("Not any registrations found, for patient: " + patient.getPatient_id());
@@ -241,6 +249,7 @@ public class PatientHistoryManagementService {
         }
         return resp;
     }
+
 
 
 
