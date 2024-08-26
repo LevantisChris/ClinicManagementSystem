@@ -1,8 +1,10 @@
 package com.levantis.clinicManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -14,7 +16,7 @@ public class PatientHistoryRegistration {
     private int patientHistoryRegistrationId;
 
     @Column(name = "p_History_registration_dateRegister", nullable = false)
-    private LocalDate patientHistoryRegistrationDateRegister;
+    private LocalDateTime patientHistoryRegistrationDateRegister;
 
     @Column(name = "p_History_registration_health_problems", nullable = false)
     private String patientHistoryRegistrationHealthProblems;
@@ -24,6 +26,7 @@ public class PatientHistoryRegistration {
 
     @ManyToOne
     @JoinColumn(name = "patientHistoryId", referencedColumnName = "history_id", nullable = false)
+    @JsonIgnore
     private PatientHistory patientHistory;
 
     public int getPatientHistoryRegistrationId() {
@@ -34,11 +37,11 @@ public class PatientHistoryRegistration {
         this.patientHistoryRegistrationId = patientHistoryRegistrationId;
     }
 
-    public LocalDate getPatientHistoryRegistrationDateRegister() {
+    public LocalDateTime getPatientHistoryRegistrationDateRegister() {
         return patientHistoryRegistrationDateRegister;
     }
 
-    public void setPatientHistoryRegistrationDateRegister(LocalDate patientHistoryRegistrationDateRegister) {
+    public void setPatientHistoryRegistrationDateRegister(LocalDateTime patientHistoryRegistrationDateRegister) {
         this.patientHistoryRegistrationDateRegister = patientHistoryRegistrationDateRegister;
     }
 

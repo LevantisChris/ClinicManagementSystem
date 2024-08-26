@@ -2,6 +2,7 @@ package com.levantis.clinicManagement.controller;
 
 import com.levantis.clinicManagement.dto.PatientHistoryDTO;
 import com.levantis.clinicManagement.dto.UserDTO;
+import com.levantis.clinicManagement.entity.PatientHistoryRegistration;
 import com.levantis.clinicManagement.service.PatientHistoryManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

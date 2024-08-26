@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +72,7 @@ public class PatientHistoryManagementService {
             PatientHistory temp = patientHistoryRepository.findByPatient(patient.getPatient_id());
             patientHistoryRegistrationNew.setPatientHistoryRegistrationHealthProblems(request.getPatientHistoryRegistrationHealthProblems());
             patientHistoryRegistrationNew.setPatientHistoryRegistrationTreatment(request.getPatientHistoryRegistrationTreatment());
-            patientHistoryRegistrationNew.setPatientHistoryRegistrationDateRegister(LocalDate.now());
+            patientHistoryRegistrationNew.setPatientHistoryRegistrationDateRegister(LocalDateTime.now());
 
             /* We have to check whether the patient has already a history created for them.
             *  If in the past someone tried to create a registration for the first time, automatically
@@ -222,12 +222,16 @@ public class PatientHistoryManagementService {
              * NOTE: if the user dont have any history at all the list will be empty */
             List<PatientHistoryRegistration> patientHistoryRegistration = patientHistoryRepository.findByPatientId(request.getPatientId());
             if(patientHistoryRegistration.isEmpty()) {
-                System.out.println("EMPTTYYY");
+                log.error("Not any registrations found, for patient: " + patient.getPatient_id());
+                resp.setMessage("Not any registrations found, for patient: " + patient.getPatient_id());
+                resp.setStatusCode(500);
+                return resp;
             } else {
-                System.out.println("NOT EMPTYYY: " + patientHistoryRegistration);
+                resp.setStatusCode(200);
+                resp.setMessage("Patient history found.");
+                resp.setPatientId(patient.getPatient_id());
+                resp.setPatientHistoryRegistrations(patientHistoryRegistration);
             }
-
-
         } catch (Exception e) {
             String exceptionType = e.getClass().getSimpleName();
             e.printStackTrace();

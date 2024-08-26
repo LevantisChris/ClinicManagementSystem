@@ -13,7 +13,7 @@ public interface PatientHistoryRepository extends JpaRepository<PatientHistory, 
     @Query("SELECT pa FROM PatientHistory pa WHERE pa.patient.patient_id = :patientId")
     PatientHistory findByPatient(Integer patientId);
 
-    @Query("SELECT pa.patientHistoryRegistrations FROM PatientHistory pa WHERE pa.patient.patient_id = :patientId")
+    @Query("SELECT pr FROM PatientHistory pa JOIN pa.patientHistoryRegistrations pr WHERE pa.patient.patient_id = :patientId ORDER BY pr.patientHistoryRegistrationDateRegister desc ")
     List<PatientHistoryRegistration> findByPatientId(Integer patientId);
 
 }
