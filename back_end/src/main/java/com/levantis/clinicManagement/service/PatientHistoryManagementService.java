@@ -19,6 +19,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class PatientHistoryManagementService {
@@ -250,6 +252,69 @@ public class PatientHistoryManagementService {
         return resp;
     }
 
+    /* Based on the ID of a Registration (PatientHistoryRegistrationId) we give back the details,
+    *  if the user is patient we need to check if the registration
+    *  belong to him/her. */
+    public PatientHistoryDTO displayHistoryRegistrationInfo(PatientHistoryDTO request) {
+        PatientHistoryDTO resp = new PatientHistoryDTO();
+        /* Must access the token and check for null fields */
+        String jwtToken = getToken();
+        if (jwtToken == null || request.getPatientHistoryRegistrationId() == null) {
+            log.error("Empty/null token");
+            resp.setMessage("Empty/null token.");
+            resp.setStatusCode(500);
+            return resp;
+        }
+        try {
+            PatientHistory patientHistory;
+            if(jwtUtils.extractRole(jwtToken).equals("USER_SECRETARY")) {
+                log.error("The user requesting the function display Patient history dont have the permission, is SECRETARY.");
+                resp.setMessage("The user requesting the function display Patient history dont have the permission, is SECRETARY.");
+                resp.setStatusCode(406);
+                return resp;
+            } else if(jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                /* Get the Patient from the token and see if the requesting registration belong to a history that belongs to the user requesting */
+                String username = jwtUtils.extractUsername(jwtToken);
+                patientHistory = patientHistoryRegistrationRepository.findByPatientHistoryRegistrationId(request.getPatientHistoryRegistrationId());
+                Patient patient = patientRepository.findByUser(username); // find by username (email)
+                if(Objects.equals(patientHistory.getPatient().getPatient_id(), patient.getPatient_id())) {
+                    log.info("The user with role PATIENT and ID: {} has the permission to view the registration that has ID: {} and belongs to the History with ID: {}, and patient with ID: {}", patient.getPatient_id(), request.getPatientHistoryRegistrationId(), patientHistory.getHistoryId(), patientHistory.getPatient().getPatient_id());
+                } else {
+                    log.error("The user with role PATIENT and ID: {} DO NOT HAVE the permission to view the registration that has ID: {} and belongs to the History with ID: {}, and patient with ID: {}", patient.getPatient_id(), request.getPatientHistoryRegistrationId(), patientHistory.getHistoryId(), patientHistory.getPatient().getPatient_id());
+                    resp.setMessage("The user with role PATIENT and ID: " + patient.getPatient_id() +
+                            " DO NOT HAVE the permission to view the registration that has ID: " + request.getPatientHistoryRegistrationId() +
+                            " and belongs to the History with ID: " + patientHistory.getHistoryId() +
+                            ", and patient with ID: " + patientHistory.getPatient().getPatient_id());
+                    resp.setStatusCode(406);
+                    return resp;
+                }
+            } else {
+                // User us Doctor, no need to check if it belongs to him/her
+                patientHistory = patientHistoryRegistrationRepository.findByPatientHistoryRegistrationId(request.getPatientHistoryRegistrationId());
+            }
+            PatientHistoryRegistration patientHistoryRegistration = patientHistoryRegistrationRepository.findById(request.getPatientHistoryRegistrationId())
+                    .orElseThrow(() -> new RuntimeException("The registration with ID: " + request.getPatientHistoryRegistrationId() + " cannot be found."));
+            resp.setStatusCode(200);
+            resp.setMessage("Registration found.");
+            resp.setHistoryId(patientHistory.getHistoryId());
+            resp.setPatientId(patientHistory.getPatient().getPatient_id());
+            resp.setPatient(patientHistory.getPatient());
+            resp.setPatientHistoryRegistrationId(request.getPatientHistoryRegistrationId());
+            resp.setPatientHistoryRegistrationDateRegister(patientHistoryRegistration.getPatientHistoryRegistrationDateRegister());
+            resp.setPatientHistoryRegistrationHealthProblems(patientHistoryRegistration.getPatientHistoryRegistrationHealthProblems());
+            resp.setPatientHistoryRegistrationTreatment(patientHistoryRegistration.getPatientHistoryRegistrationTreatment());
+            return resp;
+
+        } catch (Exception e) {
+            String exceptionType = e.getClass().getSimpleName();
+            e.printStackTrace();
+            log.error("{}: {}", e.getMessage(), exceptionType);
+            resp.setMessage(exceptionType + ": " + e.getMessage());
+            resp.setStatusCode(500);
+        }
+
+        return resp;
+    }
 
 
 

@@ -7,6 +7,7 @@ import com.levantis.clinicManagement.entity.PatientHistory;
 import com.levantis.clinicManagement.entity.PatientHistoryRegistration;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class PatientHistoryDTO {
     private List<PatientHistoryRegistration> patientHistoryRegistrations;
     // Patient History Registration
     private Integer patientHistoryRegistrationId;
-    private Date patientHistoryRegistrationDateRegister;
+    private LocalDateTime patientHistoryRegistrationDateRegister;
     private String patientHistoryRegistrationHealthProblems;
     private String patientHistoryRegistrationTreatment;
     //

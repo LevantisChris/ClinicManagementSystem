@@ -48,4 +48,11 @@ public class PatientHistoryManagementController {
         return ResponseEntity.ok(patientHistoryManagementService.displayAllHistoryOfPatient(patientHistoryDTO));
     }
 
+    @GetMapping("/displayRegistration")
+    public ResponseEntity<PatientHistoryDTO> displayRegistration(@RequestParam Integer patientHistoryRegistrationId) {
+        PatientHistoryDTO patientHistoryDTO = new PatientHistoryDTO();
+        patientHistoryDTO.setPatientHistoryRegistrationId(patientHistoryRegistrationId);
+        return ResponseEntity.ok(patientHistoryManagementService.displayHistoryRegistrationInfo(patientHistoryDTO));
+    }
+
 }
