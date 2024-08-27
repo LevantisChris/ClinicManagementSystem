@@ -3,12 +3,11 @@ package com.levantis.clinicManagement.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.levantis.clinicManagement.entity.Patient;
-import com.levantis.clinicManagement.entity.PatientHistory;
 import com.levantis.clinicManagement.entity.PatientHistoryRegistration;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -33,7 +32,10 @@ public class PatientHistoryDTO {
     private LocalDateTime patientHistoryRegistrationDateRegister;
     private String patientHistoryRegistrationHealthProblems;
     private String patientHistoryRegistrationTreatment;
-    //
-    //private PatientHistory patientHistory;
+    // For the search function
+    private LocalDateTime startDateCriteria;
+    private LocalDateTime endDateCriteria;
+    private String healthProblemCriteria;
+
 
 }

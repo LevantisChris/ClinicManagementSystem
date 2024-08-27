@@ -316,6 +316,83 @@ public class PatientHistoryManagementService {
         return resp;
     }
 
+    /* The search must be done in the history of a specific patient, so the
+    *  request includes the search criteria and also the
+    *  patient ID.
+    *
+    *  If the user is PATIENT we must return the registrations about him.
+    *  The doctor can see all the patients so all the registrations */
+    public PatientHistoryDTO searchHistory(PatientHistoryDTO request) {
+        PatientHistoryDTO resp = new PatientHistoryDTO();
+        /* Must access the token and check for null fields */
+        String jwtToken = getToken();
+        if (jwtToken == null) {
+            log.error("Empty/null token or fields.");
+            resp.setMessage("Empty/null token or fields.");
+            resp.setStatusCode(500);
+            return resp;
+        }
+
+        try {
+            List<PatientHistoryRegistration> listResults;
+            /* The user can use both the filters but also only one of the filters */
+            if(!request.getHealthProblemCriteria().isEmpty()
+                    && request.getEndDateCriteria() != null
+                    && request.getStartDateCriteria() != null) {
+                log.info("Using both the filters, date and health criteria.");
+                listResults = patientHistoryRegistration.findByPatientHistoryRegistrationDateRegisterAndPatientHistoryRegistrationHealthProblems(
+                        request.getStartDateCriteria(), request.getEndDateCriteria(), request.getHealthProblemCriteria(), request.getPatientId()
+                );
+
+            } else if(request.getHealthProblemCriteria().isEmpty() && (request.getEndDateCriteria() != null && request.getStartDateCriteria() != null)) {
+                log.info("Using only the date filter.");
+                listResults = patientHistoryRegistration.findByPatientHistoryRegistrationDateRegister(request.getStartDateCriteria(), request.getEndDateCriteria(), request.getPatientId());
+
+            } else if(!request.getHealthProblemCriteria().isEmpty() && (request.getEndDateCriteria() == null && request.getStartDateCriteria() == null)) {
+                log.info("Using only the health problem filter.");
+                listResults = patientHistoryRegistration.findByPatientHistoryRegistrationHealthProblems(request.getHealthProblemCriteria(), request.getPatientId());
+
+            } else {
+                log.error("Using NO FILTER AT ALL.");
+                resp.setMessage("The filter presentable can not be found.");
+                resp.setStatusCode(500);
+                return resp;
+            }
+
+            if(listResults == null || listResults.isEmpty()) {
+                log.info("No search results found.");
+                resp.setMessage("No search results found for criteria: " +
+                        "HEALTH PROBLEMS: " + request.getHealthProblemCriteria() + ", END DATE: " + request.getEndDateCriteria() + ", START DATE: " + request.getStartDateCriteria());
+                resp.setStatusCode(500);
+                resp.setPatientId(request.getPatientId());
+                return resp;
+            } else {
+                if(jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                    log.info("The user requesting is patient.");
+                    /* Check if the registrations returned belong to him/her */
+                    for (PatientHistoryRegistration patientHistoryRegistration : listResults) {
+                        if(!patientHistoryRegistration.getPatientHistory().getPatient().getUser().getEmail().equals(jwtUtils.extractUsername(jwtToken))) {
+                            log.error("The patient with EMAIL: " + jwtUtils.extractUsername(jwtToken) + " dont have the permission to get the retrieved registrations.");
+                            resp.setMessage("The patient with EMAIL: " + jwtUtils.extractUsername(jwtToken) + " dont have the permission to get the retrieved registrations.");
+                            resp.setStatusCode(406);
+                            return resp;
+                        }
+                    }
+                }
+                resp.setMessage("Successfully found some registrations, with that criteria.");
+                resp.setPatientHistoryRegistrations(listResults);
+            }
+        } catch (Exception e) {
+            String exceptionType = e.getClass().getSimpleName();
+            e.printStackTrace();
+            log.error("{}: {}", e.getMessage(), exceptionType);
+            resp.setMessage(exceptionType + ": " + e.getMessage());
+            resp.setStatusCode(500);
+        }
+
+        return resp;
+    }
+
 
 
 

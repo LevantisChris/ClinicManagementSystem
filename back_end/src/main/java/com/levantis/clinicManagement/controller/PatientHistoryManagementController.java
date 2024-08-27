@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -53,6 +55,28 @@ public class PatientHistoryManagementController {
         PatientHistoryDTO patientHistoryDTO = new PatientHistoryDTO();
         patientHistoryDTO.setPatientHistoryRegistrationId(patientHistoryRegistrationId);
         return ResponseEntity.ok(patientHistoryManagementService.displayHistoryRegistrationInfo(patientHistoryDTO));
+    }
+
+    @GetMapping("/searchRegistration")
+    public ResponseEntity<PatientHistoryDTO> searchRegistration(@RequestParam String patientID,
+                                                                @RequestParam String healthProblemCriteria,
+                                                                @RequestParam String startDate,
+                                                                @RequestParam String endDate) {
+
+        PatientHistoryDTO patientHistoryDTO = new PatientHistoryDTO();
+        if(!endDate.isEmpty() && !startDate.isEmpty()) {
+            /* To make things easy for the user, the user can add in the request the format YYYY-MM-DD (LocalDate)
+             *  But then the system must convert this to LocalDateTime, we don't care about the time, only for the
+             *  Date, so we add a dummy time (atStartOfTheDay). */
+            LocalDate startDateLocalDate = LocalDate.parse(startDate);
+            LocalDate endDateLocalDate = LocalDate.parse(endDate);
+
+            patientHistoryDTO.setEndDateCriteria(endDateLocalDate.atStartOfDay());
+            patientHistoryDTO.setStartDateCriteria(startDateLocalDate.atStartOfDay());
+        }
+        patientHistoryDTO.setHealthProblemCriteria(healthProblemCriteria);
+        patientHistoryDTO.setPatientId(Integer.valueOf(patientID));
+        return ResponseEntity.ok(patientHistoryManagementService.searchHistory(patientHistoryDTO));
     }
 
 }
