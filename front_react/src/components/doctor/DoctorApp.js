@@ -13,6 +13,7 @@ import LoadingApp from "../Loading/LoadingApp";
 import RegisterPatient from "./doctorComp/RegisterPatient";
 import SearchPatients from "./doctorComp/SearchPatients";
 import RegisterPatientsMassively from "./doctorComp/RegisterPatientsMassively";
+import CreateHistoryReg from "./doctorComp/CreateHistoryReg";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
@@ -31,7 +32,9 @@ function DoctorApp() {
         showSearchPatients,
         setShowSearchPatients,
         showRegisterPatientMassively,
-        setShowRegisterPatientMassively
+        setShowRegisterPatientMassively,
+        showCreateHistoryReg,
+        setShowCreateHistoryReg
     } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -97,28 +100,42 @@ function DoctorApp() {
                         <div className={'flex flex-1'}>
                             <SideBar />
                             {(() => {
-                                if (!showSearchAppointments && !showRegisterPatient && !showSearchPatients && !showRegisterPatientMassively) {
+                                if (!showSearchAppointments
+                                    && !showRegisterPatient
+                                    && !showSearchPatients
+                                    && !showRegisterPatientMassively
+                                    && !showCreateHistoryReg) {
                                     return <Month appointmentsMonth={appointmentsMonth} month={currentMonth} />;
                                 } else if (showSearchAppointments) {
                                     setShowRegisterPatientMassively(false)
                                     setShowRegisterPatient(false)
                                     setShowSearchPatients(false)
+                                    setShowCreateHistoryReg(false)
                                     return <SearchAppointments />;
                                 } else if (showRegisterPatient) {
                                     setShowRegisterPatientMassively(false)
                                     setShowSearchAppointments(false)
                                     setShowSearchPatients(false)
+                                    setShowCreateHistoryReg(false)
                                     return <RegisterPatient />;
                                 } else if(showSearchPatients){
                                     setShowRegisterPatientMassively(false)
                                     setShowSearchAppointments(false)
                                     setShowRegisterPatient(false)
+                                    setShowCreateHistoryReg(false)
                                     return <SearchPatients/>;
                                 } else if(showRegisterPatientMassively) {
                                     setShowRegisterPatient(false)
                                     setShowSearchAppointments(false)
                                     setShowRegisterPatient(false)
+                                    setShowCreateHistoryReg(false)
                                     return <RegisterPatientsMassively/>
+                                } else if(showCreateHistoryReg) {
+                                    setShowRegisterPatientMassively(false)
+                                    setShowRegisterPatient(false)
+                                    setShowSearchAppointments(false)
+                                    setShowRegisterPatient(false)
+                                    return <CreateHistoryReg/>
                                 } else {
                                     return null;
                                 }

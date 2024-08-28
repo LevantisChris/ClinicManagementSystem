@@ -77,6 +77,9 @@ export default function ContextWrapper(props) {
     const [viewDisplayPatientComponent, setViewDisplayPatientComponent]
         = useState(false)
 
+    const [showCreateHistoryReg, setShowCreateHistoryReg]
+        = useState(false)
+
     const filteredEvents = useMemo(() => {
     return savedEvents.filter((evt) =>
       labels
@@ -130,67 +133,70 @@ export default function ContextWrapper(props) {
   return (
     <GlobalContext.Provider
       value={{
-        monthIndex,
-        setMonthIndex,
-        smallCalendarMonth,
-        setSmallCalendarMonth,
-        daySelected,
-        setDaySelected,
+            monthIndex,
+            setMonthIndex,
+            smallCalendarMonth,
+            setSmallCalendarMonth,
+            daySelected,
+            setDaySelected,
 
-        showEventModal,
-        setShowEventModal,
+            showEventModal,
+            setShowEventModal,
 
-        showInsertModal,
-        setShowInsertModal,
+            showInsertModal,
+            setShowInsertModal,
 
-        showDescriptionInsertModal,
-        setShowDescriptionInsertModal,
+            showDescriptionInsertModal,
+            setShowDescriptionInsertModal,
 
-        showActiveHoursModal,
-        setShowActiveHoursModal,
+            showActiveHoursModal,
+            setShowActiveHoursModal,
 
-        showSearchAppointments,
-        setShowSearchAppointments,
+            showSearchAppointments,
+            setShowSearchAppointments,
 
-        showRegisterPatient,
-        setShowRegisterPatient,
+            showRegisterPatient,
+            setShowRegisterPatient,
 
-        showSearchPatients,
-        setShowSearchPatients,
+            showSearchPatients,
+            setShowSearchPatients,
 
-        userAuthed,
-        setUserAuthed,
+            userAuthed,
+            setUserAuthed,
 
-        successMessage,
-        setSuccessMessage,
+            successMessage,
+            setSuccessMessage,
 
-        errorMessage,
-        setErrorMessage,
+            errorMessage,
+            setErrorMessage,
 
-        viewDisplayAppointmentComponent,
-        setViewDisplayAppointmentComponent,
+            viewDisplayAppointmentComponent,
+            setViewDisplayAppointmentComponent,
 
-        viewDisplayPatientComponent,
-        setViewDisplayPatientComponent,
+            viewDisplayPatientComponent,
+            setViewDisplayPatientComponent,
 
-        showRegisterPatientMassively,
-        setShowRegisterPatientMassively,
+            showRegisterPatientMassively,
+            setShowRegisterPatientMassively,
 
-        reloadDoctorApp,
-        setReloadDoctorApp,
+            showCreateHistoryReg,
+            setShowCreateHistoryReg,
 
-        selectedOptions,
-        setSelectedOptions,
-        clearList,
+            reloadDoctorApp,
+            setReloadDoctorApp,
 
-        dispatchCallEvent,
-        savedEvents,
-        selectedEvent,
-        setSelectedEvent,
-        setLabels,
-        labels,
-        updateLabel,
-        filteredEvents,
+            selectedOptions,
+            setSelectedOptions,
+            clearList,
+
+            dispatchCallEvent,
+            savedEvents,
+            selectedEvent,
+            setSelectedEvent,
+            setLabels,
+            labels,
+            updateLabel,
+            filteredEvents,
       }}
     >
       {props.children}

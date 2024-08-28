@@ -32,6 +32,9 @@ const GlobalContext = React.createContext({
     showRegisterPatient: false,
     setShowRegisterPatient: () => {},
 
+    showCreateHistoryReg: false,
+    setShowCreateHistoryReg: () => {},
+
     reloadDoctorApp: false,
     setReloadDoctorApp: () => {},
 

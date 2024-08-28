@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Appointment {
@@ -41,6 +43,9 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "doctor_id", nullable = false)
     private Doctor appointmentDoctor;
+
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PatientHistoryRegistration> patientHistoryRegistrations = new ArrayList<>();
 
     public Integer getAppointmentId() {
         return appointmentId;
@@ -112,5 +117,13 @@ public class Appointment {
 
     public void setAppointmentDoctor(Doctor appointmentDoctor) {
         this.appointmentDoctor = appointmentDoctor;
+    }
+
+    public List<PatientHistoryRegistration> getPatientHistoryRegistrations() {
+        return patientHistoryRegistrations;
+    }
+
+    public void setPatientHistoryRegistrations(List<PatientHistoryRegistration> patientHistoryRegistrations) {
+        this.patientHistoryRegistrations = patientHistoryRegistrations;
     }
 }

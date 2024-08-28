@@ -29,6 +29,10 @@ public class PatientHistoryRegistration {
     @JsonIgnore
     private PatientHistory patientHistory;
 
+    @ManyToOne
+    @JoinColumn(name = "p_History_registration_rel_appointment", referencedColumnName = "appointment_id", nullable = false)
+    private Appointment appointment;
+
     public int getPatientHistoryRegistrationId() {
         return patientHistoryRegistrationId;
     }
@@ -67,5 +71,13 @@ public class PatientHistoryRegistration {
 
     public void setPatientHistory(PatientHistory patientHistory) {
         this.patientHistory = patientHistory;
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
     }
 }
