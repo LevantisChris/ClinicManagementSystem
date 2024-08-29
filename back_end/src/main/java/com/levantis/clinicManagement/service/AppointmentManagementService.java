@@ -711,6 +711,41 @@ public class AppointmentManagementService {
         return null;
     }
 
+    public List<Appointment> getCratedAndRespectedAppoint() {
+        AppointmentDTO resp = new AppointmentDTO();
+        List<Appointment> appointments = new ArrayList<>();
+
+        try {
+            String jwtToken = getToken();
+            if (jwtToken == null) {
+                log.error("Empty/null token");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return null;
+            }
+            /* We must return all the appointments with the state Created and Respected, but
+            *  also the ones that belong to the doctor requesting the function */
+            User userDoctor = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
+                    .orElseThrow(() -> new RuntimeException("User (Doctor) Not found"));
+
+            appointments = appointmentRepository.findByAppointmentStateAndDoctor(userDoctor.getDoctor().getDoctor_id());
+            if(appointments.isEmpty()) {
+//                resp.setStatusCode(404);
+//                resp.setMessage("No appointments found.");
+                log.info("No appointments found.");
+            } else {
+                return appointments;
+            }
+
+        } catch (Exception e) {
+            log.error("Error searching appointments: {}", e.getMessage());
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+
+        return null;
+    }
+
     /*------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     private AppointmentDTO mapToAppointmentDTO(Appointment appointment) {

@@ -1,5 +1,6 @@
 package com.levantis.clinicManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ public class DoctorSpeciality {
     private String specialityDescription;
 
     @OneToMany(mappedBy = "doctorSpeciality")
+    @JsonIgnore
     private Set<Doctor> doctors; // This represents the one-to-many relationship
 
     // Getters and setters

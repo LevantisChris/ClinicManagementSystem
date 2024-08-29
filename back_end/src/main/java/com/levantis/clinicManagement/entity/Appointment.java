@@ -1,5 +1,6 @@
 package com.levantis.clinicManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Time;
@@ -45,6 +46,7 @@ public class Appointment {
     private Doctor appointmentDoctor;
 
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<PatientHistoryRegistration> patientHistoryRegistrations = new ArrayList<>();
 
     public Integer getAppointmentId() {

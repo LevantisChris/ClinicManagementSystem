@@ -82,6 +82,11 @@ public class AppointmentManagementController {
         return ResponseEntity.ok(appointmentManagementService.getAllAppointmentsForAMonth(appointments));
     }
 
+    /* This is used in the Managment of patient History */
+    @GetMapping("/appoint/getAllCreatedAndResp")
+    public ResponseEntity<List<Appointment>> getAllCreatedAndResp() {
+        return ResponseEntity.ok(appointmentManagementService.getCratedAndRespectedAppoint());
+    }
     /*------------------------------------------------------------------------------------------------------------------*/
 
     private LocalDate strToDate(String dateString) {

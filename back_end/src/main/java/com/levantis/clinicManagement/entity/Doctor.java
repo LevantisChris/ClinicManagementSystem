@@ -1,5 +1,6 @@
 package com.levantis.clinicManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -21,6 +22,7 @@ public class Doctor {
     private DoctorSpeciality doctorSpeciality; // Changed to ManyToOne
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<WorkingHours> workingHours; // A doctor does not have continuous working hours for a specific day
 
     // Getters and setters

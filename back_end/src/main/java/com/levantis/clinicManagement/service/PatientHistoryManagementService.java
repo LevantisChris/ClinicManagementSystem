@@ -1,9 +1,11 @@
 package com.levantis.clinicManagement.service;
 
 import com.levantis.clinicManagement.dto.PatientHistoryDTO;
+import com.levantis.clinicManagement.entity.Appointment;
 import com.levantis.clinicManagement.entity.Patient;
 import com.levantis.clinicManagement.entity.PatientHistory;
 import com.levantis.clinicManagement.entity.PatientHistoryRegistration;
+import com.levantis.clinicManagement.repository.AppointmentRepository;
 import com.levantis.clinicManagement.repository.PatientHistoryRegistrationRepository;
 import com.levantis.clinicManagement.repository.PatientHistoryRepository;
 import com.levantis.clinicManagement.repository.PatientRepository;
@@ -33,6 +35,8 @@ public class PatientHistoryManagementService {
     @Autowired
     private PatientRepository patientRepository;
     @Autowired
+    private AppointmentRepository appointmentRepository;
+    @Autowired
     private PatientHistoryRegistrationRepository patientHistoryRegistrationRepository;
     @Autowired
     private PatientHistoryRepository patientHistoryRepository;
@@ -40,14 +44,18 @@ public class PatientHistoryManagementService {
     private PatientHistoryRegistrationRepository patientHistoryRegistration;
 
 
-    /* The request will give the id of the patients, with also the data about the Patient History Registration */
+    /* The request will include the associated appointment ID,
+     * also the data about the Patient History Registration
+     *
+     * NOTE: The request will not include the patient ID, the patient ID
+     * is being extracted from the appointment. */
     @Transactional
     public PatientHistoryDTO createPatientHistory(PatientHistoryDTO request) {
         PatientHistoryDTO resp = new PatientHistoryDTO();
         /* Must access the token and check for null fields */
         String jwtToken = getToken();
         if (jwtToken == null
-                || request.getPatientId() == null
+                || request.getPatientHistoryRegistrationAppointmentId() == null
                 || request.getPatientHistoryRegistrationHealthProblems() == null
                 || request.getPatientHistoryRegistrationTreatment() == null
         ) {
@@ -58,7 +66,6 @@ public class PatientHistoryManagementService {
         }
 
         try {
-
             /* Only a doctor manage history */
             if(!jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) {
                 log.error("The user requesting the function create Patient history dont have the permission");
@@ -66,32 +73,40 @@ public class PatientHistoryManagementService {
                 resp.setStatusCode(406);
                 return resp;
             }
-            Patient patient = patientRepository.findById(request.getPatientId())
-                    .orElseThrow(() -> new RuntimeException("Patient with ID: " + request.getPatientId() + " not found"));
+
+            /* Extract the real appointment from the Appointment ID in the request */
+            Appointment appointment = appointmentRepository.findById(request.getPatientHistoryRegistrationAppointmentId())
+                    .orElseThrow(() -> new RuntimeException("Appointment with ID: "
+                            + request.getPatientHistoryRegistrationAppointmentId() + " cannot be found."));
+
+            //            /* Now, find the patient from patient ID */
+            //            Patient patient = patientRepository.findById(request.getPatientId())
+            //                    .orElseThrow(() -> new RuntimeException("Patient with ID: " + request.getPatientId() + " not found"));
 
             /* Initialize the Registration, and add the request parameters */
             PatientHistoryRegistration patientHistoryRegistrationNew = new PatientHistoryRegistration();
-            PatientHistory temp = patientHistoryRepository.findByPatient(patient.getPatient_id());
+            PatientHistory temp = patientHistoryRepository.findByPatient(appointment.getAppointmentPatient().getPatient_id());
             patientHistoryRegistrationNew.setPatientHistoryRegistrationHealthProblems(request.getPatientHistoryRegistrationHealthProblems());
             patientHistoryRegistrationNew.setPatientHistoryRegistrationTreatment(request.getPatientHistoryRegistrationTreatment());
             patientHistoryRegistrationNew.setPatientHistoryRegistrationDateRegister(LocalDateTime.now());
+            patientHistoryRegistrationNew.setAppointment(appointment);
 
             /* We have to check whether the patient has already a history created for them.
             *  If in the past someone tried to create a registration for the first time, automatically
             *  the system will have crated a history for him/her if not present. */
             if(temp == null) {
-                log.info("The patient with id: {} does not have a history, proceed to create it...", patient.getPatient_id());
+                log.info("The patient with id: {} does not have a history, proceed to create it...", appointment.getAppointmentPatient().getPatient_id());
                 PatientHistory patientHistoryNew = new PatientHistory();
                 patientHistoryRegistrationNew.setPatientHistory(patientHistoryNew);
-                patientHistoryNew.setPatient(patient);
+                patientHistoryNew.setPatient(appointment.getAppointmentPatient());
                 ArrayList<PatientHistoryRegistration> list = new ArrayList<>();
                 list.add(patientHistoryRegistrationNew);
                 patientHistoryNew.setPatientHistoryRegistrations(list);
                 // here might throw error if the patient has already a history
                 PatientHistory patientHistoryResult = patientHistoryRepository.save(patientHistoryNew);
-                log.info("History for patient: {} has been created with success: {}", patient.getPatient_id(), patientHistoryResult);
+                log.info("History for patient: {} has been created with success: {}", appointment.getAppointmentPatient(), patientHistoryResult);
             } else {
-                log.info("The patient with id: {} has a history: {}", patient.getPatient_id(), temp.getHistoryId());
+                log.info("The patient with id: {} has a history: {}", appointment.getAppointmentPatient(), temp.getHistoryId());
                 patientHistoryRegistrationNew.setPatientHistory(temp);
             }
             PatientHistoryRegistration patientHistoryRegistrationResult = patientHistoryRegistrationRepository.save(patientHistoryRegistrationNew);

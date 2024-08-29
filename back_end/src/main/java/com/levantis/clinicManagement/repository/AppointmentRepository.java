@@ -1,6 +1,7 @@
 package com.levantis.clinicManagement.repository;
 
 
+import com.levantis.clinicManagement.dto.AppointmentDTO;
 import com.levantis.clinicManagement.entity.Appointment;
 import com.levantis.clinicManagement.entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,4 +38,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
     @Query("SELECT a FROM Appointment a WHERE MONTH(a.appointmentDate) = MONTH(:date) AND YEAR(a.appointmentDate) = YEAR(:date)")
     List<Appointment> findAppointmentsByAppointmentDate(@Param("date") LocalDate date);
+
+    /* Get all the appointments that are in the state Created and Respected */
+    @Query("SELECT a " +
+            "FROM Appointment a WHERE a.appointmentDoctor.doctor_id = :doctor_id AND (a.appointmentState.appointmentStateId = 1 OR a.appointmentState.appointmentStateId = 2)")
+    List<Appointment> findByAppointmentStateAndDoctor(@Param("doctor_id") Integer doctor_id);
 }
