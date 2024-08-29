@@ -336,6 +336,21 @@ class UserService {
         }
     }
 
+    static async getCreateAndRespectedAppointments() {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/appoint/getAllCreatedAndResp`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
 
 
 
