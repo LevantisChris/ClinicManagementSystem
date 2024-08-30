@@ -25,7 +25,7 @@ export default function SideBar() {
     } = useContext(GlobalContext);
 
     return (
-        <aside className={'p-5'}>
+        <aside className={'p-5 shadow-2xl'}>
             <div className={"w-64 scrollable-sidebar"}>
                 <CreateEventButton/>
                 <SmallCalendar/>

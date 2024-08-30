@@ -95,7 +95,7 @@ function DoctorApp() {
                 <>
                     {showEventModal && <EventModal />}
                     {showInsertModal && <InsertModal />}
-                    <div className={'h-screen flex flex-col bg-gradient-to-l from-slate-300'}>
+                    <div className={'h-screen flex flex-col'}>
                         <CalendarHeader />
                         <div className={'flex flex-1'}>
                             <SideBar />
