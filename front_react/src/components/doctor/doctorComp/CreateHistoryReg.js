@@ -9,7 +9,8 @@ export default function CreateHistoryReg() {
     const [showAppointments, setShowAppointments] = useState(false)
 
     /* To keep track of the text entered the text fields */
-    
+    const [healthProblem, setHealthProblem] = useState("")
+    const [suggestedTreatment, setSuggestedTreatment] = useState("")
 
     const selectAppointment = async (event) => {
         event.preventDefault();
@@ -46,6 +47,14 @@ export default function CreateHistoryReg() {
     /* Here sed the request to create the registration */
     function handleSubmitButton() {
 
+    }
+
+    function handleSuggestedTreatmentChange(event) {
+        console.log(event.target.value)
+    }
+
+    function handleDetectedHealthProblemsChange(event) {
+        console.log(event.target.value)
     }
 
     return(
@@ -238,6 +247,7 @@ export default function CreateHistoryReg() {
                         <textarea
                             className="p-2 border border-gray-300 rounded w-full h-40"
                             placeholder="Enter the detected health problems"
+                            onChange={(event) => handleDetectedHealthProblemsChange(event)}
                         />
                     </div>
 
@@ -248,6 +258,7 @@ export default function CreateHistoryReg() {
                         <textarea
                             className="p-2 border border-gray-300 rounded w-full h-40"
                             placeholder="Enter the suggested treatment"
+                            onChange={(event) => handleSuggestedTreatmentChange(event)}
                         />
                     </div>
                 </div>
