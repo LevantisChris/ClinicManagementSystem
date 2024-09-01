@@ -351,6 +351,20 @@ class UserService {
         }
     }
 
+    static async createPatientHistoryRegistration(data) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.post(`${UserService.BASE_URL}/history-patient-mangt/create`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
 
 
 

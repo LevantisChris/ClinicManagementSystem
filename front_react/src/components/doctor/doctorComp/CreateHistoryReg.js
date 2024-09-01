@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import UserService from "../../../services/UserService";
-import {Button} from "@material-tailwind/react";
+import {Alert} from "@material-tailwind/react";
 
 export default function CreateHistoryReg() {
 
@@ -12,8 +12,13 @@ export default function CreateHistoryReg() {
     const [healthProblem, setHealthProblem] = useState("")
     const [suggestedTreatment, setSuggestedTreatment] = useState("")
 
+    /* To show the alert */
+    const [showAlert, setShowAlert] = useState("")
+
     const selectAppointment = async (event) => {
         event.preventDefault();
+
+        setShowAlert("")
 
         if(showAppointments === true) {
             setAppointList([])
@@ -45,16 +50,38 @@ export default function CreateHistoryReg() {
     }
 
     /* Here sed the request to create the registration */
-    function handleSubmitButton() {
-
+    async function handleSubmitButton(event) {
+        event.preventDefault()
+        if (healthProblem === "" || suggestedTreatment === "" || selectedAppoint === "") {
+            setShowAlert("Please fill out all the info about the registration.")
+        } else {
+            const data = {
+                patientHistoryRegistrationAppointmentId: selectedAppoint.appointmentId,
+                patientHistoryRegistrationHealthProblems: healthProblem,
+                patientHistoryRegistrationTreatment: suggestedTreatment
+            }
+            console.log(data)
+            const response = await UserService.createPatientHistoryRegistration(data);
+            console.log(response)
+            if(response.statusCode === 200) {
+                setShowAlert("The creation has been done successfully")
+                setSelectedAppoint("")
+                setAppointList([])
+                setSuggestedTreatment("")
+                setHealthProblem("")
+                setShowAppointments(false)
+            }
+        }
     }
 
     function handleSuggestedTreatmentChange(event) {
-        console.log(event.target.value)
+        setShowAlert("")
+        setSuggestedTreatment(event.target.value)
     }
 
     function handleDetectedHealthProblemsChange(event) {
-        console.log(event.target.value)
+        setShowAlert("")
+        setHealthProblem(event.target.value)
     }
 
     return(
@@ -247,6 +274,7 @@ export default function CreateHistoryReg() {
                         <textarea
                             className="p-2 border border-gray-300 rounded w-full h-40"
                             placeholder="Enter the detected health problems"
+                            value={healthProblem}
                             onChange={(event) => handleDetectedHealthProblemsChange(event)}
                         />
                     </div>
@@ -258,14 +286,21 @@ export default function CreateHistoryReg() {
                         <textarea
                             className="p-2 border border-gray-300 rounded w-full h-40"
                             placeholder="Enter the suggested treatment"
+                            value={suggestedTreatment}
                             onChange={(event) => handleSuggestedTreatmentChange(event)}
                         />
                     </div>
                 </div>
 
+                {
+                    showAlert.length !== 0 ? showAlert === "The creation has been done successfully" ?
+                        <Alert color="green" className={"mt-2 p-2"}>Success: {showAlert}</Alert> :
+                        <Alert color="red" className={"mt-2 p-2"}>Error: {showAlert}</Alert> : ""
+                }
+
                 <button
-                    className={"bg-green-400 p-2 text-cyan-50 rounded w-full hover:bg-green-500 transition ease-linear mt-5"}
-                    onClick={handleSubmitButton}
+                    className={"bg-green-400 p-2 text-cyan-50 rounded w-full hover:bg-green-500 transition ease-linear mt-2"}
+                    onClick={(event) => handleSubmitButton(event)}
                 >
                     Submit
                 </button>
