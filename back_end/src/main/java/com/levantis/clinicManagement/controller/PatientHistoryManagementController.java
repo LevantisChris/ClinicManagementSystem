@@ -79,4 +79,11 @@ public class PatientHistoryManagementController {
         return ResponseEntity.ok(patientHistoryManagementService.searchHistory(patientHistoryDTO));
     }
 
+    @GetMapping("/getLastRegistrationOfPatient")
+    public ResponseEntity<PatientHistoryDTO> getLastRegistrationOfPatient(@RequestParam Integer patientId) {
+        PatientHistoryDTO patientHistoryDTO = new PatientHistoryDTO();
+        patientHistoryDTO.setPatientId(patientId);
+        return ResponseEntity.ok(patientHistoryManagementService.getPatientHistoryById(patientHistoryDTO));
+    }
+
 }

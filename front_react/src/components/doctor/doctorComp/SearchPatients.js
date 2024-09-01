@@ -3,12 +3,17 @@ import UserService from "../../../services/UserService";
 import DisplayInfoAppointment from "./DisplayInfoAppointment";
 import GlobalContext from "../../../context/GlobalContext";
 import DisplayInfoPatient from "./DisplayInfoPatient";
+import DisplayLastReg from "./DisplayLastReg";
 
-export default function SearchPatients() {
+/* bigTitle and smallTitle is for the use of this component in the component ConfigureHistoryReg.
+*  The state has value 1 when the component is being used from the component ConfigureHistoryReg*/
+export default function SearchPatients({bigTitle, smallTitle, componentState}) {
 
     const {
         viewDisplayPatientComponent,
-        setViewDisplayPatientComponent
+        setViewDisplayPatientComponent,
+        viewLastReg,
+        setViewLastReg
     } = useContext(GlobalContext);
 
     const [inputAMKAValue, setInputAMKAValue] = useState('');
@@ -44,25 +49,40 @@ export default function SearchPatients() {
     }, [viewDisplayPatientComponent]);
 
     async function handleViewPatient(patientId) {
-        const params = {
+
+        //
+        if(componentState === undefined || componentState !== 1) {
+            console.log("FIRST")
+            const params = {
             ID: patientId
+            }
+            const responseDetails = await UserService.displayPatientsById(params)
+            if (responseDetails.statusCode === 200) {
+                console.log(responseDetails)
+                setPatientToView(responseDetails)
+                setViewDisplayPatientComponent(true)
+            }
+        } else {
+            console.log("SECOND")
+            const params = {
+                patientId: patientId
+            }
+            console.log("works in another component")
+
+            const response = await UserService.getLastPatientHistoryReg(params)
+            console.log("NEW: ", response)
+            setPatientToView(response) /* if the response is failure we dont care we will handle it properly in the component */
+            setViewLastReg(true)
         }
-        const responseDetails = await UserService.displayPatientsById(params)
-        if (responseDetails.statusCode === 200) {
-            console.log(responseDetails)
-            setPatientToView(responseDetails)
-            setViewDisplayPatientComponent(true)
-        } else
-           console.log("ERROR")
     }
 
     return (
         <div className="flex flex-col h-min w-full p-4">
             <p className={"font-light text-5xl"}>
-                Search patients based on criteria
+                {bigTitle !== undefined && bigTitle.length !== 0 ? bigTitle : "Search patients based on criteria"}
             </p>
             <p className={"mt-2 font-light text-slate-400"}>
-                If you dont give any search criteria, all the patients will be returned
+                {smallTitle !== undefined && smallTitle.length !== 0 ? smallTitle : "If you dont give any search criteria, all the patients will be returned"}
             </p>
             <div className={`grid grid-cols-3 p-4 gap-4 h-min`}>
 
@@ -136,7 +156,9 @@ export default function SearchPatients() {
                     }
                 </div>
             </div>
-            {viewDisplayPatientComponent && <DisplayInfoPatient patient={patientToView}/>}
+            {viewDisplayPatientComponent && componentState !== 1
+                ? <DisplayInfoPatient patient={patientToView}/>
+                : viewLastReg && componentState === 1 ? <DisplayLastReg patient={patientToView}/> : ""}
         </div>
     );
 }

@@ -77,7 +77,13 @@ export default function ContextWrapper(props) {
     const [viewDisplayPatientComponent, setViewDisplayPatientComponent]
         = useState(false)
 
+    const [viewLastReg, setViewLastReg]
+        = useState(false)
+
     const [showCreateHistoryReg, setShowCreateHistoryReg]
+        = useState(false)
+
+    const [showConfigureHistoryReg, setShowConfigureHistoryReg]
         = useState(false)
 
     const filteredEvents = useMemo(() => {
@@ -176,11 +182,17 @@ export default function ContextWrapper(props) {
             viewDisplayPatientComponent,
             setViewDisplayPatientComponent,
 
+            viewLastReg,
+            setViewLastReg,
+
             showRegisterPatientMassively,
             setShowRegisterPatientMassively,
 
             showCreateHistoryReg,
             setShowCreateHistoryReg,
+
+            showConfigureHistoryReg,
+            setShowConfigureHistoryReg,
 
             reloadDoctorApp,
             setReloadDoctorApp,

@@ -14,6 +14,7 @@ import RegisterPatient from "./doctorComp/RegisterPatient";
 import SearchPatients from "./doctorComp/SearchPatients";
 import RegisterPatientsMassively from "./doctorComp/RegisterPatientsMassively";
 import CreateHistoryReg from "./doctorComp/CreateHistoryReg";
+import ConfigureHistoryReg from "./doctorComp/ConfigureHistoryReg";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
@@ -34,7 +35,9 @@ function DoctorApp() {
         showRegisterPatientMassively,
         setShowRegisterPatientMassively,
         showCreateHistoryReg,
-        setShowCreateHistoryReg
+        setShowCreateHistoryReg,
+        showConfigureHistoryReg,
+        setShowConfigureHistoryReg
     } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -104,38 +107,51 @@ function DoctorApp() {
                                     && !showRegisterPatient
                                     && !showSearchPatients
                                     && !showRegisterPatientMassively
-                                    && !showCreateHistoryReg) {
+                                    && !showCreateHistoryReg
+                                    && !showConfigureHistoryReg) {
                                     return <Month appointmentsMonth={appointmentsMonth} month={currentMonth} />;
                                 } else if (showSearchAppointments) {
                                     setShowRegisterPatientMassively(false)
                                     setShowRegisterPatient(false)
                                     setShowSearchPatients(false)
                                     setShowCreateHistoryReg(false)
+                                    setShowConfigureHistoryReg(false)
                                     return <SearchAppointments />;
                                 } else if (showRegisterPatient) {
                                     setShowRegisterPatientMassively(false)
                                     setShowSearchAppointments(false)
                                     setShowSearchPatients(false)
                                     setShowCreateHistoryReg(false)
+                                    setShowConfigureHistoryReg(false)
                                     return <RegisterPatient />;
                                 } else if(showSearchPatients){
                                     setShowRegisterPatientMassively(false)
                                     setShowSearchAppointments(false)
                                     setShowRegisterPatient(false)
                                     setShowCreateHistoryReg(false)
+                                    setShowConfigureHistoryReg(false)
                                     return <SearchPatients/>;
                                 } else if(showRegisterPatientMassively) {
                                     setShowRegisterPatient(false)
                                     setShowSearchAppointments(false)
                                     setShowRegisterPatient(false)
                                     setShowCreateHistoryReg(false)
+                                    setShowConfigureHistoryReg(false)
                                     return <RegisterPatientsMassively/>
                                 } else if(showCreateHistoryReg) {
                                     setShowRegisterPatientMassively(false)
                                     setShowRegisterPatient(false)
                                     setShowSearchAppointments(false)
                                     setShowRegisterPatient(false)
+                                    setShowConfigureHistoryReg(false)
                                     return <CreateHistoryReg/>
+                                } else if (showConfigureHistoryReg) {
+                                    setShowRegisterPatientMassively(false)
+                                    setShowRegisterPatient(false)
+                                    setShowSearchAppointments(false)
+                                    setShowRegisterPatient(false)
+                                    setShowCreateHistoryReg(false)
+                                    return <ConfigureHistoryReg/>
                                 } else {
                                     return null;
                                 }

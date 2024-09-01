@@ -35,6 +35,9 @@ const GlobalContext = React.createContext({
     showCreateHistoryReg: false,
     setShowCreateHistoryReg: () => {},
 
+    showConfigureHistoryReg: false,
+    setShowConfigureHistoryReg: () => {},
+
     reloadDoctorApp: false,
     setReloadDoctorApp: () => {},
 
@@ -43,6 +46,9 @@ const GlobalContext = React.createContext({
 
     viewDisplayPatientComponent: false,
     setViewDisplayPatientComponent: () => {},
+
+    viewLastReg: false,
+    setViewLastRegL: () => {},
 
     userAuthed: null,
     setUserAuthed: () => {},

@@ -408,6 +408,54 @@ public class PatientHistoryManagementService {
         return resp;
     }
 
+    /* Get the patient history using the patient ID */
+    public PatientHistoryDTO getPatientHistoryById(PatientHistoryDTO request) {
+         PatientHistoryDTO resp = new PatientHistoryDTO();
+
+        /* Must access the token and check for null fields */
+        String jwtToken = getToken();
+        if (jwtToken == null || request.getPatientId() == null) {
+            log.error("Empty/null token or fields.");
+            resp.setMessage("Empty/null token or fields.");
+            resp.setStatusCode(500);
+            return resp;
+        }
+
+        try {
+            /* At first find the patient */
+            Patient patient = patientRepository.findById(request.getPatientId())
+                    .orElseThrow(() -> new RuntimeException("No patient with patient Id: " + request.getPatientId()));
+            /* Then find the patient history of the patient */
+            PatientHistory patientHistory = patientHistoryRepository.findByPatient(request.getPatientId());
+
+            if(patientHistory == null) {
+                log.error("The patient with ID: " + request.getPatientId() + " does not have a history.");
+                resp.setError("No history present");
+                resp.setMessage("The patient with ID: " + request.getPatientId() + " does not have a history.");
+                resp.setStatusCode(404);
+                return resp;
+            } else {
+                List<PatientHistoryRegistration> patientHistoryRegistrationsList = patientHistory.getPatientHistoryRegistrations();
+                resp.setMessage("The user has a history with ID: " + patientHistory.getHistoryId() + " and last registration with ID: " + patientHistoryRegistrationsList.getLast().getPatientHistoryRegistrationId());
+                resp.setStatusCode(200);
+                /* Get the last added */
+                resp.setPatientHistoryRegistrationId(patientHistoryRegistrationsList.getLast().getPatientHistoryRegistrationId());
+                resp.setPatientHistoryRegistrationDateRegister(patientHistoryRegistrationsList.getLast().getPatientHistoryRegistrationDateRegister());
+                resp.setPatientHistoryRegistrationHealthProblems(patientHistoryRegistrationsList.getLast().getPatientHistoryRegistrationHealthProblems());
+                resp.setPatientHistoryRegistrationTreatment(patientHistoryRegistrationsList.getLast().getPatientHistoryRegistrationTreatment());
+                resp.setRegistrationAppointment(patientHistoryRegistrationsList.getLast().getAppointment());
+            }
+        } catch (Exception e) {
+            String exceptionType = e.getClass().getSimpleName();
+            e.printStackTrace();
+            log.error("{}: {}", e.getMessage(), exceptionType);
+            resp.setMessage(exceptionType + ": " + e.getMessage());
+            resp.setStatusCode(500);
+        }
+
+         return resp;
+    }
+
 
 
 

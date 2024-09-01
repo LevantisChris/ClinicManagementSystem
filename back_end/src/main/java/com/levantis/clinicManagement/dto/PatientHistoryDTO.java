@@ -38,6 +38,8 @@ public class PatientHistoryDTO {
     private LocalDateTime startDateCriteria;
     private LocalDateTime endDateCriteria;
     private String healthProblemCriteria;
+    // Extra for the update and deletion of the registration
+    private Appointment registrationAppointment;
 
 
 }
