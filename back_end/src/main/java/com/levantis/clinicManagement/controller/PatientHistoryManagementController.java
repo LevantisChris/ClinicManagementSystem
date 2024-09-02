@@ -25,14 +25,7 @@ public class PatientHistoryManagementController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<PatientHistoryDTO> updatePatientHistory(
-            @RequestParam Integer patientHistoryRegistrationId,
-            @RequestParam String patientHistoryRegistrationHealthProblems,
-            @RequestParam String patientHistoryRegistrationTreatment) {
-        PatientHistoryDTO patientHistoryDTO = new PatientHistoryDTO();
-        patientHistoryDTO.setPatientHistoryRegistrationId(patientHistoryRegistrationId);
-        patientHistoryDTO.setPatientHistoryRegistrationHealthProblems(patientHistoryRegistrationHealthProblems);
-        patientHistoryDTO.setPatientHistoryRegistrationTreatment(patientHistoryRegistrationTreatment);
+    public ResponseEntity<PatientHistoryDTO> updatePatientHistory(@RequestBody PatientHistoryDTO patientHistoryDTO) {
         return ResponseEntity.ok(patientHistoryManagementService.updateHistory(patientHistoryDTO));
     }
 

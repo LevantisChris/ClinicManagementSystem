@@ -398,6 +398,20 @@ class UserService {
         }
     }
 
+    static async updatePatientRegistration(data) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.put(`${UserService.BASE_URL}/history-patient-mangt/update`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
 
 
     /* Check if its log in, role etc */
