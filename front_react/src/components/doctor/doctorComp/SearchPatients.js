@@ -15,7 +15,8 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
         setViewDisplayPatientComponent,
         viewLastReg,
         setViewLastReg,
-        successMessage
+        patientHistoryToSee,
+        setPatientHistoryToSee
     } = useContext(GlobalContext);
 
     const [inputAMKAValue, setInputAMKAValue] = useState('');
@@ -53,8 +54,7 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
     async function handleViewPatient(patientId) {
 
         //
-        if(componentState === undefined || componentState !== 1) {
-            console.log("FIRST")
+        if(componentState !== 1 && componentState !== 2) {
             const params = {
             ID: patientId
             }
@@ -64,17 +64,20 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                 setPatientToView(responseDetails)
                 setViewDisplayPatientComponent(true)
             }
-        } else {
-            console.log("SECOND")
+        } else if(componentState === 1) {
             const params = {
                 patientId: patientId
             }
-            console.log("works in another component")
-
             const response = await UserService.getLastPatientHistoryReg(params)
-            console.log("NEW: ", response)
             setPatientToView(response) /* if the response is failure we dont care we will handle it properly in the component */
             setViewLastReg(true)
+        } else if(componentState === 2) {
+            const params = {
+                patientId: patientId
+            }
+            const response = await UserService.getAllPatientHistory(params)
+            console.log('TETSTSRTS: ', response)
+            setPatientHistoryToSee(response) // might be an error we will handle it in the component Display All history
         }
     }
 
@@ -155,7 +158,7 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                     }
                 </div>
             </div>
-            {viewDisplayPatientComponent && componentState !== 1 ? (
+            {viewDisplayPatientComponent && (componentState !== 1 || componentState !== 2) ? (
                 <DisplayInfoPatient patient={patientToView}/>
             ) : viewLastReg && componentState === 1 ? (
                 <DisplayReg patient={patientToView}/>
