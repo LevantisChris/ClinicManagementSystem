@@ -80,6 +80,9 @@ export default function ContextWrapper(props) {
     const [viewLastReg, setViewLastReg]
         = useState(false)
 
+    const [showDisplayAllHistory, setShowDisplayAllHistory]
+        = useState(false)
+
     const [showCreateHistoryReg, setShowCreateHistoryReg]
         = useState(false)
 
@@ -184,6 +187,9 @@ export default function ContextWrapper(props) {
 
             viewLastReg,
             setViewLastReg,
+
+            showDisplayAllHistory,
+            setShowDisplayAllHistory,
 
             showRegisterPatientMassively,
             setShowRegisterPatientMassively,

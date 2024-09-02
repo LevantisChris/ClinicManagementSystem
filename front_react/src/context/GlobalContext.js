@@ -35,6 +35,9 @@ const GlobalContext = React.createContext({
     showCreateHistoryReg: false,
     setShowCreateHistoryReg: () => {},
 
+    showDisplayAllHistory: false,
+    setShowDisplayAllHistory: () => {},
+
     showConfigureHistoryReg: false,
     setShowConfigureHistoryReg: () => {},
 
