@@ -4,6 +4,7 @@ import DisplayInfoAppointment from "./DisplayInfoAppointment";
 import GlobalContext from "../../../context/GlobalContext";
 import DisplayInfoPatient from "./DisplayInfoPatient";
 import DisplayLastReg from "./DisplayLastReg";
+import SuccessApp from "../../Success/SuccessApp";
 
 /* bigTitle and smallTitle is for the use of this component in the component ConfigureHistoryReg.
 *  The state has value 1 when the component is being used from the component ConfigureHistoryReg*/
@@ -13,7 +14,8 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
         viewDisplayPatientComponent,
         setViewDisplayPatientComponent,
         viewLastReg,
-        setViewLastReg
+        setViewLastReg,
+        successMessage
     } = useContext(GlobalContext);
 
     const [inputAMKAValue, setInputAMKAValue] = useState('');
@@ -78,21 +80,20 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
 
     return (
         <div className="flex flex-col h-min w-full p-4">
-            <p className={"font-light text-5xl"}>
-                {bigTitle !== undefined && bigTitle.length !== 0 ? bigTitle : "Search patients based on criteria"}
+            <p className="font-light text-5xl">
+                {bigTitle && bigTitle.length !== 0 ? bigTitle : "Search patients based on criteria"}
             </p>
-            <p className={"mt-2 font-light text-slate-400"}>
-                {smallTitle !== undefined && smallTitle.length !== 0 ? smallTitle : "If you dont give any search criteria, all the patients will be returned"}
+            <p className="mt-2 font-light text-slate-400">
+                {smallTitle && smallTitle.length !== 0 ? smallTitle : "If you don't give any search criteria, all the patients will be returned"}
             </p>
-            <div className={`grid grid-cols-3 p-4 gap-4 h-min`}>
-
+            <div className="grid grid-cols-3 p-4 gap-4 h-min">
                 <div className="col-span-1 w-full">
                     <form className="w-full">
                         <div className="relative">
                             <input
                                 type="text"
                                 onChange={handleInputAMKAChange}
-                                placeholder={"Patient AMKA"}
+                                placeholder="Patient AMKA"
                                 className="bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full"
                             />
                         </div>
@@ -104,7 +105,7 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                             <input
                                 type="text"
                                 onChange={handleInputSurnameChange}
-                                placeholder={"Patient surname"}
+                                placeholder="Patient surname"
                                 className="bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full"
                             />
                         </div>
@@ -115,7 +116,7 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                 <div className="flex justify-center w-full">
                     <form className="w-full">
                         <input
-                            type={"button"}
+                            type="button"
                             value="Search"
                             className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 w-full"
                             onClick={handleButtonClick}
@@ -126,39 +127,42 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
 
             {/* Map the results */}
             <div className="items-center w-full h-min">
-                <div className={"flex flex-col w-full h-full"}>
-                    {
-                        patientResultsList !== null && patientResultsList.length !== 0
-                            ? patientResultsList.map(patient => (
-                                <div
-                                    key={patient.patientId}
-                                    className={'flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4'}
-                                    onClick={() => handleViewPatient(patient.patientId)}
-                                >
-                                    <div className="grid grid-cols-3 w-max h-full">
-                                        <div className="flex flex-col justify-start">
-                                            <div className="text-lg font-semibold">
-                                                    <span
-                                                        className="material-icons-outlined text-gray-600 mx-2 align-text-top"
-                                                    >
-                                                        person
-                                                    </span>
-                                                {patient.patientUser.user_name} {patient.patientUser.user_surname}
-                                            </div>
-                                            {/* AMKA (patient) */}
-                                            <div
-                                                className="text-sm">{"AMKA: " + patient.patientAMKA}
-                                            </div>
+                <div className="flex flex-col w-full h-full">
+                    {patientResultsList && patientResultsList.length !== 0
+                        ? patientResultsList.map(patient => (
+                            <div
+                                key={patient.patientId}
+                                className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4"
+                                onClick={() => handleViewPatient(patient.patientId)}
+                            >
+                                <div className="grid grid-cols-3 w-max h-full">
+                                    <div className="flex flex-col justify-start">
+                                        <div className="text-lg font-semibold">
+                                                <span
+                                                    className="material-icons-outlined text-gray-600 mx-2 align-text-top">
+                                                    person
+                                                </span>
+                                            {patient.patientUser.user_name} {patient.patientUser.user_surname}
+                                        </div>
+                                        {/* AMKA (patient) */}
+                                        <div className="text-sm">
+                                            {"AMKA: " + patient.patientAMKA}
                                         </div>
                                     </div>
                                 </div>
-                            )) : "No patients found, try again"
+                            </div>
+                        )) : "No patients found, try again"
                     }
                 </div>
             </div>
-            {viewDisplayPatientComponent && componentState !== 1
-                ? <DisplayInfoPatient patient={patientToView}/>
-                : viewLastReg && componentState === 1 ? <DisplayLastReg patient={patientToView}/> : ""}
+            {viewDisplayPatientComponent && componentState !== 1 ? (
+                <DisplayInfoPatient patient={patientToView}/>
+            ) : viewLastReg && componentState === 1 ? (
+                <DisplayLastReg patient={patientToView}/>
+            ) : (
+                ""
+            )}
         </div>
     );
+
 }
