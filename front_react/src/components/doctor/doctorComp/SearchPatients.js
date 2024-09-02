@@ -3,7 +3,7 @@ import UserService from "../../../services/UserService";
 import DisplayInfoAppointment from "./DisplayInfoAppointment";
 import GlobalContext from "../../../context/GlobalContext";
 import DisplayInfoPatient from "./DisplayInfoPatient";
-import DisplayLastReg from "./DisplayLastReg";
+import DisplayReg from "./DisplayReg";
 import SuccessApp from "../../Success/SuccessApp";
 
 /* bigTitle and smallTitle is for the use of this component in the component ConfigureHistoryReg.
@@ -158,7 +158,7 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
             {viewDisplayPatientComponent && componentState !== 1 ? (
                 <DisplayInfoPatient patient={patientToView}/>
             ) : viewLastReg && componentState === 1 ? (
-                <DisplayLastReg patient={patientToView}/>
+                <DisplayReg patient={patientToView}/>
             ) : (
                 ""
             )}

@@ -4,7 +4,7 @@ import GlobalContext from "../../../context/GlobalContext";
 import {Alert, Button} from "@material-tailwind/react";
 import UserService from "../../../services/UserService";
 
-export default function DisplayLastReg({patient}) {
+export default function DisplayReg({patient}) {
 
     const {
         setViewLastReg
