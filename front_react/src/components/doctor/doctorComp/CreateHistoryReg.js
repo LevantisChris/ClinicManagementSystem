@@ -85,7 +85,7 @@ export default function CreateHistoryReg() {
     }
 
     return(
-        <div className="flex flex-col h-min w-full p-10 cursor-default">
+        <div className="flex flex-col max-h-screen overflow-y-auto h-min w-full p-10 cursor-default">
             <p className={"font-light text-5xl"}>
                 Create a History Registration
             </p>

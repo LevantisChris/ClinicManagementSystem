@@ -152,7 +152,7 @@ export default function SearchAppointments() {
     }
 
     return (
-        <div className="flex flex-col h-min w-full">
+        <div className="flex flex-col h-min w-full p-5">
             <p className={"font-light text-5xl"}>
                 Search & View appointments
             </p>
