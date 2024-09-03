@@ -238,7 +238,8 @@ export function DisplayAllHistory() {
                                                         </p>
                                                     </div>
                                                 </div>
-                                            ) : null)
+                                            ) : null
+                                        )
                                 }
                             </div>
 

@@ -38,8 +38,8 @@ const GlobalContext = React.createContext({
     showDisplayAllHistory: false,
     setShowDisplayAllHistory: () => {},
 
-    showSearchHistory: false,
-    setShowSearchHistory: () => {},
+    showRegisterPatientHistoryMassively: false,
+    setShowRegisterPatientHistoryMassively: () => {},
 
     patientHistoryToSee: null,
     setPatientHistoryToSee: () => {},

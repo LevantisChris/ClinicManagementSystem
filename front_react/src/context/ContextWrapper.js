@@ -85,13 +85,13 @@ export default function ContextWrapper(props) {
     const [patientHistoryToSee, setPatientHistoryToSee]
         = useState(null) // The patient history to view, we need a global state because we manage it differently
 
-    const [showSearchHistory, setShowSearchHistory]
-        = useState(false)
-
     const [showCreateHistoryReg, setShowCreateHistoryReg]
         = useState(false)
 
     const [showConfigureHistoryReg, setShowConfigureHistoryReg]
+        = useState(false)
+
+    const [showRegisterPatientHistoryMassively, setShowRegisterPatientHistoryMassively]
         = useState(false)
 
     const filteredEvents = useMemo(() => {
@@ -199,9 +199,6 @@ export default function ContextWrapper(props) {
             patientHistoryToSee,
             setPatientHistoryToSee,
 
-            showSearchHistory,
-            setShowSearchHistory,
-
             showRegisterPatientMassively,
             setShowRegisterPatientMassively,
 
@@ -210,6 +207,9 @@ export default function ContextWrapper(props) {
 
             showConfigureHistoryReg,
             setShowConfigureHistoryReg,
+
+            showRegisterPatientHistoryMassively,
+            setShowRegisterPatientHistoryMassively,
 
             reloadDoctorApp,
             setReloadDoctorApp,

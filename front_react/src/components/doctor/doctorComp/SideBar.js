@@ -166,7 +166,7 @@ export default function SideBar() {
                                             className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
                                             onClick={() => (showDisplayAllHistory === false ? setShowDisplayAllHistory(true) : setShowDisplayAllHistory(false))}
                                         >
-                                            Display all patient history
+                                            Display & Search patient history
                                         </a>
                                     </div>
                                 </div>
