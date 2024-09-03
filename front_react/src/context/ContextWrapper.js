@@ -85,6 +85,9 @@ export default function ContextWrapper(props) {
     const [patientHistoryToSee, setPatientHistoryToSee]
         = useState(null) // The patient history to view, we need a global state because we manage it differently
 
+    const [showSearchHistory, setShowSearchHistory]
+        = useState(false)
+
     const [showCreateHistoryReg, setShowCreateHistoryReg]
         = useState(false)
 
@@ -195,6 +198,9 @@ export default function ContextWrapper(props) {
 
             patientHistoryToSee,
             setPatientHistoryToSee,
+
+            showSearchHistory,
+            setShowSearchHistory,
 
             showRegisterPatientMassively,
             setShowRegisterPatientMassively,
