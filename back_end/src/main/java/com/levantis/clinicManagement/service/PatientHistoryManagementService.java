@@ -395,6 +395,7 @@ public class PatientHistoryManagementService {
                     }
                 }
                 resp.setMessage("Successfully found some registrations, with that criteria.");
+                resp.setStatusCode(200);
                 resp.setPatientHistoryRegistrations(listResults);
             }
         } catch (Exception e) {

@@ -23,6 +23,7 @@
     "react-pro-sidebar": "^1.1.0",
     "react-router-dom": "^6.24.1",
     "react-scripts": "^5.0.1",
+    "react-tailwindcss-datepicker": "^1.7.2",
     "react-transition-group": "^4.4.5",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"

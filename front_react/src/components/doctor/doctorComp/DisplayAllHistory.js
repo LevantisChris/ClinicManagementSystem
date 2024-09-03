@@ -1,8 +1,10 @@
-import {React, useContext, useState} from "react"
+import {React, useContext, useEffect, useState} from "react"
 import SearchPatients from "./SearchPatients";
 import GlobalContext from "../../../context/GlobalContext";
-import {Button} from "@material-tailwind/react";
+import {Alert, Button, Input} from "@material-tailwind/react";
 import {motion} from 'framer-motion';
+import Datepicker from "react-tailwindcss-datepicker";
+import UserService from "../../../services/UserService";
 
 export function DisplayAllHistory() {
 
@@ -12,6 +14,57 @@ export function DisplayAllHistory() {
     } = useContext(GlobalContext);
 
     const [registrationToSee, setRegistrationToSee] = useState(null)
+
+    /* For the date picker in the filter */
+    const [value, setValue] = useState({
+        startDate: null,
+        endDate: null
+    });
+    /* For the detected health problem filter */
+    const [detectedHealthProblemFilter, setDetectedHealthProblemFilter] = useState("")
+    /* To keep the results after the filter function */
+    const [filteredResults, setFilteredResults] = useState(null);
+    /* To know when to show the clear filters/results button */
+    const [showClearButton, setShowClearButton] = useState(false)
+
+    useEffect(() => {
+        setDetectedHealthProblemFilter("")
+        setValue(null)
+        setFilteredResults(null)
+        setShowClearButton(false)
+    }, [patientHistoryToSee]);
+
+    function handleFilterDetectedHealthProblem(event) {
+        setDetectedHealthProblemFilter(event.target.value)
+    }
+
+    async function handleFilterSubmit() {
+        setShowClearButton(true)
+        const params = {
+            healthProblemCriteria: detectedHealthProblemFilter,
+            startDate: value !== null ? formatDateToLocal(value.startDate) : "",
+            endDate: value !== null ? formatDateToLocal(value.endDate) : "",
+            patientID: patientHistoryToSee.patientId
+        }
+        console.log("TET: ", params)
+        const response = await UserService.searchRegistrations(params);
+        console.log(response)
+        setFilteredResults(response)
+    }
+
+    function formatDateToLocal(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function handleClearFilters() {
+        setDetectedHealthProblemFilter("")
+        setValue(null)
+        setFilteredResults(null)
+        setShowClearButton(false)
+    }
 
     return (
         <div className={"w-full p-2"}>
@@ -31,10 +84,19 @@ export function DisplayAllHistory() {
                             <p className="mt-2 font-light text-slate-400">
                                 Choose a patient and then the registration you want to view
                             </p>
-                            <header className="rounded bg-blue-200 px-4 py-2 flex justify-between items-center mt-3">
-                                <p className="text-2xl text-black font-black hover:text-sky-700">
-                                    {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_name} {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_surname} History
-                                </p>
+                            <header
+                                className="rounded bg-blue-200 px-4 py-2 flex justify-between items-center mt-3 shadow-lg">
+                                <div
+                                    className={"flex flex-col text-center bg-blue-200 p-4 hover:bg-blue-300 transition ease-in rounded cursor-default shadow-lg"}>
+                                    <span
+                                        className="material-icons-outlined text-gray-600 mx-2 align-text-top text-4xl"
+                                    >
+                                        person_search
+                                    </span>
+                                    <p className="text-2xl text-black font-black hover:text-sky-700">
+                                        {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_name} {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_surname} History
+                                    </p>
+                                </div>
                                 <div>
                                     <Button className={"text-xl text-white bg-blue-500"}
                                             onClick={() => setPatientHistoryToSee(null)}>
@@ -43,50 +105,144 @@ export function DisplayAllHistory() {
                                 </div>
                             </header>
 
-                            <div className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 mb-5 shadow-xl">
+                            {/* Add the filters, by date and by health problem detected */}
+                            {/* Calendar Picker Component from https://github.com/onesine/react-tailwindcss-datepicker?tab=readme-ov-file */}
+                            <div  className={
+                                showClearButton
+                                    ? "grid grid-rows-2 gap-2 bg-slate-200 rounded-xl border-4 p-2"
+                                    : "grid grid-rows-1 gap-2 bg-slate-200 rounded-xl border-4 p-2"
+                            }>
+                                <div className={"grid grid-cols-4 gap-2"}>
+                                    <div className="flex col-span-1 w-full items-center">
+                                            <span className="material-icons-outlined text-gray-600 mx-2">
+                                              filter_list
+                                            </span>
+                                        <Button className="bg-green-500 w-full" onClick={handleFilterSubmit}>
+                                            Apply
+                                            filters
+                                        </Button>
+                                    </div>
+                                    <Datepicker
+                                        primaryColor="blue"
+                                        showShortcuts={true}
+                                        value={value}
+                                        onChange={newValue => setValue(newValue)}
+                                    />
+                                    <input
+                                        className="rounded-lg col-span-2"
+                                        placeholder="Detected health problem"
+                                        value={detectedHealthProblemFilter}
+                                        onChange={(event) => handleFilterDetectedHealthProblem(event)}
+                                    />
+                                </div>
+
                                 {
-                                    patientHistoryToSee.patientHistoryRegistrations.map(registration => (
+                                    showClearButton ?
+                                        <Button className="bg-red-500 w-full" onClick={handleClearFilters}>
+                                            Clear filters
+                                        </Button> : ""
+                                }
+                            </div>
+
+                            <div
+                                className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 mb-5 shadow-xl">
+                                {
+                                    filteredResults === null
+                                    ?
+                                        patientHistoryToSee.patientHistoryRegistrations.map((registration) => (
                                         <div
-                                            className={`flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-200 hover:shadow-lg transition-shadow duration-300 mb-4`}
+                                            key={registration.patientHistoryRegistrationId}
+                                            className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-200 hover:shadow-lg transition-shadow duration-300 mb-4"
                                             onClick={() => setRegistrationToSee(registration)}
                                         >
                                             <div className="grid grid-cols-3 w-max h-full">
                                                 <div className="flex flex-col justify-start">
-                                                    {/* Appointment Code */}
                                                     <div className="text-lg font-semibold">
-                                                    <span
-                                                        className="material-icons-outlined text-gray-600 mx-2 align-text-top"
-                                                    >
-                                                        fact_check
-                                                    </span>
+                                                        <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
+                                                          fact_check
+                                                        </span>
                                                         {"ID: " + registration.patientHistoryRegistrationId}
                                                     </div>
                                                     <div className="text-md">
-                                                        Health
-                                                        problem: {registration.patientHistoryRegistrationHealthProblems}
+                                                        Health problem:{" "}
+                                                        {registration.patientHistoryRegistrationHealthProblems}
                                                     </div>
                                                     <div className="text-sm text-gray-500">
-                                                        Suggested
-                                                        Treatment: {registration.patientHistoryRegistrationTreatment}
+                                                        Suggested Treatment:{" "}
+                                                        {registration.patientHistoryRegistrationTreatment}
                                                     </div>
                                                     <div className="text-sm text-gray-500">
-                                                        Doctor: {registration.appointment.appointmentDoctor.user.user_name} {registration.appointment.appointmentDoctor.user.user_surname}
+                                                        Doctor:{" "}
+                                                        {registration.appointment.appointmentDoctor.user.user_name}{" "}
+                                                        {registration.appointment.appointmentDoctor.user.user_surname}
                                                     </div>
                                                     <div className="text-sm text-gray-500">
-                                                        Relative appointment date: {registration.appointment.appointmentDate}
+                                                        Relative appointment date:{" "}
+                                                        {registration.appointment.appointmentDate}
                                                     </div>
-                                                    {/* Click to view more info about the appointment */}
-                                                    <span
-                                                        className="material-icons-outlined text-gray-600"
-                                                    >
+                                                    <span className="material-icons-outlined text-gray-600">
                                                         more_horiz
-                                                </span>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
                                     ))
+                                    : (filteredResults.statusCode === 200
+                                        ? filteredResults.patientHistoryRegistrations.map((registration) => (
+                                            <div
+                                                key={registration.patientHistoryRegistrationId}
+                                                className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-200 hover:shadow-lg transition-shadow duration-300 mb-4"
+                                                onClick={() => setRegistrationToSee(registration)}
+                                            >
+                                                <div className="grid grid-cols-3 w-max h-full">
+                                                    <div className="flex flex-col justify-start">
+                                                        <div className="text-lg font-semibold">
+                                                            <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
+                                                              fact_check
+                                                            </span>
+                                                            {"ID: " + registration.patientHistoryRegistrationId}
+                                                        </div>
+                                                        <div className="text-md">
+                                                            Health problem:{" "}
+                                                            {registration.patientHistoryRegistrationHealthProblems}
+                                                        </div>
+                                                        <div className="text-sm text-gray-500">
+                                                            Suggested Treatment:{" "}
+                                                            {registration.patientHistoryRegistrationTreatment}
+                                                        </div>
+                                                        <div className="text-sm text-gray-500">
+                                                            Doctor:{" "}
+                                                            {registration.appointment.appointmentDoctor.user.user_name}{" "}
+                                                            {registration.appointment.appointmentDoctor.user.user_surname}
+                                                        </div>
+                                                        <div className="text-sm text-gray-500">
+                                                            Relative appointment date:{" "}
+                                                            {registration.appointment.appointmentDate}
+                                                        </div>
+                                                        <span className="material-icons-outlined text-gray-600">
+                                                            more_horiz
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                        : filteredResults.statusCode === 500 ? (
+                                                <div
+                                                    className="flex-grow mt-2 rounded-xl bg-slate-200 border-4 p-5 flex justify-center items-center">
+                                                    <div className="text-center">
+                                                        <span className="material-icons-outlined text-9xl text-red-600">
+                                                            trending_down
+                                                        </span>
+                                                        <p className="text-xl text-red-600">
+                                                            Cannot find results, check your filters
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ) : null)
                                 }
                             </div>
+
+
                         </div>
                         : /* Not any History was found */
                         <div className={"p-2 rounded shadow-5xl"}>

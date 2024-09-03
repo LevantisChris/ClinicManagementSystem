@@ -428,6 +428,22 @@ class UserService {
         }
     }
 
+    static async searchRegistrations(params) {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/history-patient-mangt/searchRegistration`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params: params
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
 
 
     /* Check if its log in, role etc */
