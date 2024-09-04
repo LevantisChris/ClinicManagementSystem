@@ -29,8 +29,9 @@ public class PatientHistoryRegistration {
     @JsonIgnore
     private PatientHistory patientHistory;
 
+    /* UNIQUE: Because only  */
     @ManyToOne
-    @JoinColumn(name = "p_History_registration_rel_appointment", referencedColumnName = "appointment_id", nullable = false)
+    @JoinColumn(name = "p_History_registration_rel_appointment", referencedColumnName = "appointment_id", nullable = false, unique = true)
     private Appointment appointment;
 
     public int getPatientHistoryRegistrationId() {

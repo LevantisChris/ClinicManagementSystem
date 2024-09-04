@@ -25,7 +25,9 @@ export default function SideBar() {
         showConfigureHistoryReg,
         setShowConfigureHistoryReg,
         showDisplayAllHistory,
-        setShowDisplayAllHistory
+        setShowDisplayAllHistory,
+        showRegisterPatientHistoryMassively,
+        setShowRegisterPatientHistoryMassively
     } = useContext(GlobalContext);
 
     return (
@@ -145,6 +147,17 @@ export default function SideBar() {
                                             onClick={() => (showCreateHistoryReg === false ? setShowCreateHistoryReg(true) : setShowCreateHistoryReg(false))}
                                         >
                                             Create history registration
+                                        </a>
+                                    </div>
+                                    <div className={"flex items-center ml-5"}>
+                                            <span className="material-icons-outlined text-sm">
+                                                arrow_forward_ios
+                                            </span>
+                                        <a
+                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            onClick={() => (showRegisterPatientHistoryMassively === false ? setShowRegisterPatientHistoryMassively(true) : setShowRegisterPatientHistoryMassively(false))}
+                                        >
+                                            Create history registrations massively
                                         </a>
                                     </div>
                                     <div className={"flex items-center ml-5"}>

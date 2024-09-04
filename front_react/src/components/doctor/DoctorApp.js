@@ -16,6 +16,7 @@ import RegisterPatientsMassively from "./doctorComp/RegisterPatientsMassively";
 import CreateHistoryReg from "./doctorComp/CreateHistoryReg";
 import ConfigureHistoryReg from "./doctorComp/ConfigureHistoryReg";
 import {DisplayAllHistory} from "./doctorComp/DisplayAllHistory";
+import CreatePatientsHistoryMassively from "./doctorComp/CreatePatientsHistoryMassively";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
@@ -40,7 +41,9 @@ function DoctorApp() {
         showConfigureHistoryReg,
         setShowConfigureHistoryReg,
         showDisplayAllHistory,
-        setShowDisplayAllHistory
+        setShowDisplayAllHistory,
+        showRegisterPatientHistoryMassively,
+        setShowRegisterPatientHistoryMassively
     } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -112,7 +115,8 @@ function DoctorApp() {
                                     && !showRegisterPatientMassively
                                     && !showCreateHistoryReg
                                     && !showConfigureHistoryReg
-                                    && !showDisplayAllHistory) {
+                                    && !showDisplayAllHistory
+                                    && !showRegisterPatientHistoryMassively) {
                                     return <Month appointmentsMonth={appointmentsMonth} month={currentMonth} />;
                                 } else if (showSearchAppointments) {
                                     setShowRegisterPatientMassively(false)
@@ -121,6 +125,7 @@ function DoctorApp() {
                                     setShowCreateHistoryReg(false)
                                     setShowConfigureHistoryReg(false)
                                     setShowDisplayAllHistory(false)
+                                    setShowRegisterPatientHistoryMassively(false)
                                     return <SearchAppointments />;
                                 } else if (showRegisterPatient) {
                                     setShowRegisterPatientMassively(false)
@@ -129,6 +134,7 @@ function DoctorApp() {
                                     setShowCreateHistoryReg(false)
                                     setShowConfigureHistoryReg(false)
                                     setShowDisplayAllHistory(false)
+                                    setShowRegisterPatientHistoryMassively(false)
                                     return <RegisterPatient />;
                                 } else if(showSearchPatients){
                                     setShowRegisterPatientMassively(false)
@@ -137,6 +143,7 @@ function DoctorApp() {
                                     setShowCreateHistoryReg(false)
                                     setShowConfigureHistoryReg(false)
                                     setShowDisplayAllHistory(false)
+                                    setShowRegisterPatientHistoryMassively(false)
                                     return <SearchPatients/>;
                                 } else if(showRegisterPatientMassively) {
                                     setShowRegisterPatient(false)
@@ -145,6 +152,7 @@ function DoctorApp() {
                                     setShowCreateHistoryReg(false)
                                     setShowConfigureHistoryReg(false)
                                     setShowDisplayAllHistory(false)
+                                    setShowRegisterPatientHistoryMassively(false)
                                     return <RegisterPatientsMassively/>
                                 } else if(showCreateHistoryReg) {
                                     setShowRegisterPatientMassively(false)
@@ -153,6 +161,7 @@ function DoctorApp() {
                                     setShowRegisterPatient(false)
                                     setShowConfigureHistoryReg(false)
                                     setShowDisplayAllHistory(false)
+                                    setShowRegisterPatientHistoryMassively(false)
                                     return <CreateHistoryReg/>
                                 } else if (showConfigureHistoryReg) {
                                     setShowRegisterPatientMassively(false)
@@ -161,6 +170,7 @@ function DoctorApp() {
                                     setShowRegisterPatient(false)
                                     setShowCreateHistoryReg(false)
                                     setShowDisplayAllHistory(false)
+                                    setShowRegisterPatientHistoryMassively(false)
                                     return <ConfigureHistoryReg/>
                                 } else if(showDisplayAllHistory) {
                                     setShowRegisterPatientMassively(false)
@@ -169,7 +179,17 @@ function DoctorApp() {
                                     setShowRegisterPatient(false)
                                     setShowCreateHistoryReg(false)
                                     setShowConfigureHistoryReg(false)
+                                    setShowRegisterPatientHistoryMassively(false)
                                     return <DisplayAllHistory/>
+                                } else if(showRegisterPatientHistoryMassively) {
+                                    setShowRegisterPatientMassively(false)
+                                    setShowRegisterPatient(false)
+                                    setShowSearchAppointments(false)
+                                    setShowRegisterPatient(false)
+                                    setShowCreateHistoryReg(false)
+                                    setShowDisplayAllHistory(false)
+                                    setShowConfigureHistoryReg(false)
+                                    return <CreatePatientsHistoryMassively/>
                                 } else {
                                     return null;
                                 }

@@ -22,7 +22,8 @@ export default function CalendarHeader() {
         showRegisterPatientMassively,
         showCreateHistoryReg,
         showConfigureHistoryReg,
-        showDisplayAllHistory
+        showDisplayAllHistory,
+        showRegisterPatientHistoryMassively
     } = useContext(GlobalContext);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -68,7 +69,8 @@ export default function CalendarHeader() {
                     && showRegisterPatientMassively === false
                     &&  showCreateHistoryReg === false
                     && showConfigureHistoryReg === false
-                    && showDisplayAllHistory === false ? (
+                    && showDisplayAllHistory === false
+                    && showRegisterPatientHistoryMassively === false ? (
                         <>
                             <button className="border rounded py-2 px-4 mr-5" onClick={handleReset}>
                                 Today

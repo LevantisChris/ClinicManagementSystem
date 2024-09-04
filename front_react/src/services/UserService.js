@@ -361,7 +361,7 @@ class UserService {
             });
             return response.data;
         } catch (err) {
-            throw err;
+            return err.response ? err.response.data : err;
         }
     }
 

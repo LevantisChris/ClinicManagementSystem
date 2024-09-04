@@ -145,7 +145,7 @@ export function DisplayAllHistory() {
                             </div>
 
                             <div
-                                className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 mb-5 shadow-xl">
+                                className="flex-grow mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 mb-5 shadow-xl">
                                 {
                                     filteredResults === null
                                     ?

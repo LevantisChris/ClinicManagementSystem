@@ -109,16 +109,14 @@ public class PatientHistoryManagementService {
                 log.info("The patient with id: {} has a history: {}", appointment.getAppointmentPatient(), temp.getHistoryId());
                 patientHistoryRegistrationNew.setPatientHistory(temp);
             }
-            PatientHistoryRegistration patientHistoryRegistrationResult = patientHistoryRegistrationRepository.save(patientHistoryRegistrationNew);
+            PatientHistoryRegistration patientHistoryRegistrationResult
+                    = patientHistoryRegistrationRepository.save(patientHistoryRegistrationNew);
 
             resp.setMessage("The registration has been done with success, NOTE: " + (temp == null ? "HISTORY CREATION YES" : "HISTORY CREATION NO"));
             resp.setStatusCode(200);
         } catch (Exception e) {
             String exceptionType = e.getClass().getSimpleName();
-            e.printStackTrace();
-            log.error("{}: {}", e.getMessage(), exceptionType);
-            resp.setMessage(exceptionType + ": " + e.getMessage());
-            resp.setStatusCode(500);
+            log.error("{} MIIIIIIIIIII: {}", e.getMessage(), exceptionType);
         }
         return resp;
     }

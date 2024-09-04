@@ -1,18 +1,18 @@
-import React, {useState} from 'react';
-import * as XLSX from 'xlsx';
-import {Button, Card, Typography} from "@material-tailwind/react";
+import {React, useState} from 'react'
+import * as XLSX from "xlsx";
 import UserService from "../../../services/UserService";
 import LoadingApp from "../../Loading/LoadingApp";
+import {Button, Card, Typography} from "@material-tailwind/react";
 
-export default function RegisterPatientsMassively() {
+export default function CreatePatientsHistoryMassively() {
 
-    const TABLE_HEAD = ["Status", "First-name","Second-name", "AMKA", "Email", "ID-Number"];
+    const TABLE_HEAD = ["Status", "Relevant Appointment ID", "Detected Health Problems", "Suggested Treatment"];
 
     const [TABLE_ROWS, setTABLE_ROWS] = useState([])
     const [loading, setLoading] = useState(false)
 
-    /* To manage the registration */
-    const [unsuccedRegistrations, setUnsuccedRegistrations] = useState([]) // track of the patients that dont registered successfully
+    /* To track the unsuccessful registrations, its list */
+    const [unsuccedRegistrations, setUnsuccedRegistrations] = useState([])
 
     const addUnSuccessRegistration = (newValue) => {
         setUnsuccedRegistrations((prevRegistrations) => [
@@ -36,69 +36,46 @@ export default function RegisterPatientsMassively() {
         reader.readAsArrayBuffer(file);
     }
 
-    function generateRandomString(length, includeSpecialChars = true) {
-        const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
-        const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const numbers = '0123456789';
-        const specialChars = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
-
-        let availableChars = lowercaseChars + uppercaseChars + numbers;
-
-        if (includeSpecialChars) {
-            availableChars += specialChars;
-        }
-
-        let randomString = '';
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * availableChars.length);
-            randomString += availableChars[randomIndex];
-        }
-
-        return randomString;
-    }
-
     async function handleSubmitClick() {
         setLoading(true);
         setUnsuccedRegistrations([]) // empty the list
 
         for (let i = 0; i < TABLE_ROWS.length; i++) {
-            const patient = TABLE_ROWS[i];
+            const registration = TABLE_ROWS[i];
             const data = {
-                userName: patient.userName,
-                userSurname: patient.userSurname,
-                userIdNumber: patient.userIdNumber,
-                userEmail: patient.userEmail,
-                userPassword: generateRandomString(10, true), /* generate random password */
-                patientAMKA: patient.patientAMKA,
-                roleId: 1
+                patientHistoryRegistrationAppointmentId: registration.patientHistoryRegistrationAppointmentId,
+                patientHistoryRegistrationHealthProblems: registration.patientHistoryRegistrationHealthProblems,
+                patientHistoryRegistrationTreatment: registration.patientHistoryRegistrationTreatment
             };
 
-            const response = await UserService.registerPatient(data);
+            const response = await UserService.createPatientHistoryRegistration(data);
 
             if (response.statusCode !== 200) {
-                addUnSuccessRegistration(patient)
+                addUnSuccessRegistration(registration)
             }
         }
         if (unsuccedRegistrations.length !== 0) {
             console.log("Something went wrong: ", unsuccedRegistrations);
             setTABLE_ROWS([])
         } else {
-            console.log("All patients correctly registered: ", unsuccedRegistrations)
+            console.log("All registrations correctly registered: ", unsuccedRegistrations)
             setTABLE_ROWS([])
         }
         setLoading(false);
     }
 
-
     return (
         loading ? ( <LoadingApp/>) :
             <div className="flex flex-col h-min w-full p-5">
                 <p className={"font-light text-5xl"}>
-                    Register patients massively
+                    Create history registrations massively
                 </p>
                 <p className={"mt-3 font-light text-slate-400"}>
                     You can use an excel file for doing it, but the file must follow a pattern. Download the file pattern
-                    bellow.
+                    bellow
+                </p>
+                <p className={"font-light text-sm text-slate-400"}>
+                    Note, if a user dont have a history, the system automatically will create one
                 </p>
 
 
@@ -127,7 +104,7 @@ export default function RegisterPatientsMassively() {
 
 
                     <div className="flex items-center justify-center w-full ml-2">
-                        <a href="src/assets/patients_patern.xlsx" download
+                        <a href="src/assets/registrations_pattern.xlsx" download
                            className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-blue-800 dark:bg-blue-700 hover:bg-gray-100 dark:border-blue-600 dark:hover:border-gray-500">
                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -145,7 +122,7 @@ export default function RegisterPatientsMassively() {
                 </div>
 
                 {TABLE_ROWS.length !== 0 && unsuccedRegistrations.length === 0 ?
-                    <div className={"mt-4"}>
+                    <div className={"mt-4 bg-slate-200 rounded p-2"}>
                         <div className={"grid grid-cols-2 gap-2"}>
                             <label id="disabled-input-2" aria-label="disabled input 2"
                                    className={"rounded bg-slate-300 p-2 text-lg text-center"}
@@ -153,13 +130,14 @@ export default function RegisterPatientsMassively() {
                                     <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
                                         fact_check
                                     </span>
-                                The data successfully loaded, when you are ready proceed to registration
+                                The data successfully loaded, when you are ready proceed to the creation
                             </label>
-                            <Button className={"w-full h-full bg-green-500"} onClick={handleSubmitClick}>Register
-                                patients</Button>
+                            <Button className={"w-full h-full bg-green-500"} onClick={handleSubmitClick}>
+                                Create registrations
+                            </Button>
                         </div>
                         <Card className="w-full overflow-y-auto h-80 mt-4">
-                            <table className="w-full min-w-max table-auto text-left">
+                            <table className="w-full min-w-max table-auto text-left overflow-y-auto h-32">
                                 <thead>
                                 <tr>
                                     {TABLE_HEAD.map((head) => (
@@ -176,8 +154,8 @@ export default function RegisterPatientsMassively() {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {TABLE_ROWS.map(patient => (
-                                    <tr key={patient.patientAMKA} className="even:bg-blue-gray-50/50">
+                                {TABLE_ROWS.map(registration => (
+                                    <tr className="even:bg-blue-gray-50/50">
                                         <td className="p-4">
                                             <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
                                                 check_circle
@@ -185,27 +163,17 @@ export default function RegisterPatientsMassively() {
                                         </td>
                                         <td className="p-4">
                                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {patient.userName}
+                                                {registration.patientHistoryRegistrationAppointmentId}
                                             </Typography>
                                         </td>
                                         <td className="p-4">
                                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {patient.userSurname}
+                                                {registration.patientHistoryRegistrationHealthProblems}
                                             </Typography>
                                         </td>
                                         <td className="p-4">
                                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {patient.userIdNumber}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {patient.userEmail}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {patient.patientAMKA}
+                                                {registration.patientHistoryRegistrationTreatment}
                                             </Typography>
                                         </td>
                                     </tr>
@@ -217,7 +185,7 @@ export default function RegisterPatientsMassively() {
                     : TABLE_ROWS.length === 0 && unsuccedRegistrations.length !== 0 ?
                         <div className={"mt-2"}>
                             <p className={"text-red-600 font-bold text-3xl"}>
-                                The following patients fail to registered, please choose another file
+                                The following registrations fail to be created, please choose another file
                             </p>
                             <Card className="h-full w-full overflow-scroll mt-4">
                                 <table className="w-full min-w-max table-auto text-left">
@@ -237,8 +205,8 @@ export default function RegisterPatientsMassively() {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {unsuccedRegistrations.map(patient => (
-                                        <tr key={patient.patientAMKA} className="even:bg-blue-gray-50/50">
+                                    {unsuccedRegistrations.map(registration => (
+                                        <tr className="even:bg-blue-gray-50/50">
                                             <td className="p-4">
                                             <span className="material-icons-outlined text-gray-600 mx-2 align-text-top text-red-600">
                                                 close
@@ -246,27 +214,17 @@ export default function RegisterPatientsMassively() {
                                             </td>
                                             <td className="p-4">
                                                 <Typography variant="small" color="blue-gray" className="font-normal">
-                                                    {patient.userName}
+                                                    {registration.patientHistoryRegistrationAppointmentId}
                                                 </Typography>
                                             </td>
                                             <td className="p-4">
                                                 <Typography variant="small" color="blue-gray" className="font-normal">
-                                                    {patient.userSurname}
+                                                    {registration.patientHistoryRegistrationHealthProblems}
                                                 </Typography>
                                             </td>
                                             <td className="p-4">
                                                 <Typography variant="small" color="blue-gray" className="font-normal">
-                                                    {patient.userIdNumber}
-                                                </Typography>
-                                            </td>
-                                            <td className="p-4">
-                                                <Typography variant="small" color="blue-gray" className="font-normal">
-                                                    {patient.userEmail}
-                                                </Typography>
-                                            </td>
-                                            <td className="p-4">
-                                                <Typography variant="small" color="blue-gray" className="font-normal">
-                                                    {patient.patientAMKA}
+                                                    {registration.patientHistoryRegistrationTreatment}
                                                 </Typography>
                                             </td>
                                         </tr>
