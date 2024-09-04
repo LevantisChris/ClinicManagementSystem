@@ -358,6 +358,16 @@ export function DisplayAllHistory() {
                             </div>
                         </header>
 
+                        <Button
+                            className={"text-xs mt-2 text-white bg-blue-500"}
+                            onClick={() => GeneratePDF.createPDF(
+                                registrationToSee.appointment.appointmentPatient.user.user_name + " " + registrationToSee.appointment.appointmentPatient.user.user_surname,
+                                registrationToSee
+                                )}
+                        >
+                            Generate as PDF
+                        </Button>
+
                         <div
                             className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 mb-5 shadow-xl">
                             <div className="bg-blue-200 p-2 rounded-xl">

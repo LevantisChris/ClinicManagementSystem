@@ -53,11 +53,17 @@ class GeneratePDF {
 
             pdfBlob = doc.output('blob');
         } else { // The jsonData is not an array, only an object
-            doc.text("Patient History for: " + patientUsername, margin, yOffset);
+            doc.text("Patient Registration for: " + patientUsername, margin, yOffset);
             yOffset += lineHeight;
 
             Object.keys(jsonData).forEach((key) => {
-                const text = `${key}: ${jsonData[key]}`;
+                let text;
+                if(key === "appointment")
+                    text = `RelevantAppointmentDate: ${jsonData[key].appointmentDate}`;
+                else if(key === "patientHistoryRegistrationDateRegister")
+                    text = `RegistrationDate&Time: ${jsonData[key].split("T")[0]} at ${jsonData[key].split("T")[1]}`
+                else
+                    text = `${key}: ${jsonData[key]}`;
                 const splitText = doc.splitTextToSize(text, pageWidth - 2 * margin);
                 splitText.forEach(line => {
                     doc.text(line, margin, yOffset);
