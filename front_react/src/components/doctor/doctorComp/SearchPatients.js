@@ -81,6 +81,8 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
         }
     }
 
+    /* pagination settings */
+
     return (
         <div className="flex flex-col h-min w-full p-4">
             <p className="font-light text-5xl">

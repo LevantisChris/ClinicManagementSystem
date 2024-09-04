@@ -46,9 +46,7 @@ export function DisplayAllHistory() {
             endDate: value !== null ? formatDateToLocal(value.endDate) : "",
             patientID: patientHistoryToSee.patientId
         }
-        console.log("TET: ", params)
         const response = await UserService.searchRegistrations(params);
-        console.log(response)
         setFilteredResults(response)
     }
 
@@ -65,6 +63,38 @@ export function DisplayAllHistory() {
         setFilteredResults(null)
         setShowClearButton(false)
     }
+
+    /* pagination settings */
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
+    const totalItems = (filteredResults === null && patientHistoryToSee !== null && patientHistoryToSee.patientHistoryRegistrations !== undefined)
+        ? patientHistoryToSee.patientHistoryRegistrations.length
+        : (filteredResults !== null && filteredResults.statusCode === 200)
+            ? filteredResults.patientHistoryRegistrations.length
+            : 0;
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    const handleClick = (page) => {
+        setCurrentPage(page);
+    };
+
+    const getPaginatedData = (data) => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return data.slice(startIndex, endIndex);
+    };
+
+    const paginatedData = (filteredResults === null && patientHistoryToSee !== null && patientHistoryToSee.patientHistoryRegistrations !== undefined)
+        ? getPaginatedData(patientHistoryToSee.patientHistoryRegistrations)
+        : (filteredResults !== null && filteredResults.statusCode === 200)
+            ? getPaginatedData(filteredResults.patientHistoryRegistrations)
+            : [];
+
+    /*-------------------------------------------------------------*/
+
 
     return (
         <div className={"w-full p-2"}>
@@ -149,43 +179,44 @@ export function DisplayAllHistory() {
                                 {
                                     filteredResults === null
                                     ?
-                                        patientHistoryToSee.patientHistoryRegistrations.map((registration) => (
-                                        <div
-                                            key={registration.patientHistoryRegistrationId}
-                                            className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-200 hover:shadow-lg transition-shadow duration-300 mb-4"
-                                            onClick={() => setRegistrationToSee(registration)}
-                                        >
-                                            <div className="grid grid-cols-3 w-max h-full">
-                                                <div className="flex flex-col justify-start">
-                                                    <div className="text-lg font-semibold">
-                                                        <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
-                                                          fact_check
+                                        paginatedData.map((registration) => (
+                                            <div
+                                                key={registration.patientHistoryRegistrationId}
+                                                className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-200 hover:shadow-lg transition-shadow duration-300 mb-4"
+                                                onClick={() => setRegistrationToSee(registration)}
+                                            >
+                                                <div className="grid grid-cols-3 w-max h-full">
+                                                    <div className="flex flex-col justify-start">
+                                                        <div className="text-lg font-semibold">
+                                                            <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
+                                                              fact_check
+                                                            </span>
+                                                            {"ID: " + registration.patientHistoryRegistrationId}
+                                                        </div>
+                                                        <div className="text-md">
+                                                            Health problem:{" "}
+                                                            {registration.patientHistoryRegistrationHealthProblems}
+                                                        </div>
+                                                        <div className="text-sm text-gray-500">
+                                                            Suggested Treatment:{" "}
+                                                            {registration.patientHistoryRegistrationTreatment}
+                                                        </div>
+                                                        <div className="text-sm text-gray-500">
+                                                            Doctor:{" "}
+                                                            {registration.appointment.appointmentDoctor.user.user_name}{" "}
+                                                            {registration.appointment.appointmentDoctor.user.user_surname}
+                                                        </div>
+                                                        <div className="text-sm text-gray-500">
+                                                            Relative appointment date:{" "}
+                                                            {registration.appointment.appointmentDate}
+                                                        </div>
+                                                        <span className="material-icons-outlined text-gray-600">
+                                                            more_horiz
                                                         </span>
-                                                        {"ID: " + registration.patientHistoryRegistrationId}
                                                     </div>
-                                                    <div className="text-md">
-                                                        Health problem:{" "}
-                                                        {registration.patientHistoryRegistrationHealthProblems}
-                                                    </div>
-                                                    <div className="text-sm text-gray-500">
-                                                        Suggested Treatment:{" "}
-                                                        {registration.patientHistoryRegistrationTreatment}
-                                                    </div>
-                                                    <div className="text-sm text-gray-500">
-                                                        Doctor:{" "}
-                                                        {registration.appointment.appointmentDoctor.user.user_name}{" "}
-                                                        {registration.appointment.appointmentDoctor.user.user_surname}
-                                                    </div>
-                                                    <div className="text-sm text-gray-500">
-                                                        Relative appointment date:{" "}
-                                                        {registration.appointment.appointmentDate}
-                                                    </div>
-                                                    <span className="material-icons-outlined text-gray-600">
-                                                        more_horiz
-                                                    </span>
                                                 </div>
                                             </div>
-                                        </div>
+
                                     ))
                                     : (filteredResults.statusCode === 200
                                         ? filteredResults.patientHistoryRegistrations.map((registration) => (
@@ -241,6 +272,18 @@ export function DisplayAllHistory() {
                                             ) : null
                                         )
                                 }
+                                {/* Pagination Controls */}
+                                <div className="flex justify-center mt-4">
+                                    {Array.from({ length: totalPages }, (_, index) => (
+                                        <button
+                                            key={index + 1}
+                                            onClick={() => handleClick(index + 1)}
+                                            className={`px-3 py-1 mx-1 rounded-lg ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                                        >
+                                            {index + 1}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
 
