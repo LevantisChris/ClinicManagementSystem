@@ -76,12 +76,36 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                 patientId: patientId
             }
             const response = await UserService.getAllPatientHistory(params)
-            console.log('TETSTSRTS: ', response)
             setPatientHistoryToSee(response) // might be an error we will handle it in the component Display All history
         }
     }
 
     /* pagination settings */
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
+    const totalItems = patientResultsList !== null
+        ? patientResultsList.length
+        : 0;
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    const handleClick = (page) => {
+        setCurrentPage(page);
+    };
+
+    const getPaginatedData = (data) => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return data.slice(startIndex, endIndex);
+    };
+
+    const paginatedData = patientResultsList !== null
+        ? getPaginatedData(patientResultsList)
+        : [];
+
+    /*---------------------------------------------*/
 
     return (
         <div className="flex flex-col h-min w-full p-4">
@@ -133,8 +157,9 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
             {/* Map the results */}
             <div className="items-center w-full h-min">
                 <div className="flex flex-col w-full h-full">
-                    {patientResultsList && patientResultsList.length !== 0
-                        ? patientResultsList.map(patient => (
+                    {
+                        patientResultsList && patientResultsList.length !== 0
+                        ? paginatedData.map(patient => (
                             <div
                                 key={patient.patientId}
                                 className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4"
@@ -158,6 +183,18 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                             </div>
                         )) : "No patients found, try again"
                     }
+                    {/* Pagination Controls */}
+                    <div className="flex justify-center mt-4">
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <button
+                                key={index + 1}
+                                onClick={() => handleClick(index + 1)}
+                                className={`px-3 py-1 mx-1 rounded-lg ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
             {viewDisplayPatientComponent && (componentState !== 1 || componentState !== 2) ? (

@@ -151,6 +151,33 @@ export default function SearchAppointments() {
         return undefined;
     }
 
+    /* pagination settings */
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 4;
+
+    const totalItems = (appointmentsResolvedList !== null)
+        ? appointmentsResolvedList.length
+        :  0;
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    const handleClick = (page) => {
+        setCurrentPage(page);
+    };
+
+    const getPaginatedData = (data) => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return data.slice(startIndex, endIndex);
+    };
+
+    const paginatedData = (appointmentsResolvedList !== null)
+        ? getPaginatedData(appointmentsResolvedList)
+        : [];
+
+    /*-------------------------------------------------------------*/
+
     return (
         <div className="flex flex-col h-min w-full p-5">
             <p className={"font-light text-5xl"}>
@@ -167,7 +194,7 @@ export default function SearchAppointments() {
                         value={selectedFilter}
                         onChange={handleSelectedFilter}
                     >
-                        <option value="none">None</option>
+                        <option value="today_appointments">Today Appointments</option>
                         <option value="surname">By Surname</option>
                         <option value="AMKA">By AMKA</option>
                         <option value="appointState">By Appoin. state</option>
@@ -214,7 +241,7 @@ export default function SearchAppointments() {
                             {endDate === null ? setEndDate(new Date()) : endDate.getDate() ? endDate.toDateString() : "Select end date"}
                         </div>
                     </>
-                ) : (
+                ) : (selectedFilter !== "today_appointments" ? (
                     <div className="col-span-1 w-full">
                         <form className="w-full">
                             <div className="relative">
@@ -227,7 +254,7 @@ export default function SearchAppointments() {
                             </div>
                         </form>
                     </div>
-
+                    ): ""
                 )
                 }
 
@@ -253,7 +280,7 @@ export default function SearchAppointments() {
                     <div className={"flex flex-col w-full h-full"}>
 
                         {
-                            appointmentsResolvedList !== null && appointmentsResolvedList.length !== 0 ? appointmentsResolvedList.map(appointment => (
+                            appointmentsResolvedList !== null && appointmentsResolvedList.length !== 0 ? paginatedData.map(appointment => (
                                 <div
                                     key={appointment.appointmentId}
                                     className={
@@ -304,6 +331,18 @@ export default function SearchAppointments() {
                                 </div>
                             )) : "No appointments found"
                         }
+                        {/* Pagination Controls */}
+                        <div className="flex justify-center mt-4">
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index + 1}
+                                    onClick={() => handleClick(index + 1)}
+                                    className={`px-3 py-1 mx-1 rounded-lg ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Calendar Modal */}

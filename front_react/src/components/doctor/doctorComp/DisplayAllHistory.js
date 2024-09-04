@@ -67,7 +67,7 @@ export function DisplayAllHistory() {
     /* pagination settings */
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 2;
 
     const totalItems = (filteredResults === null && patientHistoryToSee !== null && patientHistoryToSee.patientHistoryRegistrations !== undefined)
         ? patientHistoryToSee.patientHistoryRegistrations.length
