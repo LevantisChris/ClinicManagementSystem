@@ -5,6 +5,7 @@ import {Alert, Button, Input} from "@material-tailwind/react";
 import {motion} from 'framer-motion';
 import Datepicker from "react-tailwindcss-datepicker";
 import UserService from "../../../services/UserService";
+import GeneratePDF from "../../../services/GeneratePDF";
 
 export function DisplayAllHistory() {
 
@@ -126,6 +127,16 @@ export function DisplayAllHistory() {
                                     <p className="text-2xl text-black font-black hover:text-sky-700">
                                         {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_name} {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_surname} History
                                     </p>
+                                    <Button
+                                        className={"text-xs mt-2 text-white bg-blue-500"}
+                                        onClick={() => GeneratePDF.createPDF(
+                                            patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_name + " " +patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_surname,
+                                            patientHistoryToSee.patientHistoryRegistrations
+                                        )
+                                    }
+                                    >
+                                        Generate PDF
+                                    </Button>
                                 </div>
                                 <div>
                                     <Button className={"text-xl text-white bg-blue-500"}
