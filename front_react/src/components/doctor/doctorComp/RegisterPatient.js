@@ -86,100 +86,103 @@ export default function RegisterPatient() {
 
             {/* Form to register the user */}
             <form className="w-full h-full mx-auto mt-5">
-                <div className="relative z-0 w-full mb-5 group">
+                {/*<div className="relative z-0 w-full mb-5 group">*/}
+                <div className="z-0 w-full mb-5 group">
                     <input
                         type="email"
                         name="floating_email"
                         id="floating_email"
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
+                        placeholder="Email address"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                    <label htmlFor="floating_email"
-                           className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                        Email address
-                    </label>
+                    {/*<label htmlFor="floating_email"*/}
+                    {/*       className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">*/}
+                    {/*    Email address*/}
+                    {/*</label>*/}
                 </div>
 
                 {/* First Name */}
-                <div className="grid md:grid-cols-2 md:gap-6">
-                    <div className="relative z-0 w-full mb-5 group">
+                <div className="">
+                    <div className="z-0 w-full mb-5 group">
                         <input
                             type="text"
                             name="floating_first_name"
                             id="floating_first_name"
                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
+                            placeholder="First name"
                             required
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
                         />
-                        <label htmlFor="floating_first_name"
-                               className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                            First name
-                        </label>
+                        {/*<label htmlFor="floating_first_name"*/}
+                        {/*       className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">*/}
+                        {/*    First name*/}
+                        {/*</label>*/}
                     </div>
 
                     {/* Last Name */}
-                    <div className="relative z-0 w-full mb-5 group">
+                    {/*<div className="relative z-0 w-full mb-5 group">*/}
+                    <div className="z-0 w-full mb-5 group">
                         <input
                             type="text"
                             name="floating_last_name"
                             id="floating_last_name"
                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
+                            placeholder="Last name"
                             required
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
                         />
-                        <label htmlFor="floating_last_name"
-                               className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                            Last name
-                        </label>
+                        {/*<label htmlFor="floating_last_name"*/}
+                        {/*       className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">*/}
+                        {/*    Last name*/}
+                        {/*</label>*/}
                     </div>
                 </div>
 
                 {/* Phone */}
-                <div className="grid md:grid-cols-2 md:gap-6">
-                    <div className="relative z-0 w-full mb-5 group">
+                <div className="">
+                    {/*<div className="relative z-0 w-full mb-5 group">*/}
+                    <div className="z-0 w-full mb-5 group">
                         <input
                             type="text"
                             name="id_number"
                             id="id_number"
                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
+                            placeholder="ID number"
                             required
                             value={idnumber}
                             onChange={(e) => setIdNumber(e.target.value)}
                             pattern="[A-Za-z]{8}" // Enforces exactly 8 letters (uppercase or lowercase)
                             title="ID number must be exactly 8 letters"
                         />
-                        <label
-                            htmlFor="id_number"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            ID number
-                        </label>
+                        {/*<label*/}
+                        {/*    htmlFor="id_number"*/}
+                        {/*    className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"*/}
+                        {/*>*/}
+                        {/*    ID number*/}
+                        {/*</label>*/}
                     </div>
 
                     {/* AMKA */}
-                    <div className="relative z-0 w-full mb-5 group">
+                    <div className="z-0 w-full mb-5 group">
                         <input
                             type="text"
                             name="floating_company"
                             id="AMKA"
                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
+                            placeholder="AMKA"
                             required
                             value={amka}
                             onChange={(e) => setAmka(e.target.value)}
                         />
-                        <label htmlFor="AMKA"
-                               className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                            AMKA
-                        </label>
+                        {/*<label htmlFor="AMKA"*/}
+                        {/*       className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">*/}
+                        {/*    AMKA*/}
+                        {/*</label>*/}
                     </div>
                 </div>
 
@@ -196,14 +199,14 @@ export default function RegisterPatient() {
                         Submit
                     </button>
                     {error ?
-                        <div className="relative z-0 w-full mb-5 group">
+                        <div className="z-0 w-full mb-5 group">
                             <label className="text-red-600">
                                 An error occurred
                             </label>
                         </div>
                         : success
                             ?
-                            <div className="relative z-0 w-full mb-5 group">
+                            <div className="z-0 w-full mb-5 group">
                                 <label className="text-green-600">
                                     The patient registered successfully
                                 </label>
@@ -217,22 +220,22 @@ export default function RegisterPatient() {
             <p className={"mt-5 font-light text-5xl"}>
                 Some, already registered patients
             </p>
-            <Card className="h-full w-full overflow-scroll mt-5">
+            <div className="h-full w-full overflow-scroll mt-5 bg-white rounded-xl">
                 <table className="w-full min-w-max table-auto text-left">
                     <thead>
-                    <tr>
-                        {TABLE_HEAD.map((head) => (
-                            <th key={head} className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                                <Typography
-                                    variant="small"
-                                    color="blue-gray"
-                                    className="font-normal leading-none opacity-70"
-                                >
-                                    {head}
-                                </Typography>
-                            </th>
-                        ))}
-                    </tr>
+                        <tr>
+                            {TABLE_HEAD.map((head) => (
+                                <th key={head} className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                                    <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-normal leading-none"
+                                    >
+                                        {head}
+                                    </Typography>
+                                </th>
+                            ))}
+                        </tr>
                     </thead>
                     <tbody>
                     {
@@ -290,7 +293,7 @@ export default function RegisterPatient() {
                     }
                     </tbody>
                 </table>
-            </Card>
+            </div>
 
         </div>
     )
