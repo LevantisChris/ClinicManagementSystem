@@ -108,34 +108,34 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
     /*---------------------------------------------*/
 
     return (
-        <div className="flex flex-col h-min w-full p-4">
-            <p className="font-light text-5xl">
+        <div className="flex flex-col h-min w-full p-3 sm:p-4">
+            <p className="font-light mr-10 sm:mr-0 text-3xl md:text-5xl">
                 {bigTitle && bigTitle.length !== 0 ? bigTitle : "Search patients based on criteria"}
             </p>
-            <p className="mt-2 font-light text-slate-400">
+            <p className="mt-2 mr-10 sm:mr-0 font-light text-slate-400 text-sm md:text-base">
                 {smallTitle && smallTitle.length !== 0 ? smallTitle : "If you don't give any search criteria, all the patients will be returned"}
             </p>
-            <div className="grid grid-cols-3 p-4 gap-4 h-min">
+            <div className="grid grid-cols-3 mr-10 sm:mr-0 p-4 gap-4 h-min">
                 <div className="col-span-1 w-full">
                     <form className="w-full">
-                        <div className="relative">
+                        <div className="">
                             <input
                                 type="text"
                                 onChange={handleInputAMKAChange}
                                 placeholder="Patient AMKA"
-                                className="bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full"
+                                className="w-full bg-white h-10 sm:px-5 sm:pr-10 rounded-full text-xs sm:text-sm focus:outline-none"
                             />
                         </div>
                     </form>
                 </div>
                 <div className="col-span-1 w-full">
                     <form className="w-full">
-                        <div className="relative">
+                        <div className="">
                             <input
                                 type="text"
                                 onChange={handleInputSurnameChange}
                                 placeholder="Patient surname"
-                                className="bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full"
+                                className="bg-white h-10 sm:px-5 sm:pr-10 rounded-full text-xs sm:text-sm focus:outline-none w-full"
                             />
                         </div>
                     </form>
@@ -147,7 +147,7 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                         <input
                             type="button"
                             value="Search"
-                            className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 w-full"
+                            className="bg-blue-500 text-white px-2 py-2 sm:px-4 sm:py-2 rounded cursor-pointer hover:bg-blue-700 w-full"
                             onClick={handleButtonClick}
                         />
                     </form>
@@ -159,30 +159,29 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                 <div className="flex flex-col w-full h-full">
                     {
                         patientResultsList && patientResultsList.length !== 0
-                        ? paginatedData.map(patient => (
-                            <div
-                                key={patient.patientId}
-                                className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4"
-                                onClick={() => handleViewPatient(patient.patientId)}
-                            >
-                                <div className="grid grid-cols-3 w-max h-full">
-                                    <div className="flex flex-col justify-start">
-                                        <div className="text-lg font-semibold">
-                                                <span
-                                                    className="material-icons-outlined text-gray-600 mx-2 align-text-top">
-                                                    person
-                                                </span>
-                                            {patient.patientUser.user_name} {patient.patientUser.user_surname}
-                                        </div>
-                                        {/* AMKA (patient) */}
-                                        <div className="text-sm">
-                                            {"AMKA: " + patient.patientAMKA}
+                            ? paginatedData.map(patient => (
+                                <div
+                                    key={patient.patientId}
+                                    className="flex flex-col cursor-pointer w-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4"
+                                    onClick={() => handleViewPatient(patient.patientId)}
+                                >
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full h-full">
+                                        <div className="flex flex-col justify-start">
+                                            <div className="text-lg font-semibold flex items-center">
+                                              <span className="material-icons-outlined text-gray-600 mr-2">
+                                                person
+                                              </span>
+                                                {patient.patientUser.user_name} {patient.patientUser.user_surname}
+                                            </div>
+                                            <div className="text-sm">
+                                                {"AMKA: " + patient.patientAMKA}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        )) : "No patients found, try again"
+                            )) : "No patients found, try again"
                     }
+
                     {/* Pagination Controls */}
                     <div className="flex justify-center mt-4">
                         {Array.from({ length: totalPages }, (_, index) => (

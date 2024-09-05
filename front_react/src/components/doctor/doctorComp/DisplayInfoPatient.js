@@ -187,7 +187,7 @@ export default function DisplayInfoPatient({patient}) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.1, ease: 'easeOut' }}
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto "
         >
             {
                 loading ? (
@@ -198,13 +198,13 @@ export default function DisplayInfoPatient({patient}) {
                     <ErrorApp />
                 ) : (
                     <div
-                        className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-5/12 max-w-full h-5/6 overflow-auto">
+                        className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl ml-2 mr-2 w-max sm:w-5/12 max-w-full h-5/6 overflow-auto">
                         <header className="rounded  bg-slate-200 px-4 py-2 flex justify-between items-center">
                             {!updateState ?
-                                <p className="text-4xl text-black font-black hover:text-sky-700">
+                                <p className="text-xl sm:text-4xl text-black font-black hover:text-sky-700">
                                     {patient.patientUser.user_name} {patient.patientUser.user_surname}
                                 </p>
-                                : <p className="text-3xl text-black font-black hover:text-sky-700">
+                                : <p className="text-lg sm:text-3xl text-black font-black hover:text-sky-700">
                                     Provide the new info about the patient
                                 </p>
                             }
@@ -229,16 +229,16 @@ export default function DisplayInfoPatient({patient}) {
                             {
                                 !updateState ? (
                                     <>
-                                        <p className="text-black text-lg font-light hover:text-sky-700">
+                                        <p className="text-black text-sm sm:text-lg font-light hover:text-sky-700">
                                             Email: {patient.patientUser.email}
                                         </p>
-                                        <p className="text-black text-lg font-light hover:text-sky-700">
+                                        <p className="text-black text-sm sm:text-lg font-light hover:text-sky-700">
                                             ID number: {patient.patientUser.user_idNumber}
                                         </p>
-                                        <p className="text-black text-lg font-light hover:text-sky-700">
+                                        <p className="text-black text-sm sm:text-lg font-light hover:text-sky-700">
                                             AMKA: {patient.patientAMKA}
                                         </p>
-                                        <p className="text-black text-lg  font-light hover:text-sky-700">
+                                        <p className="text-black text-sm sm:text-lg font-light hover:text-sky-700">
                                             System registration date: {patient.patientRegistrationDate}
                                         </p>
                                     </>
@@ -334,14 +334,14 @@ export default function DisplayInfoPatient({patient}) {
                                 <>
                                     <div>
                                         <button
-                                            className="bg-blue-400 p-4 text-black-400 hover:bg-blue-600 rounded-xl transition duration-500 ease-in-out"
+                                            className="bg-blue-400 p-3 sm:p-4 text-black-400 hover:bg-blue-600 rounded-xl transition duration-500 ease-in-out"
                                             onClick={handleUpdateButtonClicked}>
                                             Update patient
                                         </button>
                                     </div>
                                     <div>
                                         <button
-                                            className="bg-red-400 p-4 text-black-400 hover:bg-red-600 rounded-xl transition duration-500 ease-in-out"
+                                            className="bg-red-400 p-3 sm:p-4 text-black-400 hover:bg-red-600 rounded-xl transition duration-500 ease-in-out"
                                             onClick={handleDeleteButtonClick}>
                                             Delete patient
                                         </button>
