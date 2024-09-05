@@ -180,17 +180,17 @@ export default function SearchAppointments() {
 
     return (
         <div className="flex flex-col h-min w-full p-5">
-            <p className={"font-light text-5xl"}>
+            <p className={"font-light text-2xl sm:text-5xl"}>
                 Search & View appointments
             </p>
-            <p className={"mt-2 font-light text-slate-400"}>
+            <p className={"mt-2 font-light text-slate-400 text-xs sm:text-lg"}>
                 If you dont give any search criteria, all the appointments for the current day will be returned
             </p>
             <div className={`grid ${selectedFilter === 'date' ? 'grid-cols-4' : 'grid-cols-3'} p-4 gap-4 h-min`}>
                 {/* Choice Box */}
                 <div className="w-full">
                     <select
-                        className="border p-2 rounded w-full shadow-sm"
+                        className="border p-1 sm:p-3 rounded w-full shadow-sm text-xs sm:text-base"
                         value={selectedFilter}
                         onChange={handleSelectedFilter}
                     >
@@ -207,7 +207,7 @@ export default function SearchAppointments() {
                     <>
                         <div className="w-full">
                             <select
-                                className="border p-2 rounded w-full shadow-sm"
+                                className="border p-1 sm:p-3 rounded w-full shadow-sm text-xs sm:text-base"
                                 value={filterAppointStateSelectedOption}
                                 onChange={handleSelectedState}
                             >
@@ -218,10 +218,11 @@ export default function SearchAppointments() {
                             </select>
                         </div>
                     </>
+
                 ) : selectedFilter === 'date' ? (
                     <>
                         {/* Starting Date */}
-                        <div className="flex items-center border-2 bg-white">
+                        <div className="flex items-center sm:border-2 sm:bg-white text-xs sm:text-lg">
                             <span
                                 className="material-icons-outlined cursor-pointer text-gray-600 mx-2"
                                 onClick={handleStartDateCalendarClick}
@@ -231,9 +232,9 @@ export default function SearchAppointments() {
                             {startDate === null ? setStartDate(new Date()) : startDate.getDate() ? startDate.toDateString() : "Select starting date"}
                         </div>
                         {/* Ending Date */}
-                        <div className="flex items-center border-2 bg-white">
+                        <div className="flex items-center sm:border-2 sm:bg-white text-xs sm:text-lg">
                             <span
-                                className="material-icons-outlined cursor-pointer text-gray-600 mx-2"
+                                className="material-icons-outlined cursor-pointer text-gray-600 sm:mx-2"
                                 onClick={handleEndDateCalendarClick}
                             >
                                 edit_calendar
@@ -244,12 +245,12 @@ export default function SearchAppointments() {
                 ) : (selectedFilter !== "today_appointments" ? (
                     <div className="col-span-1 w-full">
                         <form className="w-full">
-                            <div className="relative">
+                            <div className="">
                                 <input
                                     type="text"
                                     onChange={selectedFilter === 'AMKA' ? handleInputAMKAChange : handleInputSurnameChange}
                                     placeholder={selectedFilter === 'AMKA' ? "Enter the AMKA" : "Enter the surname"}
-                                    className="bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full"
+                                    className="bg-white  sm:h-10 p-1 sm:px-5 sm:pr-10 rounded-full focus:outline-none w-full text-xs sm:text-base"
                                 />
                             </div>
                         </form>
@@ -264,7 +265,7 @@ export default function SearchAppointments() {
                         <input
                             type={"button"}
                             value="Search"
-                            className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 w-full"
+                            className="bg-blue-500 text-white p-1 sm:px-4 sm:py-2 rounded cursor-pointer hover:bg-blue-700 w-full text-xs sm:text-base"
                             onClick={handleSubmitButtonClick}
                         />
                     </form>
@@ -284,53 +285,39 @@ export default function SearchAppointments() {
                                 <div
                                     key={appointment.appointmentId}
                                     className={
-                                        appointment.appointmentStateId === 1 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4`
-                                            : appointment.appointmentStateId === 2 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-yellow-300 hover:shadow-lg transition-shadow duration-300 mb-4`
-                                                : appointment.appointmentStateId === 3 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-green-300 hover:shadow-lg transition-shadow duration-300 mb-4`
-                                                    : appointment.appointmentStateId === 4 ? `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-red-300 hover:shadow-lg transition-shadow duration-300 mb-4`
-                                                        : `flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-purple-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                        appointment.appointmentStateId === 1 ? `flex flex-col cursor-pointer w-full p-2 sm:p-4 rounded-xl bg-blue-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                            : appointment.appointmentStateId === 2 ? `flex flex-col cursor-pointer w-full p-2 sm:p-4 rounded-xl bg-yellow-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                                : appointment.appointmentStateId === 3 ? `flex flex-col cursor-pointer w-full p-2 sm:p-4 rounded-xl bg-green-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                                    : appointment.appointmentStateId === 4 ? `flex flex-col cursor-pointer w-full p-2 sm:p-4 rounded-xl bg-red-300 hover:shadow-lg transition-shadow duration-300 mb-4`
+                                                        : `flex flex-col cursor-pointer w-full p-2 sm:p-4 rounded-xl bg-purple-300 hover:shadow-lg transition-shadow duration-300 mb-4`
                                     }
                                     onClick={() => handleViewAppointment(appointment.appointmentId)}
                                 >
-                                    <div className="grid grid-cols-3 w-max h-full">
-                                        <div className="flex flex-col justify-start">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="flex flex-col">
                                             {/* Appointment Code */}
-                                            <div className="text-lg font-semibold">
-                                                    <span
-                                                        className="material-icons-outlined text-gray-600 mx-2 align-text-top"
-                                                    >
-                                                        fact_check
-                                                    </span>
+                                            <div className="text-md sm:text-lg font-semibold">
+                                                <span className="material-icons-outlined text-gray-600 mx-1 sm:mx-2 align-text-top">fact_check</span>
                                                 {"ID: " + appointment.appointmentId}
                                             </div>
                                             {/* AMKA (patient) */}
-                                            <div
-                                                className="text-md">{"AMKA: " + appointment.appointmentPatientAMKA}</div>
+                                            <div className="text-sm sm:text-md">{"AMKA: " + appointment.appointmentPatientAMKA}</div>
                                             {/* Time */}
-                                            <div className="text-sm text-gray-500">
-                                                In {appointment.appointmentDate}
-                                            </div>
-                                            <div className="text-sm text-gray-500">
-                                                From {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
-                                            </div>
+                                            <div className="text-xs sm:text-sm text-gray-500">In {appointment.appointmentDate}</div>
+                                            <div className="text-xs sm:text-sm text-gray-500">From {appointment.appointmentStartTime} to {appointment.appointmentEndTime}</div>
                                             {/* Click to view more info about the appointment */}
-                                            <span
-                                                className="material-icons-outlined text-gray-600"
-                                            >
-                                                        more_horiz
-                                                </span>
+                                            <span className="material-icons-outlined text-gray-600 hidden sm:block">more_horiz</span>
                                         </div>
-                                        <div className="flex flex-col justify-start">
-                                            {/* Code */}
-                                            <div className="text-lg font-semibold">Reason for the appointment</div>
-                                            <div className="text-md">
-                                                {appointment.appointmentJustification}
-                                            </div>
+                                        <div className="flex flex-col">
+                                            {/* Reason for Appointment */}
+                                            <div className="text-md sm:text-lg font-semibold">Reason for the appointment</div>
+                                            <div className="text-sm sm:text-md">{appointment.appointmentJustification}</div>
                                         </div>
                                     </div>
                                 </div>
                             )) : "No appointments found"
                         }
+
                         {/* Pagination Controls */}
                         <div className="flex justify-center mt-4">
                             {Array.from({ length: totalPages }, (_, index) => (
@@ -353,7 +340,7 @@ export default function SearchAppointments() {
                             animate={{opacity: 1}}
                             transition={{duration: 0.3, ease: 'easeOut'}}
                         >
-                            <div className="relative z-10" aria-labelledby="modal-title" role="dialog"
+                            <div className="z-10" aria-labelledby="modal-title" role="dialog"
                                  aria-modal="true">
                                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
                                      aria-hidden="true"></div>
@@ -362,7 +349,7 @@ export default function SearchAppointments() {
                                     <div
                                         className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                                         <div
-                                            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                                            className="transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                                             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                                 <Calendar
                                                     onChange={handleStartDateChange}
@@ -384,7 +371,7 @@ export default function SearchAppointments() {
                             animate={{opacity: 1}}
                             transition={{duration: 0.3, ease: 'easeOut'}}
                         >
-                            <div className="relative z-10" aria-labelledby="modal-title" role="dialog"
+                            <div className="z-10" aria-labelledby="modal-title" role="dialog"
                                  aria-modal="true">
                                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
                                      aria-hidden="true"></div>
@@ -393,7 +380,7 @@ export default function SearchAppointments() {
                                     <div
                                         className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                                         <div
-                                            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                                            className="transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                                             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                                 <Calendar
                                                     onChange={handleEndDateChange}
