@@ -31,7 +31,7 @@ export default function SideBar() {
     } = useContext(GlobalContext);
 
     return (
-        <aside className={'p-5 shadow-2xl'}>
+        <aside className={'p-5 shadow-2xl hidden sm:block'}>
             <div className={"w-64 scrollable-sidebar"}>
                 {/*<CreateEventButton/>*/}
                 <SmallCalendar/>
@@ -221,5 +221,6 @@ export default function SideBar() {
                     </nav>
                 </div>
             </div>
-        </aside>);
+        </aside>
+    );
 }
