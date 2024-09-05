@@ -102,7 +102,7 @@ function DoctorApp() {
         <>
             {userAuthed ? (
                 <>
-                    {showEventModal && <EventModal />}
+                    {/*{showEventModal && <EventModal />}*/}
                     {showInsertModal && <InsertModal />}
                     <div className={'h-screen flex flex-col'}>
                         <CalendarHeader />

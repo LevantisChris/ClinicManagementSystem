@@ -5,10 +5,10 @@ import logo from '../../../assets/health.png';
 import user_32IMG from '../../../assets/icons8-user-50.png';
 import GlobalContext from "../../../context/GlobalContext";
 import dayjs from "dayjs";
-import DescriptionInsertModal from "./DescriptionInsertModal";
 import ActiveHoursModal from "./ActiveHoursModal";
-import {useNavigate} from "react-router-dom";
 import UserService from "../../../services/UserService";
+import { useNavigate } from "react-router-dom";
+
 
 export default function CalendarHeader() {
     const {monthIndex,
@@ -26,7 +26,7 @@ export default function CalendarHeader() {
         showRegisterPatientHistoryMassively
     } = useContext(GlobalContext);
     const [menuOpen, setMenuOpen] = useState(false);
-
+    const navigate = useNavigate();
 
     function handlePrevMonth() {
         setMonthIndex(monthIndex - 1);
@@ -110,9 +110,17 @@ export default function CalendarHeader() {
                         </div>
                         {menuOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
-                                <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-200" onClick={showActiveHoursModalHandler}>Working hours</a>
-                                <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Settings</a>
-                                <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</a>
+                                <a className="block px-4 cursor-default py-2 text-gray-800 hover:bg-green-200 rounded" onClick={showActiveHoursModalHandler}>Working hours</a>
+                                <a className="block px-4 cursor-default py-2 text-gray-800 hover:bg-gray-200">Settings</a>
+                                <a
+                                    className="block px-4 cursor-default py-2 text-gray-800 hover:bg-red-200"
+                                    onClick={() => {
+                                        UserService.logout();
+                                        navigate("/auth", { replace: true });
+                                    }}
+                                >
+                                    Logout
+                                </a>
                             </div>
                         )}
                     </div>

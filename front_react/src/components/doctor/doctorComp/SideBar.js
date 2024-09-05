@@ -33,7 +33,7 @@ export default function SideBar() {
     return (
         <aside className={'p-5 shadow-2xl'}>
             <div className={"w-64 scrollable-sidebar"}>
-                <CreateEventButton/>
+                {/*<CreateEventButton/>*/}
                 <SmallCalendar/>
 
                 <div className="w-64 bg-white text-gray-600 rounded-xl border-4">
