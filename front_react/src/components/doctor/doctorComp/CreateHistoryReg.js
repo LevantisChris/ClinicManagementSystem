@@ -85,20 +85,18 @@ export default function CreateHistoryReg() {
     }
 
     return(
-        <div className="flex flex-col max-h-screen overflow-y-auto h-min w-full p-10 cursor-default">
-            <p className={"font-light text-5xl"}>
+        <div className="flex flex-col max-h-screen sm:overflow-y-auto h-min w-full p-4 sm:p-10 cursor-default">
+            <p className={"font-light text-3xl sm:text-5xl"}>
                 Create a History Registration
             </p>
-            <p className={"mt-2 font-light text-slate-400"}>
+            <p className={"mt-2 text-sm sm:text-lg font-light text-slate-400"}>
                 Insert the information about the problem and treatment you suggest
             </p>
 
             {/* Form to register the user */}
             <form className="w-full h-full mt-5 justify-items-start">
-
-
-                <div className="relative z-0 w-full mb-5 group flex items-center bg-slate-300 rounded-xl p-2">
-                    <span className="material-icons-outlined text-blue-600 mr-3 text-4xl">
+                <div className="z-0 w-full mb-5 group flex items-center bg-slate-300 rounded-xl p-2">
+                    <span className="hidden sm:block material-icons-outlined text-blue-600 mr-3 text-4xl">
                         star_half
                     </span>
                     <button className={
@@ -106,7 +104,7 @@ export default function CreateHistoryReg() {
                             ? "text-sm p-3 rounded bg-slate-300 to-transparent hover:bg-slate-400 transition ease-linear mr-5"
                             : selectedAppoint === ""
                                 ? "text-sm p-3 rounded bg-red-400 hover:bg-red-600 transition ease-linear mr-5"
-                                : "text-sm p-3 rounded bg-green-300 mr-5"
+                                : "hidden sm:block text-sm p-3 rounded bg-green-300 mr-5"
                     }
                             onClick={(event) => selectAppointment(event)}
                     >
@@ -120,27 +118,30 @@ export default function CreateHistoryReg() {
                         selectedAppoint != null && selectedAppoint !== "" && showAppointments !== true
                             ?
                             <form className="w-full mx-auto">
-                                <p className={"text-2xl mb-3 text-blue-500 hover:text-blue-700"}>Relevant Appointment Information</p>
-                                <div className="relative z-0 w-full mb-5 group">
+                                <p className={" sm:text-2xl mb-3 text-blue-500 hover:text-blue-700"}>Relevant
+                                    Appointment Information</p>
+                                <div className="z-0 w-full mb-5 group">
                                     <input type="email" name="floating_email" id="floating_email" disabled={true}
                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder=" " required
                                            value={selectedAppoint.appointmentDoctor.user.user_name + " " + selectedAppoint.appointmentDoctor.user.user_surname}/>
-                                    <label htmlFor="floating_email"
-                                           className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                        Doctor full-name
-                                    </label>
+                                    {/*<label htmlFor="floating_email"*/}
+                                    {/*       className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">*/}
+                                    {/*    Doctor full-name*/}
+                                    {/*</label>*/}
                                 </div>
                                 <div className="relative z-0 w-full mb-5 group">
                                     <input type="text" name="floating_password" id="floating_password" disabled={true}
                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                           placeholder=" " required value={selectedAppoint.appointmentDoctor.user.email}/>
+                                           placeholder=" " required
+                                           value={selectedAppoint.appointmentDoctor.user.email}/>
                                     <label htmlFor="floating_password"
                                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Doctor
                                         Email</label>
                                 </div>
                                 <div className="relative z-0 w-full mb-5 group">
-                                    <input type="text" name="repeat_password" id="floating_repeat_password" disabled={true}
+                                    <input type="text" name="repeat_password" id="floating_repeat_password"
+                                           disabled={true}
                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder=" " required
                                            value={selectedAppoint.appointmentDoctor.doctorSpeciality.specialityDescription}/>
@@ -162,7 +163,8 @@ export default function CreateHistoryReg() {
                                         </label>
                                     </div>
                                     <div className="relative z-0 w-full mb-5 group">
-                                        <input type="text" name="floating_last_name" id="floating_last_name" disabled={true}
+                                        <input type="text" name="floating_last_name" id="floating_last_name"
+                                               disabled={true}
                                                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                placeholder=" " required
                                                value={selectedAppoint.appointmentPatient.patient_AMKA}/>
@@ -187,7 +189,8 @@ export default function CreateHistoryReg() {
                                     <div className="relative z-0 w-full mb-5 group">
                                         <input type="text" name="floating_company" id="floating_company" disabled={true}
                                                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                               placeholder=" " required value={selectedAppoint.appointmentJustification}/>
+                                               placeholder=" " required
+                                               value={selectedAppoint.appointmentJustification}/>
                                         <label htmlFor="floating_company"
                                                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
                                             Appointment Justification
@@ -217,7 +220,8 @@ export default function CreateHistoryReg() {
                                     </div>
                                 </div>
                                 <button type="none"
-                                        className="bg-red-700 p-2 rounded-xl w-full text-white text-lg" onClick={handleClearClick}>
+                                        className="bg-red-700 p-2 rounded-xl w-full text-white text-lg"
+                                        onClick={handleClearClick}>
                                     Clear
                                 </button>
                             </form>
@@ -236,28 +240,24 @@ export default function CreateHistoryReg() {
                             >
                                 <div className="flex flex-col justify-start">
                                     {/* Appointment Code */}
-                                    <div className="text-sm font-semibold">
+                                    <div className="text-xs sm:text-sm font-semibold">
                                         <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
                                             fact_check
                                         </span>
                                         {"ID: " + appointment.appointmentId}
                                     </div>
                                     {/* Time */}
-                                    <div className="text-sm text-gray-500">
+                                    <div className="text-xs sm:text-sm text-gray-500">
                                         In {appointment.appointmentDate}
                                     </div>
-                                    <div className="text-sm text-gray-500">
+                                    <div className="text-xs sm:text-sm text-gray-500">
                                         From {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
                                     </div>
-                                    {/* Click to view more info about the appointment */}
-                                    <span className="material-icons-outlined text-gray-600">
-                                        more_horiz
-                                    </span>
                                 </div>
                                 <div className="flex flex-col justify-start">
                                     {/* Code */}
-                                    <div className="text-sm font-semibold">Reason for the appointment</div>
-                                    <div className="text-sm">
+                                    <div className="text-xs sm:text-sm font-semibold">Reason for the appointment</div>
+                                    <div className="text-xs sm:text-sm">
                                         {appointment.appointmentJustification}
                                     </div>
                                 </div>
@@ -267,24 +267,24 @@ export default function CreateHistoryReg() {
                 ) : <></>}
 
                 <div className={"bg-slate-300 rounded-xl p-2"}>
-                    <div className="relative z-0 w-full mb-5 group flex items-center">
+                    <div className="z-0 w-full mb-5 group flex items-center">
                         <span className="material-icons-outlined text-blue-600 mr-3 text-4xl">
                             edit_note
                         </span>
                         <textarea
-                            className="p-2 border border-gray-300 rounded w-full h-40"
+                            className="p-2 text-sm sm:text-lg border border-gray-300 rounded w-full h-40"
                             placeholder="Enter the detected health problems"
                             value={healthProblem}
                             onChange={(event) => handleDetectedHealthProblemsChange(event)}
                         />
                     </div>
 
-                    <div className="relative z-0 w-full mb-5 group flex items-center">
+                    <div className= "z-0 w-full mb-5 group flex items-center">
                         <span className="material-icons-outlined text-blue-600 mr-3 text-4xl">
                             edit_note
                         </span>
                         <textarea
-                            className="p-2 border border-gray-300 rounded w-full h-40"
+                            className="p-2 text-sm sm:text-lg border border-gray-300 rounded w-full h-40"
                             placeholder="Enter the suggested treatment"
                             value={suggestedTreatment}
                             onChange={(event) => handleSuggestedTreatmentChange(event)}

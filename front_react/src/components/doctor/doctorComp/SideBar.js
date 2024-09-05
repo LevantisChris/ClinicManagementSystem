@@ -237,7 +237,7 @@ export default function SideBar() {
             </aside>
 
 
-            <div className={"md:hidden"}>
+            <div className={"relative z-50 md:hidden"}>
                 {/* Button to toggle side nav */}
                 <button className="sm:hidden p-2 text-white rounded" onClick={toggleSideNav}>
                    <span className="material-icons-outlined text-3xl text-blue-700">
