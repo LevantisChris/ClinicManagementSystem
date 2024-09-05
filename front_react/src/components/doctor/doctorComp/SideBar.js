@@ -61,7 +61,12 @@ export default function SideBar() {
                                                 arrow_forward_ios
                                             </span>
                                             <a
-                                                className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                className={
+                                                showSearchAppointments === false
+                                                    ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                    : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
+                                            }
+
                                                 onClick={() => (showSearchAppointments === false ? setShowSearchAppointments(true) : setShowSearchAppointments(false))}>
                                                 Search & View Appointments
                                             </a>
@@ -90,7 +95,11 @@ export default function SideBar() {
                                                 arrow_forward_ios
                                             </span>
                                         <a
-                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            className={
+                                                !showRegisterPatient
+                                                    ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                    : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
+                                        }
                                             onClick={() => (showRegisterPatient === false ? setShowRegisterPatient(true) : setShowRegisterPatient(false))}
                                         >
                                             Register patients
@@ -101,7 +110,11 @@ export default function SideBar() {
                                                 arrow_forward_ios
                                             </span>
                                         <a
-                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            className={
+                                                !showSearchPatients
+                                                    ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                    : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
+                                            }
                                             onClick={() => (showSearchPatients === false ? setShowSearchPatients(true) : setShowSearchPatients(false))}
                                         >
                                             Search patients
@@ -112,7 +125,11 @@ export default function SideBar() {
                                                 arrow_forward_ios
                                             </span>
                                         <a
-                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            className={
+                                                !showRegisterPatientMassively
+                                                    ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                    : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
+                                            }
                                             onClick={() => (showRegisterPatientMassively === false ? setShowRegisterPatientMassively(true) : setShowRegisterPatientMassively(false))}
                                         >
                                             Register patients massively
@@ -143,7 +160,11 @@ export default function SideBar() {
                                                 arrow_forward_ios
                                             </span>
                                         <a
-                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            className={
+                                                !showCreateHistoryReg
+                                                    ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                    : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
+                                            }
                                             onClick={() => (showCreateHistoryReg === false ? setShowCreateHistoryReg(true) : setShowCreateHistoryReg(false))}
                                         >
                                             Create history registration
@@ -154,7 +175,11 @@ export default function SideBar() {
                                                 arrow_forward_ios
                                             </span>
                                         <a
-                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            className={
+                                                !showRegisterPatientHistoryMassively
+                                                    ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                    : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
+                                            }
                                             onClick={() => (showRegisterPatientHistoryMassively === false ? setShowRegisterPatientHistoryMassively(true) : setShowRegisterPatientHistoryMassively(false))}
                                         >
                                             Create history registrations massively
@@ -165,7 +190,11 @@ export default function SideBar() {
                                                 arrow_forward_ios
                                             </span>
                                         <a
-                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            className={
+                                               !showConfigureHistoryReg
+                                                    ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                    : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
+                                            }
                                             onClick={() => (showConfigureHistoryReg === false ? setShowConfigureHistoryReg(true) : setShowConfigureHistoryReg(false))}
                                         >
                                             Configure last patient registration
@@ -176,7 +205,11 @@ export default function SideBar() {
                                                 arrow_forward_ios
                                             </span>
                                         <a
-                                            className="block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                            className={
+                                                !showDisplayAllHistory
+                                                    ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
+                                                    : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
+                                            }
                                             onClick={() => (showDisplayAllHistory === false ? setShowDisplayAllHistory(true) : setShowDisplayAllHistory(false))}
                                         >
                                             Display & Search patient history
