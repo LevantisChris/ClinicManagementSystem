@@ -746,6 +746,53 @@ public class AppointmentManagementService {
         return null;
     }
 
+    /* The request will include only the patient ID,
+    *  if the user role is patient, then we
+    *  extract the patient ID from the token */
+    public AppointmentDTO getPatientAppointments(AppointmentDTO request) {
+        AppointmentDTO resp = new AppointmentDTO();
+
+        try {
+            String jwtToken = getToken();
+            if (jwtToken == null
+                    || request.getAppointmentPatient().getPatient_id() == null) {
+                log.error("Empty/null token");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return null;
+            }
+
+            if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR") || jwtUtils.extractRole(jwtToken).equals("USER_SECRETARY")) {
+                Patient patient = patientRepository.findById(request.getAppointmentPatient().getPatient_id())
+                        .orElseThrow(() -> new RuntimeException("Patient with ID: " + request.getAppointmentPatient().getPatient_id() + " cannot be found."));
+                List<Appointment> patientAppointments = appointmentRepository.findByPatientAMKA(patient.getPatient_AMKA());
+                resp.setMessage("Appointments retrieved successfully for patient " + patient.getUser().getEmail());
+                resp.setMessage(
+                        !patientAppointments.isEmpty()
+                                ? "Appointments retrieved successfully for patient " + patient.getUser().getEmail()
+                                : "No appointments found for patient " + patient.getUser().getEmail());
+                resp.setStatusCode(200);
+                resp.setAppointmentList(patientAppointments.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
+            } else if(jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                String email = jwtUtils.extractUsername(jwtToken); // the username is the email
+                User user = userRepository.findByEmail(email).orElseThrow(
+                        () -> new RuntimeException("User (Patient) with email: " + email + " cannot be found."));
+                List<Appointment> patientAppointments = appointmentRepository.findByPatientAMKA(user.getPatient().getPatient_AMKA());
+                resp.setMessage(
+                        !patientAppointments.isEmpty()
+                                ? "Appointments retrieved successfully for user (patient) " + user.getEmail()
+                                : "No appointments found for user (patient) " + user.getEmail());
+                resp.setStatusCode(200);
+                resp.setAppointmentList(patientAppointments.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
+            }
+        } catch (Exception e) {
+            log.error("Error searching appointments: {}", e.getMessage());
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
     /*------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     private AppointmentDTO mapToAppointmentDTO(Appointment appointment) {

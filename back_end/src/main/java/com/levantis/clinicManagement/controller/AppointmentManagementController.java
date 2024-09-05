@@ -3,9 +3,11 @@ package com.levantis.clinicManagement.controller;
 import com.levantis.clinicManagement.dto.AppointmentDTO;
 import com.levantis.clinicManagement.dto.WorkingHoursDTO;
 import com.levantis.clinicManagement.entity.Appointment;
+import com.levantis.clinicManagement.entity.Patient;
 import com.levantis.clinicManagement.service.AppointmentManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -86,6 +88,18 @@ public class AppointmentManagementController {
     @GetMapping("/appoint/getAllCreatedAndResp")
     public ResponseEntity<List<Appointment>> getAllCreatedAndResp() {
         return ResponseEntity.ok(appointmentManagementService.getCratedAndRespectedAppoint());
+    }
+
+    /* Get the appointments of a user (Doctor or Secretary and Patient)
+    *  For the patient we use the token, for the other two the request (patient ID) */
+    @GetMapping("/appoint/getPatientAppointments")
+    public ResponseEntity<AppointmentDTO> getAllAppointments(@RequestParam Integer patientId) {
+        Patient patient = new Patient();
+        patient.setPatient_id(patientId);
+        //
+        AppointmentDTO appointmentDTO = new AppointmentDTO();
+        appointmentDTO.setAppointmentPatient(patient);
+        return ResponseEntity.ok(appointmentManagementService.getPatientAppointments(appointmentDTO));
     }
     /*------------------------------------------------------------------------------------------------------------------*/
 
