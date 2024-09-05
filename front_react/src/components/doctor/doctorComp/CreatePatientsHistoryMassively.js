@@ -67,19 +67,19 @@ export default function CreatePatientsHistoryMassively() {
     return (
         loading ? ( <LoadingApp/>) :
             <div className="flex flex-col h-min w-full p-5">
-                <p className={"font-light text-5xl"}>
+                <p className={"font-light text-3xl sm:text-5xl"}>
                     Create history registrations massively
                 </p>
-                <p className={"mt-3 font-light text-slate-400"}>
+                <p className={"mt-3 text-sm sm:text-lg font-light text-slate-400"}>
                     You can use an excel file for doing it, but the file must follow a pattern. Download the file pattern
                     bellow
                 </p>
-                <p className={"font-light text-sm text-slate-400"}>
+                <p className={"font-light text-xs sm:text-sm text-slate-400"}>
                     Note, if a user dont have a history, the system automatically will create one
                 </p>
 
 
-                <div className={"grid grid-cols-3 mt-3"}>
+                <div className={"grid grid-cols-3 mr-12 sm:mr-0 mt-3"}>
 
                     <div className="flex items-center justify-center w-full col-span-2">
                         <label htmlFor="dropzone-file"
@@ -91,7 +91,7 @@ export default function CreatePatientsHistoryMassively() {
                                           stroke-width="2"
                                           d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                                 </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                <p className="mb-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                                     <span className="font-semibold">Click to upload</span> or drag and drop
                                 </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Only Excel files (.xls, .xlsx)</p>
@@ -113,19 +113,19 @@ export default function CreatePatientsHistoryMassively() {
                                           stroke-width="2"
                                           d="M5 9v4a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V9m-4 4V3m-4 5 4 4 4-4"/>
                                 </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
+                                <p className="mb-2 text-xs text-center sm:text-sm text-gray-500 dark:text-gray-400"><span
                                     className="font-semibold">Click to download the pattern file</span></p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">Download your file here</p>
+                                <p className="text-xs text-center text-gray-500 dark:text-gray-400">Download your file here</p>
                             </div>
                         </a>
                     </div>
                 </div>
 
                 {TABLE_ROWS.length !== 0 && unsuccedRegistrations.length === 0 ?
-                    <div className={"mt-4 bg-slate-200 rounded p-2"}>
+                    <div className={"mt-4 mr-10 sm:mr-0 bg-slate-200 rounded p-2"}>
                         <div className={"grid grid-cols-2 gap-2"}>
                             <label id="disabled-input-2" aria-label="disabled input 2"
-                                   className={"rounded bg-slate-300 p-2 text-lg text-center"}
+                                   className={"rounded bg-slate-300 p-2 text-sm sm:text-lg text-center"}
                             >
                                     <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
                                         fact_check
@@ -183,8 +183,8 @@ export default function CreatePatientsHistoryMassively() {
                         </Card>
                     </div>
                     : TABLE_ROWS.length === 0 && unsuccedRegistrations.length !== 0 ?
-                        <div className={"mt-2"}>
-                            <p className={"text-red-600 font-bold text-3xl"}>
+                        <div className={"mr-10 sm:mr-0 mt-2"}>
+                            <p className={"text-red-600 font-bold text-lg sm:text-3xl"}>
                                 The following registrations fail to be created, please choose another file
                             </p>
                             <Card className="h-full w-full overflow-scroll mt-4">
