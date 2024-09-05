@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {motion} from 'framer-motion';
 import LoadingApp from "../../Loading/LoadingApp";
 import SuccessApp from "../../Success/SuccessApp";
@@ -9,7 +9,7 @@ import UserService from "../../../services/UserService";
 
 export default function DisplayInfoPatient({patient}) {
 
-    const TABLE_HEAD = ["Name", "Job", "Employed", ""];
+    const TABLE_HEAD = ["Appointment Date", "Appointment Start Time", "Appointment End Time", "Appointment Justification"];
     const TABLE_ROWS = [
         {
             name: "John Michael",
@@ -66,11 +66,15 @@ export default function DisplayInfoPatient({patient}) {
         errorMessage,
         setSuccessMessage,
         setErrorMessage,
+        viewDisplayPatientComponent,
         setViewDisplayPatientComponent,
 
     } = useContext(GlobalContext);
 
     const [loading, setLoading] = useState(false)
+
+    /* List that has all the appointments a patient has */
+    const [appointmentList, setAppointmentList] = useState([])
 
     /* This represents the state that the user wants to update a patient.
     *  The info will be visual as input fields. */
@@ -93,7 +97,18 @@ export default function DisplayInfoPatient({patient}) {
         setUpdateState(true)
     }
 
-
+    /* fetch the patient appointments, when the state viewDisplayPatientComponent is triggered */
+    useEffect(() => {
+        const getPatientAppointments = async () => {
+            const params = {
+                patientId: patient.patientId,
+           };
+            const response = await UserService.getPatientAppointments(params)
+            setAppointmentList(response.appointmentList)
+            console.log(response)
+        }
+        getPatientAppointments();
+    }, [patient.patientId, viewDisplayPatientComponent]);
 
     function handleGoBackButton() {
         if(!updateState)
@@ -263,19 +278,20 @@ export default function DisplayInfoPatient({patient}) {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {TABLE_ROWS.map(({name, job, date}, index) => {
+                                    {
+                                        appointmentList.length !== 0 ? appointmentList.map((appointment, index) => {
                                         const isLast = index === TABLE_ROWS.length - 1;
                                         const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
                                         return (
-                                            <tr key={name}>
+                                            <tr key={appointment.appointmentId}>
                                                 <td className={classes}>
                                                     <Typography
                                                         variant="small"
                                                         color="blue-gray"
                                                         className="font-normal"
                                                     >
-                                                        {name}
+                                                        {appointment.appointmentDate}
                                                     </Typography>
                                                 </td>
                                                 <td className={classes}>
@@ -284,7 +300,7 @@ export default function DisplayInfoPatient({patient}) {
                                                         color="blue-gray"
                                                         className="font-normal"
                                                     >
-                                                        {job}
+                                                        {appointment.appointmentStartTime}
                                                     </Typography>
                                                 </td>
                                                 <td className={classes}>
@@ -293,23 +309,22 @@ export default function DisplayInfoPatient({patient}) {
                                                         color="blue-gray"
                                                         className="font-normal"
                                                     >
-                                                        {date}
+                                                        {appointment.appointmentEndTime}
                                                     </Typography>
                                                 </td>
                                                 <td className={classes}>
                                                     <Typography
-                                                        as="a"
-                                                        href="#"
                                                         variant="small"
                                                         color="blue-gray"
-                                                        className="font-medium"
+                                                        className="font-normal"
                                                     >
-                                                        Edit
+                                                        {appointment.appointmentJustification}
                                                     </Typography>
                                                 </td>
                                             </tr>
                                         );
-                                    })}
+                                    }) : ""
+                                    }
                                     </tbody>
                                 </table>
                             </Card> : ""
