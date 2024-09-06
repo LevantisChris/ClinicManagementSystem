@@ -11,7 +11,8 @@ export function DisplayAllHistory() {
 
     const {
         patientHistoryToSee,
-        setPatientHistoryToSee
+        setPatientHistoryToSee,
+        viewEnglish
     } = useContext(GlobalContext);
 
     const [registrationToSee, setRegistrationToSee] = useState(null)
@@ -102,18 +103,18 @@ export function DisplayAllHistory() {
             {
                 /* If the patientHistoryToSee is null, that means the user doesn't have any patient selected to view the history. */
                 patientHistoryToSee === null ?
-                    <SearchPatients bigTitle={"Display all the history of a patient"}
-                                    smallTitle={"Choose a patient and then the registration you want to view"}
+                    <SearchPatients bigTitle={viewEnglish ? "Display all the history of a patient" : "Εμφάνιση όλου του ιστορικού ενός ασθενούς"}
+                                    smallTitle={viewEnglish ? "Choose a patient and then the registration you want to view" : "Επιλέξτε έναν ασθενή και στη συνέχεια την εγγραφή που θέλετε να δείτε."}
                                     componentState={2}
                     />
                     :
                     patientHistoryToSee.statusCode === 200 ?
                         <div className={"p-2 rounded shadow-5xl"}>
                             <p className="font-light text-xl sm:text-5xl">
-                                Display all the history of a patient
+                                {viewEnglish ? "Display all the history of a patient" : "Εμφάνιση όλου του ιστορικού ενός ασθενούς"}
                             </p>
                             <p className="mt-2 font-light text-slate-400">
-                                Choose a patient and then the registration you want to view
+                                {viewEnglish ? "Choose a patient and then the registration you want to view" : "Επιλέξτε έναν ασθενή και στη συνέχεια την εγγραφή που θέλετε να δείτε."}
                             </p>
                             <header
                                 className="rounded bg-blue-200 px-4 py-2 flex justify-between items-center mt-3 shadow-lg">
@@ -125,7 +126,7 @@ export function DisplayAllHistory() {
                                         person_search
                                     </span>
                                     <p className="text-sm sm:text-2xl text-black font-black hover:text-sky-700">
-                                        {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_name} {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_surname} History
+                                        {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_name} {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_surname} {viewEnglish ? "History" : "Ιστορικό"}
                                     </p>
                                     <Button
                                         className={"text-xs mt-2 text-white bg-blue-500"}
@@ -135,13 +136,13 @@ export function DisplayAllHistory() {
                                         )
                                     }
                                     >
-                                        Generate PDF
+                                        {viewEnglish ? "Generate PDF" : "Δημιουργία PDF"}
                                     </Button>
                                 </div>
                                 <div>
                                     <Button className={"text-xs ml-2 sm:text-xl text-white bg-blue-500"}
                                             onClick={() => setPatientHistoryToSee(null)}>
-                                        Go Back
+                                        {viewEnglish ? "Go Back" : "Επιστροφη"}
                                     </Button>
                                 </div>
                             </header>
@@ -161,7 +162,7 @@ export function DisplayAllHistory() {
                                               filter_list
                                             </span>
                                         <Button className="bg-green-500 w-full" onClick={handleFilterSubmit}>
-                                            Apply filters
+                                            {viewEnglish ? "Apply filters" : "Εφαρμόστε φίλτρα"}
                                         </Button>
                                     </div>
                                     <div className={"z-0"}>
@@ -174,7 +175,7 @@ export function DisplayAllHistory() {
                                     </div>
                                     <input
                                         className="rounded-lg col-span-2"
-                                        placeholder="Detected health problem"
+                                        placeholder={viewEnglish ? "Detected health problem" : "Εντοπισμένο πρόβλημα υγείας"}
                                         value={detectedHealthProblemFilter}
                                         onChange={(event) => handleFilterDetectedHealthProblem(event)}
                                     />
@@ -183,7 +184,7 @@ export function DisplayAllHistory() {
                                 {
                                     showClearButton ?
                                         <Button className="bg-red-500 w-full h-1/2 sm:h-full" onClick={handleClearFilters}>
-                                            Clear filters
+                                            {viewEnglish ? "Clear filters" : "Εκκαθάριση φίλτρων"}
                                         </Button> : ""
                                 }
                             </div>
@@ -209,20 +210,17 @@ export function DisplayAllHistory() {
                                                             {"ID: " + registration.patientHistoryRegistrationId}
                                                         </div>
                                                         <div className="text-md">
-                                                            Health
-                                                            problem: {registration.patientHistoryRegistrationHealthProblems}
+                                                            {viewEnglish ? "Health problem:" : "Πρόβλημα υγείας:"} {registration.patientHistoryRegistrationHealthProblems}
                                                         </div>
                                                         <div className="text-sm text-gray-500">
-                                                            Suggested
-                                                            Treatment: {registration.patientHistoryRegistrationTreatment}
+                                                            {viewEnglish ? "Suggested Treatment:" : "Προτεινόμενη θεραπεία:"} {registration.patientHistoryRegistrationTreatment}
                                                         </div>
                                                         <div className="text-sm text-gray-500">
-                                                            Doctor: {registration.appointment.appointmentDoctor.user.user_name}{" "}
+                                                            {viewEnglish ? "Doctor:" : "Γιατρός:"} {registration.appointment.appointmentDoctor.user.user_name}{" "}
                                                             {registration.appointment.appointmentDoctor.user.user_surname}
                                                         </div>
                                                         <div className="text-sm text-gray-500">
-                                                            Relative appointment
-                                                            date: {registration.appointment.appointmentDate}
+                                                            {viewEnglish ? "Relative appointment date:" : "Ημερομηνία σχετικού ραντεβού:"} {registration.appointment.appointmentDate}
                                                         </div>
                                                         <span className="material-icons-outlined text-gray-600">
                                                             more_horiz
@@ -306,20 +304,20 @@ export function DisplayAllHistory() {
                         </div>
                         : /* Not any History was found */
                         <div className={"p-2 rounded shadow-5xl"}>
-                            <p className="font-light text-5xl">
+                            <p className="font-light text-3xl sm:text-5xl">
                                 Display all the history of a patient
                             </p>
-                            <p className="mt-2 font-light text-slate-400">
+                            <p className="mt-2 text-xs sm:text-base font-light text-slate-400">
                                 Choose a patient and then the registration you want to view
                             </p>
                             <header className="rounded bg-slate-200 px-4 py-2 flex justify-between items-center mt-3">
-                                <p className="text-2xl text-red-600 font-black hover:text-red-700">
-                                    Error, not history found
+                                <p className="text-sm sm:text-2xl text-red-600 font-black hover:text-red-700">
+                                    {viewEnglish ? "Error, not history found" : "Σφάλμα, δεν βρέθηκε ιστορικό"}
                                 </p>
                                 <div>
-                                    <Button className={"text-xl text-white bg-blue-500"}
+                                    <Button className={"text-xs sm:text-xl text-white bg-blue-500"}
                                             onClick={() => setPatientHistoryToSee(null)}>
-                                        Go Back
+                                        {viewEnglish ? "Go Back" : "Επιστροφη"}
                                     </Button>
                                 </div>
                             </header>
@@ -327,12 +325,11 @@ export function DisplayAllHistory() {
                             <div
                                 className="flex-grow mt-2 rounded-xl bg-slate-200 border-4 p-5 flex justify-center items-center">
                                 <div className="text-center">
-                                    <span className="material-icons-outlined text-9xl text-red-600">
+                                    <span className="material-icons-outlined text-5xl sm:text-9xl text-red-600">
                                         trending_down
                                     </span>
-                                    <p className="text-xl text-red-600">
-                                        Cannot find patient history, create a new registration and the history of the
-                                        patient will automatically created.
+                                    <p className="text=sm sm:text-xl text-red-600">
+                                        {viewEnglish ? "Cannot find patient history, create a new registration and the history of the patient will automatically created." : "Δεν μπορείτε να βρείτε το ιστορικό του ασθενούς, δημιουργήστε μια νέα εγγραφή και το ιστορικό του ασθενούς θα δημιουργηθεί αυτόματα."}
                                     </p>
                                 </div>
                             </div>
@@ -350,15 +347,15 @@ export function DisplayAllHistory() {
                     >
                         <header className="rounded bg-slate-200 px-4 py-2 flex justify-between items-center">
                             <p className="text-xl sm:text-2xl text-black font-black hover:text-sky-700">
-                                Registration with ID: {registrationToSee.patientHistoryRegistrationId}
+                                {viewEnglish ? "Registration with ID:" : "Εγγραφή με ID:"} {registrationToSee.patientHistoryRegistrationId}
                             </p>
                             <div>
                                 <button onClick={() => setRegistrationToSee(null)}>
-          <span
-              className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out"
-          >
-            close
-          </span>
+                                  <span
+                                      className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out"
+                                  >
+                                    close
+                                  </span>
                                 </button>
                             </div>
                         </header>
@@ -374,7 +371,7 @@ export function DisplayAllHistory() {
                                 )
                             }
                         >
-                            Generate as PDF
+                            {viewEnglish ? "Generate PDF" : "Δημιουργια PDF"}
                         </Button>
 
                         <div
@@ -382,56 +379,55 @@ export function DisplayAllHistory() {
                         >
                             <div className="bg-blue-200 p-2 rounded-xl">
                                 <p className="text-black text-xl sm:text-2xl font-bold hover:text-sky-700">
-                                    Registration Information
+                                    {viewEnglish ? "Registration Information" : "Πληροφορίες Εγγραφής"}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Registration ID: {registrationToSee.patientHistoryRegistrationId}
+                                    {viewEnglish ? "Registration ID:" : "ID εγγραφής:"} {registrationToSee.patientHistoryRegistrationId}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Date Register: {registrationToSee.patientHistoryRegistrationDateRegister}
+                                    {viewEnglish ? "Date Register:" : "Ημερομηνία Καταχώρησης:"} {registrationToSee.patientHistoryRegistrationDateRegister}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Detected Health
-                                    Problem: {registrationToSee.patientHistoryRegistrationHealthProblems}
+                                    {viewEnglish ? "Detected Health Problem:" : "Πρόβλημα Υγείας:"} {registrationToSee.patientHistoryRegistrationHealthProblems}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Suggested Treatment: {registrationToSee.patientHistoryRegistrationTreatment}
+                                    {viewEnglish ? "Suggested Treatment:" : "Προτεινόμενη Θεραπεία:"} {registrationToSee.patientHistoryRegistrationTreatment}
                                 </p>
                             </div>
 
                             <div className="bg-slate-200 p-2 rounded-xl">
                                 <p className="text-black text-xl sm:text-2xl font-bold hover:text-sky-700">
-                                    Relative Appointment Information
+                                    {viewEnglish ? "Relative Appointment Information" : "Πληροφορίες Σχετικού Ραντεβού"}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Appointment ID: {registrationToSee.appointment.appointmentId}
+                                    {viewEnglish ? "Appointment ID:" : "ID Ραντεβού:"} {registrationToSee.appointment.appointmentId}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Start Time: {registrationToSee.appointment.appointmentStartTime}
+                                    {viewEnglish ? "Start Time:" : "Ώρα έναρξης:"} {registrationToSee.appointment.appointmentStartTime}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    End Time: {registrationToSee.appointment.appointmentEndTime}
+                                    {viewEnglish ? "End Time:" : "Ώρα Λήξης:"} {registrationToSee.appointment.appointmentEndTime}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Justification: {registrationToSee.appointment.appointmentJustification}
+                                    {viewEnglish ? "Justification:" : "Λόγος Ραντεβού:"} {registrationToSee.appointment.appointmentJustification}
                                 </p>
                             </div>
 
                             <div className="bg-slate-200 p-2 rounded-xl">
                                 <p className="text-black text-xl sm:text-2xl font-bold hover:text-sky-700">
-                                    Patient Information
+                                    {viewEnglish ? "Patient Information" : "Πληροφορίες Ασθενή"}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Appointment ID: {registrationToSee.appointment.appointmentPatient.patient_id}
+                                    {viewEnglish ? "Appointment ID:" : "ID Ραντεβού:"} {registrationToSee.appointment.appointmentPatient.patient_id}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    First-Name: {registrationToSee.appointment.appointmentPatient.user.user_name}
+                                    {viewEnglish ? "First - Name:" : "Όνομα:"} {registrationToSee.appointment.appointmentPatient.user.user_name}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Second-Name: {registrationToSee.appointment.appointmentPatient.user.user_surname}
+                                    {viewEnglish ? "Second - Name:" : "Επώνυμο:"} {registrationToSee.appointment.appointmentPatient.user.user_surname}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    ID-Number: {registrationToSee.appointment.appointmentPatient.user.user_idNumber}
+                                    {viewEnglish ? "ID - Number:" : "Αριθμός Ταυτότητας:"} {registrationToSee.appointment.appointmentPatient.user.user_idNumber}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Email: {registrationToSee.appointment.appointmentPatient.user.email}
@@ -443,22 +439,22 @@ export function DisplayAllHistory() {
 
                             <div className="bg-slate-200 p-2 rounded-xl">
                                 <p className="text-black text-xl sm:text-2xl font-bold hover:text-sky-700">
-                                    Doctor Information
+                                    {viewEnglish ? "Doctor Information" : "Πληροφορίες Γιατρού"}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Doctor ID: {registrationToSee.appointment.appointmentDoctor.doctor_id}
+                                    {viewEnglish ? "Doctor ID:" : "ID Γιατρού:"} {registrationToSee.appointment.appointmentDoctor.doctor_id}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    First-Name: {registrationToSee.appointment.appointmentDoctor.user.user_name}
+                                    {viewEnglish ? "First - Name:" : "Όνομα:"} {registrationToSee.appointment.appointmentDoctor.user.user_name}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Second-Name: {registrationToSee.appointment.appointmentDoctor.user.user_surname}
+                                    {viewEnglish ? "Second - Name:" : "Επώνυμο:"} {registrationToSee.appointment.appointmentDoctor.user.user_surname}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Email: {registrationToSee.appointment.appointmentDoctor.user.email}
                                 </p>
                                 <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
-                                    Speciality: {registrationToSee.appointment.appointmentDoctor.doctorSpeciality.specialityDescription}
+                                    {viewEnglish ? "Speciality:" : "Ειδικότητα:"} {registrationToSee.appointment.appointmentDoctor.doctorSpeciality.specialityDescription}
                                 </p>
                             </div>
                         </div>
