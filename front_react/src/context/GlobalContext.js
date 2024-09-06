@@ -44,6 +44,9 @@ const GlobalContext = React.createContext({
     patientHistoryToSee: null,
     setPatientHistoryToSee: () => {},
 
+    viewEnglish: true,
+    setViewEnglish: () => {},
+
     showConfigureHistoryReg: false,
     setShowConfigureHistoryReg: () => {},
 

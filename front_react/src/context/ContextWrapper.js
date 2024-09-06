@@ -94,6 +94,9 @@ export default function ContextWrapper(props) {
     const [showRegisterPatientHistoryMassively, setShowRegisterPatientHistoryMassively]
         = useState(false)
 
+    const [viewEnglish, setViewEnglish]
+        = useState(true)
+
     const filteredEvents = useMemo(() => {
     return savedEvents.filter((evt) =>
       labels
@@ -210,6 +213,9 @@ export default function ContextWrapper(props) {
 
             showRegisterPatientHistoryMassively,
             setShowRegisterPatientHistoryMassively,
+
+            viewEnglish,
+            setViewEnglish,
 
             reloadDoctorApp,
             setReloadDoctorApp,

@@ -23,7 +23,9 @@ export default function CalendarHeader() {
         showCreateHistoryReg,
         showConfigureHistoryReg,
         showDisplayAllHistory,
-        showRegisterPatientHistoryMassively
+        showRegisterPatientHistoryMassively,
+        viewEnglish,
+        setViewEnglish
     } = useContext(GlobalContext);
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
@@ -56,6 +58,70 @@ export default function CalendarHeader() {
         setShowActiveHoursModal(false);
     }
 
+    /* The date object starts from 0 */
+    function getGreekDate(formattedDate, year) {
+        if(formattedDate === "September") {
+            return "Σεπτέμβριος " + year;
+        } else if(formattedDate === "October") {
+            return "Οκτώβριος " + year;
+        } else if(formattedDate === "November") {
+            return "Νοεμβριος " + year
+        } else if(formattedDate === "December") {
+            return "Δεκέμβριος " + year
+        } else if(formattedDate === "January") {
+            return "Ιανουάριος " + year
+        } else if(formattedDate === "February") {
+            return "Φεβρουάριος " + year
+        } else if(formattedDate === "March") {
+            return "Μαρτιος " + year
+        } else if(formattedDate === "April") {
+            return "Απρίλιος " + year
+        } else if(formattedDate === "May") {
+            return "Μάιος " + year
+        } else if(formattedDate === "June") {
+            return "Ιούνιος " + year
+        } else if(formattedDate === "July") {
+            return "Ιούλιος " + year
+        } else if(formattedDate === "August") {
+            return "Άυγουστος " + year
+        }
+
+        // Implement Greek date formatting logic here
+        return "Greek Date"; // Replace this with the actual Greek date format
+    }
+        // if(monthIndex === 8)
+        //     return "Σεπτέμβριος " + year
+        // else if(monthIndex === 9)
+        //     return "Οκτώβριος " + year
+        // else if(monthIndex === 10)
+        //     return "Νοεμβριος " + year
+        // else if(monthIndex === 11)
+        //     return "Δεκέμβριος " + year
+        // else if(monthIndex === 12)
+        //     return "Ιανουάριος " + year
+        // else if(monthIndex === 13)
+        //     return "Φεβρουάριος " + year
+        // else if(monthIndex === 14)
+        //     return "Μάρτιος " + year
+        // else if(monthIndex === 15)
+        //     return "Απρίλιος " + year
+        // else if(monthIndex === 16)
+        //     return "Μάιος " + year
+        // else if(monthIndex === 17)
+        //     return "Ιούνιος " + year
+        // else if(monthIndex === 18)
+        //     return "Ιούλιος " + year
+        // else if(monthIndex === 19)
+        //     return "Άυγουστος " + year
+        // return "";
+
+    function changeLanguage() {
+        if(viewEnglish === false)
+            setViewEnglish(true)
+        else
+            setViewEnglish(false)
+    }
+
     return (
         <>
             <header className={'px-4 py-2 flex items-center bg-gradient-to-l from-blue-200 shadow-sm'}>
@@ -74,7 +140,7 @@ export default function CalendarHeader() {
                         <>
                             <button className="border rounded py-2 px-1 sm:px-4 mr-2 sm:mr-5 text-xs sm:text-base"
                                     onClick={handleReset}>
-                                Today
+                                {viewEnglish ? "Today" : "Σήμερα"}
                             </button>
 
                             <button onClick={handlePrevMonth}>
@@ -90,7 +156,10 @@ export default function CalendarHeader() {
                             </span>
                             </button>
                             <h2 className="ml-4 text-xl text-gray-500 font-bold text-xs sm:text-base">
-                                {dayjs(new Date(dayjs().year(), monthIndex)).format("MMMM YYYY")}
+                                {viewEnglish
+                                    ? dayjs(new Date(dayjs().year(), monthIndex)).format("MMMM YYYY")
+                                    : getGreekDate(dayjs(new Date(dayjs().year(), monthIndex)).format("MMMM"), dayjs(new Date(dayjs().year(), monthIndex)).format("YYYY"))
+                                }
                             </h2>
                         </>
                     ) : (<div></div>)
@@ -102,9 +171,12 @@ export default function CalendarHeader() {
                         <span className="text-gray-600 text-sm sm:text-lg">{userAuthed.username}</span>
                         <span className="text-gray-600 text-xs sm:text-xs">
                             {
-                                userAuthed.role === "USER_DOCTOR" ? 'Doctor' :
-                                    userAuthed.role === "USER_PATIENT" ? 'Patient' :
-                                        userAuthed.role === "USER_SECRETARY" ? 'Secretary' : 'Role undefined'
+                                userAuthed.role === "USER_DOCTOR" && viewEnglish ? 'Doctor' : userAuthed.role === "USER_DOCTOR" && !viewEnglish ? "Γιατρός"
+                                    :
+                                    userAuthed.role === "USER_PATIENT" && viewEnglish ? 'Patient' : userAuthed.role === "USER_PATIENT" && !viewEnglish ? 'Ασθενής'
+                                        :
+                                        userAuthed.role === "USER_SECRETARY" && viewEnglish ? 'Secretary' : userAuthed.role === "USER_SECRETARY" && !viewEnglish ? 'Γραμματέας'
+                                            : ""
                             }
                         </span>
                     </div>
@@ -115,8 +187,15 @@ export default function CalendarHeader() {
                         {menuOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
                                 <a className="block px-4 cursor-default py-2 text-gray-800 hover:bg-green-200 rounded"
-                                   onClick={showActiveHoursModalHandler}>Working hours</a>
-                                <a className="block px-4 cursor-default py-2 text-gray-800 hover:bg-gray-200">Settings</a>
+                                   onClick={showActiveHoursModalHandler}>
+                                    {viewEnglish ? "Active hours" : "Ενεργές ώρες"}
+                                </a>
+                                <a
+                                    className="block px-4 cursor-default py-2 text-gray-800 hover:bg-gray-200"
+                                    onClick={() => changeLanguage()}
+                                >
+                                    {viewEnglish ? "Change Language" : "Αλλαγή γλώσσας"}
+                                </a>
                                 <a
                                     className="block px-4 cursor-default py-2 text-gray-800 hover:bg-red-200"
                                     onClick={() => {
@@ -124,7 +203,7 @@ export default function CalendarHeader() {
                                         navigate("/auth", {replace: true});
                                     }}
                                 >
-                                    Logout
+                                    {viewEnglish ? "Logout" : "Αποσύνδεση"}
                                 </a>
                             </div>
                         )}
