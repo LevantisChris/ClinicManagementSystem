@@ -89,31 +89,6 @@ export default function CalendarHeader() {
         // Implement Greek date formatting logic here
         return "Greek Date"; // Replace this with the actual Greek date format
     }
-        // if(monthIndex === 8)
-        //     return "Σεπτέμβριος " + year
-        // else if(monthIndex === 9)
-        //     return "Οκτώβριος " + year
-        // else if(monthIndex === 10)
-        //     return "Νοεμβριος " + year
-        // else if(monthIndex === 11)
-        //     return "Δεκέμβριος " + year
-        // else if(monthIndex === 12)
-        //     return "Ιανουάριος " + year
-        // else if(monthIndex === 13)
-        //     return "Φεβρουάριος " + year
-        // else if(monthIndex === 14)
-        //     return "Μάρτιος " + year
-        // else if(monthIndex === 15)
-        //     return "Απρίλιος " + year
-        // else if(monthIndex === 16)
-        //     return "Μάιος " + year
-        // else if(monthIndex === 17)
-        //     return "Ιούνιος " + year
-        // else if(monthIndex === 18)
-        //     return "Ιούλιος " + year
-        // else if(monthIndex === 19)
-        //     return "Άυγουστος " + year
-        // return "";
 
     function changeLanguage() {
         if(viewEnglish === false)

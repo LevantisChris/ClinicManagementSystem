@@ -12,7 +12,7 @@ export default function SmallCalendar() {
     setCurrentMonth(getMonth(currentMonthIdx));
   }, [currentMonthIdx]);
 
-  const { monthIndex, setSmallCalendarMonth, setDaySelected, daySelected } =
+  const { monthIndex, setSmallCalendarMonth, setDaySelected, daySelected,viewEnglish} =
     useContext(GlobalContext);
 
   useEffect(() => {
@@ -41,6 +41,38 @@ export default function SmallCalendar() {
     }
   }
 
+  /* The date object starts from 0 */
+  function getGreekDate(formattedDate, year) {
+    if(formattedDate === "September") {
+      return "Σεπτέμβριος " + year;
+    } else if(formattedDate === "October") {
+      return "Οκτώβριος " + year;
+    } else if(formattedDate === "November") {
+      return "Νοεμβριος " + year
+    } else if(formattedDate === "December") {
+      return "Δεκέμβριος " + year
+    } else if(formattedDate === "January") {
+      return "Ιανουάριος " + year
+    } else if(formattedDate === "February") {
+      return "Φεβρουάριος " + year
+    } else if(formattedDate === "March") {
+      return "Μαρτιος " + year
+    } else if(formattedDate === "April") {
+      return "Απρίλιος " + year
+    } else if(formattedDate === "May") {
+      return "Μάιος " + year
+    } else if(formattedDate === "June") {
+      return "Ιούνιος " + year
+    } else if(formattedDate === "July") {
+      return "Ιούλιος " + year
+    } else if(formattedDate === "August") {
+      return "Άυγουστος " + year
+    }
+
+    // Implement Greek date formatting logic here
+    return "Greek Date"; // Replace this with the actual Greek date format
+  }
+
   return (
     <div
       className={
@@ -50,7 +82,10 @@ export default function SmallCalendar() {
       {" "}
       <header className={"flex justify-between"}>
         <p className={"text-gray-500 font-bold"}>
-          {dayjs(new Date(dayjs().year(), currentMonthIdx)).format("MMMM YYYY")}
+          {viewEnglish
+              ? dayjs(new Date(dayjs().year(), monthIndex)).format("MMMM YYYY")
+              : getGreekDate(dayjs(new Date(dayjs().year(), monthIndex)).format("MMMM"), dayjs(new Date(dayjs().year(), monthIndex)).format("YYYY"))
+          }
         </p>
         <div>
           <button onClick={handlePrevMonth}>

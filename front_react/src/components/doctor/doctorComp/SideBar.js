@@ -6,6 +6,11 @@ import GlobalContext from "../../../context/GlobalContext";
 import {Button} from "@material-tailwind/react";
 
 export default function SideBar() {
+
+    const {
+        viewEnglish
+    } = useContext(GlobalContext)
+
     const [activeCategory, setActiveCategory] = useState(null); // for dynamic sub-categories
 
     const handleCategoryClick = (category) => {
@@ -51,7 +56,7 @@ export default function SideBar() {
 
                     <div className="w-64 bg-white text-gray-600 rounded-xl border-4">
                         <div className="p-4">
-                            <h1 className="text-2xl font-bold">Functions</h1>
+                            <h1 className="text-2xl font-bold">{viewEnglish ? "Functions" : "Λειτουργίες"}</h1>
                         </div>
                         <nav className="cursor-pointer">
                             <div>
@@ -63,7 +68,7 @@ export default function SideBar() {
                                         <span className="material-icons-outlined">
                                             handshake
                                         </span>
-                                        <span className="ml-2">Manage Appointments</span>
+                                        <span className="ml-2">{viewEnglish ? "Manage Appointments" : "Διαχείριση ραντεβού"}</span>
                                     </div>
                                 </a>
 
@@ -81,7 +86,7 @@ export default function SideBar() {
                                                 }
 
                                                 onClick={() => (showSearchAppointments === false ? setShowSearchAppointments(true) : setShowSearchAppointments(false))}>
-                                                Search & View Appointments
+                                                {viewEnglish ? "Search & View Appointments" : "Αναζήτηση & Προβολή Ραντεβού"}
                                             </a>
                                         </div>
                                     </div>
@@ -97,7 +102,9 @@ export default function SideBar() {
                                         <span className="material-icons-outlined">
                                             personal_injury
                                         </span>
-                                        <span className="ml-2">Manage Patients</span>
+                                        <span className="ml-2">
+                                            {viewEnglish ? "Manage Patients" : "Διαχείριση Ασθενών"}
+                                        </span>
                                     </div>
                                 </a>
 
@@ -115,7 +122,7 @@ export default function SideBar() {
                                                 }
                                                 onClick={() => (showRegisterPatient === false ? setShowRegisterPatient(true) : setShowRegisterPatient(false))}
                                             >
-                                                Register patients
+                                                {viewEnglish ? "Register patients" : "Εισαγωγή ασθενών"}
                                             </a>
                                         </div>
                                         <div className={"flex items-center ml-5"}>
@@ -130,7 +137,7 @@ export default function SideBar() {
                                                 }
                                                 onClick={() => (showSearchPatients === false ? setShowSearchPatients(true) : setShowSearchPatients(false))}
                                             >
-                                                Search patients
+                                                {viewEnglish ? "Search patients" : "Αναζήτηση ασθενών"}
                                             </a>
                                         </div>
                                         <div className={"flex items-center ml-5"}>
@@ -145,7 +152,7 @@ export default function SideBar() {
                                                 }
                                                 onClick={() => (showRegisterPatientMassively === false ? setShowRegisterPatientMassively(true) : setShowRegisterPatientMassively(false))}
                                             >
-                                                Register patients massively
+                                                {viewEnglish ? "Register patients massively" : "Εισαγωγή ασθενών μαζικά"}
                                             </a>
                                         </div>
                                     </div>
@@ -162,7 +169,9 @@ export default function SideBar() {
                                         <span className="material-icons-outlined">
                                             history
                                         </span>
-                                        <span className="ml-2">Manage Patient History</span>
+                                        <span className="ml-2">
+                                            {viewEnglish ? "Manage Patient History": "Διαχείριση Ιστορικού Ασθενούς"}
+                                        </span>
                                     </div>
                                 </a>
 
@@ -180,7 +189,7 @@ export default function SideBar() {
                                                 }
                                                 onClick={() => (showCreateHistoryReg === false ? setShowCreateHistoryReg(true) : setShowCreateHistoryReg(false))}
                                             >
-                                                Create history registration
+                                                {viewEnglish ? "Create history registration" : "Δημιουργία εγγραφής ιστορικού"}
                                             </a>
                                         </div>
                                         <div className={"flex items-center ml-5"}>
@@ -195,7 +204,7 @@ export default function SideBar() {
                                                 }
                                                 onClick={() => (showRegisterPatientHistoryMassively === false ? setShowRegisterPatientHistoryMassively(true) : setShowRegisterPatientHistoryMassively(false))}
                                             >
-                                                Create history registrations massively
+                                                {viewEnglish ? "Create history registrations massively" : "Δημιουργία εγγραφής ιστορικού μαζικά"}
                                             </a>
                                         </div>
                                         <div className={"flex items-center ml-5"}>
@@ -210,7 +219,7 @@ export default function SideBar() {
                                                 }
                                                 onClick={() => (showConfigureHistoryReg === false ? setShowConfigureHistoryReg(true) : setShowConfigureHistoryReg(false))}
                                             >
-                                                Configure last patient registration
+                                                {viewEnglish ? "Configure last patient registration" : "Επεξεργασία τελευταίας εγγραφής ασθενούς"}
                                             </a>
                                         </div>
                                         <div className={"flex items-center ml-5"}>
@@ -225,7 +234,7 @@ export default function SideBar() {
                                                 }
                                                 onClick={() => (showDisplayAllHistory === false ? setShowDisplayAllHistory(true) : setShowDisplayAllHistory(false))}
                                             >
-                                                Display & Search patient history
+                                                {viewEnglish ? "Display & Search patient history" : "Προβολή & Αναζήτηση ιστορικό ασθενούς"}
                                             </a>
                                         </div>
                                     </div>
