@@ -7,6 +7,8 @@ import UserService from "../../../services/UserService";
 import LoadingApp from "../../Loading/LoadingApp";
 import SuccessApp from "../../Success/SuccessApp";
 import ErrorApp from "../../Error/ErrorApp";
+import {data} from "autoprefixer";
+import dayjs from "dayjs";
 
 export default function ActiveHoursModal({onClose}) {
     const {
@@ -16,7 +18,8 @@ export default function ActiveHoursModal({onClose}) {
         successMessage,
         setSuccessMessage,
         errorMessage,
-        setErrorMessage
+        setErrorMessage,
+        viewEnglish
     } = useContext(GlobalContext);
 
     const [date, setDate] = useState(new Date());
@@ -277,9 +280,6 @@ export default function ActiveHoursModal({onClose}) {
 
     async function sendRequestToDeleteWH(workingHoursDate, startTime, endTime) {
         setLoading(true)
-        console.log("DATE DELETE --> " + formatDateToLocal(workingHoursDate)) // example output: 2024-08-16
-        console.log("START TIME DELETE --> ", startTime)
-        console.log("END TIME DELETE --> ", endTime)
         try {
             const data = {
                 workingHoursDate: formatDateToLocal(workingHoursDate),
@@ -287,7 +287,6 @@ export default function ActiveHoursModal({onClose}) {
                 endTime: endTime
             }
             const response = await UserService.deleteWorkingHours(data)
-            console.log(response)
             if (response.statusCode === 200) {
                 setLoading(false)
                 setShowDeleteDialog(false);
@@ -297,10 +296,67 @@ export default function ActiveHoursModal({onClose}) {
                 setErrorMessage(response.message)
             }
         } catch (error) {
-            console.error('Error defining working hours:', error);
             setErrorMessage('An error occurred while defining working hours.');
         } finally {
             setLoading(false);
+        }
+    }
+
+    function getFullGreekDate(date) {
+        console.log("- ", date.toDateString())
+        console.log("- ", dayToGreek(date.getDay()))
+        console.log("- ", getGreekMonth(date.getMonth()))
+
+        return dayToGreek(date.getDay()) + " " + getGreekMonth(date.getMonth()) + " " + dayjs(date.toDateString()).format('DD') + " " + date.getFullYear();
+    }
+
+    /* The date object starts from 0 */
+    function getGreekMonth(formattedDate, year) {
+        if(formattedDate === 8) {
+            return "Σεπτ"
+        } else if(formattedDate === 9) {
+            return "Οκτ";
+        } else if(formattedDate === 10) {
+            return "Νοε"
+        } else if(formattedDate === 11) {
+            return "Δεκ"
+        } else if(formattedDate === 0) {
+            return "Ιαν"
+        } else if(formattedDate === 1) {
+            return "Φεβρ"
+        } else if(formattedDate === 2) {
+            return "Μαρ"
+        } else if(formattedDate === 3) {
+            return "Απρί"
+        } else if(formattedDate === 4) {
+            return "Μάι"
+        } else if(formattedDate === 5) {
+            return "Ιούν"
+        } else if(formattedDate === 6) {
+            return "Ιούλ"
+        } else if(formattedDate === 7) {
+            return "Άυγ"
+        }
+
+        // Implement Greek date formatting logic here
+        return "Greek Date"; // Replace this with the actual Greek date format
+    }
+
+    function dayToGreek(s) {
+        if(s === 0) {
+            return "Κυρ"
+        } else if(s === 1) {
+            return "Δευ"
+        } else if(s === 2) {
+            return "Τρι"
+        } else if(s === 3) {
+            return "Τετ"
+        } else if(s === 4) {
+            return "Πεμ"
+        } else if(s === 5) {
+            return "Παρ"
+        } else if(s === 6) {
+            return "Σαβ"
         }
     }
 
@@ -327,7 +383,7 @@ export default function ActiveHoursModal({onClose}) {
 
                 <header className="col-span-1">
                     <p className="text-slate-700 font-black hover:text-sky-700">
-                        {date.toDateString()}
+                        {viewEnglish ? date.toDateString() : getFullGreekDate(date)}
                     </p>
                 </header>
 
@@ -347,13 +403,13 @@ export default function ActiveHoursModal({onClose}) {
                                             className="block px-4 py-2 text-gray-800 hover:bg-green-200"
                                             onClick={() => handleSubmit()}
                                         >
-                                            Submit
+                                            {viewEnglish ? "Submit" : "Καταχώρηση"}
                                         </a>
                                         <a
                                             className="block px-4 py-2 text-gray-800 hover:bg-red-200"
                                             onClick={() => handleCloseSubmitDialog()}
                                         >
-                                            Close
+                                            {viewEnglish ? "Close" : "Κλείσιμο"}
                                         </a>
                                     </div> )
                                 : (showDeleteDialog ? (
@@ -362,13 +418,13 @@ export default function ActiveHoursModal({onClose}) {
                                             className="block px-4 py-2 text-red-600 hover:bg-red-400"
                                             onClick={() => handleDelete()}
                                         >
-                                            Delete
+                                            {viewEnglish ? "Delete" : "Διαγραφή"}
                                         </a>
                                         <a
                                             className="block px-4 py-2 text-gray-800 hover:bg-red-200"
                                             onClick={() => handleCloseDeleteDialog()}
                                         >
-                                            Close
+                                            {viewEnglish ? "Close" : "Κλείσιμο"}
                                         </a>
                                     </div>
                                 ) : null)
@@ -490,7 +546,7 @@ export default function ActiveHoursModal({onClose}) {
                         onClick={onClose}
                         className="text-white text-sm"
                     >
-                        Close
+                        {viewEnglish ? "Close" : "Κλείσιμο"}
                     </button>
                 </div>
             </div>
