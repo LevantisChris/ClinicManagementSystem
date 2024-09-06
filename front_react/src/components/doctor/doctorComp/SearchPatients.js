@@ -16,7 +16,8 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
         viewLastReg,
         setViewLastReg,
         patientHistoryToSee,
-        setPatientHistoryToSee
+        setPatientHistoryToSee,
+        viewEnglish
     } = useContext(GlobalContext);
 
     const [inputAMKAValue, setInputAMKAValue] = useState('');
@@ -110,10 +111,11 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
     return (
         <div className="flex flex-col h-min w-full p-3 sm:p-4">
             <p className="font-light mr-10 sm:mr-0 text-3xl md:text-5xl">
-                {bigTitle && bigTitle.length !== 0 ? bigTitle : "Search patients based on criteria"}
+                {bigTitle && bigTitle.length !== 0 ? bigTitle : (viewEnglish ? "Search patients based on criteria" : "Αναζήτηση ασθενών βάση κριτιριών")}
             </p>
             <p className="mt-2 mr-10 sm:mr-0 font-light text-slate-400 text-sm md:text-base">
-                {smallTitle && smallTitle.length !== 0 ? smallTitle : "If you don't give any search criteria, all the patients will be returned"}
+                {smallTitle && smallTitle.length !== 0 ? smallTitle : (viewEnglish ? "If you don't give any search criteria, all the patients will be returned"
+                    : "Άμα δεν δωθούν κριτίρια αναζήτησης, όλοι οι ασθενείς θα επιστραφούν")}
             </p>
             <div className="grid grid-cols-3 mr-10 sm:mr-0 p-4 gap-4 h-min">
                 <div className="col-span-1 w-full">
@@ -122,7 +124,7 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                             <input
                                 type="text"
                                 onChange={handleInputAMKAChange}
-                                placeholder="Patient AMKA"
+                                placeholder={viewEnglish ? "Patient AMKA" : "ΑΜΚΑ ασθενούς"}
                                 className="w-full bg-white h-10 sm:px-5 sm:pr-10 rounded-full text-xs sm:text-sm focus:outline-none"
                             />
                         </div>
@@ -134,7 +136,7 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                             <input
                                 type="text"
                                 onChange={handleInputSurnameChange}
-                                placeholder="Patient surname"
+                                placeholder={viewEnglish ? "Patient surname" : "Επώνυμο ασθενούς"}
                                 className="bg-white h-10 sm:px-5 sm:pr-10 rounded-full text-xs sm:text-sm focus:outline-none w-full"
                             />
                         </div>
@@ -146,7 +148,7 @@ export default function SearchPatients({bigTitle, smallTitle, componentState}) {
                     <form className="w-full">
                         <input
                             type="button"
-                            value="Search"
+                            value={viewEnglish ? "Search" : "Αναζήτηση"}
                             className="bg-blue-500 text-white px-2 py-2 sm:px-4 sm:py-2 rounded cursor-pointer hover:bg-blue-700 w-full"
                             onClick={handleButtonClick}
                         />

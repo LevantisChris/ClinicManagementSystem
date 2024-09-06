@@ -9,58 +9,6 @@ import UserService from "../../../services/UserService";
 
 export default function DisplayInfoPatient({patient}) {
 
-    const TABLE_HEAD = ["Appointment Date", "Appointment Start Time", "Appointment End Time", "Appointment Justification"];
-    const TABLE_ROWS = [
-        {
-            name: "John Michael",
-            job: "Manager",
-            date: "23/04/18",
-        },
-        {
-            name: "Alexa Liras",
-            job: "Developer",
-            date: "23/04/18",
-        },
-        {
-            name: "Laurent Perrier",
-            job: "Executive",
-            date: "19/09/17",
-        },
-        {
-            name: "Michael Levi",
-            job: "Developer",
-            date: "24/12/08",
-        },
-        {
-            name: "Richard Gran",
-            job: "Manager",
-            date: "04/10/21",
-        },
-        {
-            name: "Richard Gran",
-            job: "Manager",
-            date: "04/10/21",
-        },
-        {
-            name: "Richard Gran",
-            job: "Manager",
-            date: "04/10/21",
-        },
-        {
-            name: "Richard Gran",
-            job: "Manager",
-            date: "04/10/21",
-        },
-        {
-            name: "Richard Gran",
-            job: "Manager",
-            date: "04/10/21",
-        },
-    ];
-
-
-
-
     const {
         successMessage,
         errorMessage,
@@ -68,8 +16,13 @@ export default function DisplayInfoPatient({patient}) {
         setErrorMessage,
         viewDisplayPatientComponent,
         setViewDisplayPatientComponent,
-
+        viewEnglish
     } = useContext(GlobalContext);
+
+    const TABLE_HEAD = [(viewEnglish ? "Appointment Date" : "Ημερομηνία ραντεβού"),
+        (viewEnglish ? "Appointment Start Time" : "Ώρα έναρξης ραντεβού"),
+        (viewEnglish ? "Appointment End Time" : "Ώρα λήξης ραντεβού"),
+        (viewEnglish ? "Appointment Justification" : "Αιτιολόγηση ραντεβού")];
 
     const [loading, setLoading] = useState(false)
 
@@ -205,7 +158,7 @@ export default function DisplayInfoPatient({patient}) {
                                     {patient.patientUser.user_name} {patient.patientUser.user_surname}
                                 </p>
                                 : <p className="text-lg sm:text-3xl text-black font-black hover:text-sky-700">
-                                    Provide the new info about the patient
+                                    {viewEnglish ? "Provide the new info about the patient" : "Παρέχετε τις νέες πληροφορίες για τον ασθενή"}
                                 </p>
                             }
                             <div>
@@ -233,23 +186,23 @@ export default function DisplayInfoPatient({patient}) {
                                             Email: {patient.patientUser.email}
                                         </p>
                                         <p className="text-black text-sm sm:text-lg font-light hover:text-sky-700">
-                                            ID number: {patient.patientUser.user_idNumber}
+                                            {viewEnglish ? "ID number:" : "Αριθμός ταυτότητας:"} {patient.patientUser.user_idNumber}
                                         </p>
                                         <p className="text-black text-sm sm:text-lg font-light hover:text-sky-700">
                                             AMKA: {patient.patientAMKA}
                                         </p>
                                         <p className="text-black text-sm sm:text-lg font-light hover:text-sky-700">
-                                            System registration date: {patient.patientRegistrationDate}
+                                            {viewEnglish ? "System registration date:" : "Ημερομηνία καταχώρησης:"} {patient.patientRegistrationDate}
                                         </p>
                                     </>
                                 ) : (
                                     <div className="flex w-full p-4 flex-col items-start gap-10">
-                                        <Input size="sm" label="Provide the new name" placeholder={patient.patientUser.user_name} onChange={(event) => handleChangeName(event)}/>
-                                        <Input size="sm" label="Provide the new surname" placeholder={patient.patientUser.user_surname} onChange={(event) => handleChangeSurname(event)}/>
-                                        <Input size="sm" label="Provide the new email" placeholder={patient.patientUser.email} onChange={(event) => handleChangeEmail(event)}/>
-                                        <Input size="sm" label="Provide the new ID number" placeholder={patient.patientUser.user_idNumber} onChange={(event) => handleChangeIdNumber(event)}/>
-                                        <Input size="sm" label="Provide the new AMKA number" placeholder={patient.patientAMKA} onChange={(event) => handleChangeAMKA(event)}/>
-                                        <Button className={"size-9 w-full bg-green-600"} onClick={handleSubmitUpdateButton}>Submit</Button>
+                                        <Input size="sm" label={viewEnglish ? "Provide the new name" : "Δώστε το νέο όνομα"} placeholder={patient.patientUser.user_name} onChange={(event) => handleChangeName(event)}/>
+                                        <Input size="sm" label={viewEnglish ? "Provide the new surname" : "Δώστε το νέο επώνυμο"} placeholder={patient.patientUser.user_surname} onChange={(event) => handleChangeSurname(event)}/>
+                                        <Input size="sm" label={viewEnglish ? "Provide the new email" : "Δώστε το νέο email"} placeholder={patient.patientUser.email} onChange={(event) => handleChangeEmail(event)}/>
+                                        <Input size="sm" label={viewEnglish ? "Provide the new ID number" : "Δώστε το νέο αριθμό ταυτότητας"} placeholder={patient.patientUser.user_idNumber} onChange={(event) => handleChangeIdNumber(event)}/>
+                                        <Input size="sm" label={viewEnglish ? "Provide the new AMKA number" : "Δώστε τον νέο αριθμό ΑΜΚΑ"} placeholder={patient.patientAMKA} onChange={(event) => handleChangeAMKA(event)}/>
+                                        <Button className={"size-9 w-full bg-green-600"} onClick={handleSubmitUpdateButton}>{viewEnglish ? "Submit" : "Υποβολη"}</Button>
                                     </div>
                                 )
                             }
@@ -280,7 +233,7 @@ export default function DisplayInfoPatient({patient}) {
                                     <tbody>
                                     {
                                         appointmentList.length !== 0 ? appointmentList.map((appointment, index) => {
-                                        const isLast = index === TABLE_ROWS.length - 1;
+                                        const isLast = index === appointmentList.length - 1;
                                         const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
                                         return (
@@ -336,14 +289,14 @@ export default function DisplayInfoPatient({patient}) {
                                         <button
                                             className="bg-blue-400 p-3 sm:p-4 text-black-400 hover:bg-blue-600 rounded-xl transition duration-500 ease-in-out"
                                             onClick={handleUpdateButtonClicked}>
-                                            Update patient
+                                            {viewEnglish ? "Update patient" : "Ενημέρωση ασθενούς"}
                                         </button>
                                     </div>
                                     <div>
                                         <button
                                             className="bg-red-400 p-3 sm:p-4 text-black-400 hover:bg-red-600 rounded-xl transition duration-500 ease-in-out"
                                             onClick={handleDeleteButtonClick}>
-                                            Delete patient
+                                            {viewEnglish ? "Delete patient" : "Διαγραφή ασθενούς"}
                                         </button>
                                     </div>
                                 </>
@@ -352,7 +305,7 @@ export default function DisplayInfoPatient({patient}) {
                                     <button
                                         className="bg-blue-400 p-4 text-black-400 rounded-xl w-full"
                                         onClick={handleGoBackButton}>
-                                        Go back
+                                        {viewEnglish ? "Go back" : "Επιστροφή"}
                                     </button>
                                 </div>
                             }
