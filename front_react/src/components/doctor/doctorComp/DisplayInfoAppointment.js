@@ -9,7 +9,8 @@ export default function DisplayInfoAppointment({appointment}) {
     const {
         successMessage,
         errorMessage,
-        setViewDisplayAppointmentComponent
+        setViewDisplayAppointmentComponent,
+        viewEnglish
     } = useContext(GlobalContext);
 
     const [loading, setLoading] = useState(false)
@@ -50,16 +51,16 @@ export default function DisplayInfoAppointment({appointment}) {
                         <div className="p-3 sm:p-5 grid grid-cols-1 gap-5">
                             <div className="grid grid-rows-5 bg-slate-200 p-3 rounded">
                                 <p className="text-lg sm:text-2xl text-slate-700 font-black hover:text-sky-700 text-center">
-                                    Appointment Details
+                                    {viewEnglish ? "Appointment Details" : "Λεπτομέρειες Ραντεβού"}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
-                                    Date: {appointment.appointmentDate}
+                                    {viewEnglish ? "Date:" : "Ημερομηνία: "} {appointment.appointmentDate}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
-                                    Time: {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
+                                    {viewEnglish ? "Time:" : "Ώρα: "} {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
-                                    State: {
+                                    {viewEnglish ? "State: " : "Κατάσταση:"} {
                                     appointment.appointmentStateId === 1 ? "Created" :
                                         appointment.appointmentStateId === 2 ? "Respected" :
                                             appointment.appointmentStateId === 3 ? "Completed" :
@@ -67,11 +68,11 @@ export default function DisplayInfoAppointment({appointment}) {
                                 }
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
-                                    Appointment description:
+                                    {viewEnglish ? "Appointment description:" : "Περιγραφή ραντεβού: "}
                                 </p>
                                 <textarea
                                     name="description"
-                                    placeholder="Reason for the appointment"
+                                    placeholder={viewEnglish ? "Reason for the appointment" : "Λόγος για το ραντεβού"}
                                     style={{ resize: 'none' }}
                                     disabled
                                     className="pt-3 border-0 text-gray-600 bg-gray-200 w-full rounded border-b-2 focus:outline-none focus:ring-0 focus:border-blue-500"
@@ -81,16 +82,16 @@ export default function DisplayInfoAppointment({appointment}) {
 
                             <div className="grid grid-rows-5 bg-slate-200 p-3 rounded">
                                 <p className="text-lg sm:text-2xl text-slate-700 font-black hover:text-sky-700 text-center">
-                                    Patient Information
+                                    {viewEnglish ? "Patient Information" : "Πληροφορίες Ασθενή"}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
-                                    Full-name: {appointment.appointmentPatient.user.user_name} {appointment.appointmentPatient.user.user_surname}
+                                    {viewEnglish ? "Full - name:" : "Όνομα:"} {appointment.appointmentPatient.user.user_name} {appointment.appointmentPatient.user.user_surname}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
                                     AMKA: {appointment.appointmentPatient.patient_AMKA}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
-                                    ID Number: {appointment.appointmentPatient.user.user_idNumber}
+                                    {viewEnglish ? "ID Number:" : "Αριθμός Ταυτότητας:"} {appointment.appointmentPatient.user.user_idNumber}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
                                     Email: {appointment.appointmentPatient.user.email}
@@ -99,16 +100,16 @@ export default function DisplayInfoAppointment({appointment}) {
 
                             <div className="grid grid-rows-5 bg-slate-200 p-3 rounded">
                                 <p className="text-lg sm:text-2xl text-slate-700 font-black hover:text-sky-700 text-center">
-                                    Doctor Information
+                                    {viewEnglish ? "Doctor Information" : "Πληροφορίες Γιατρού"}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
-                                    Full-name: {appointment.appointmentDoctorName} {appointment.appointmentDoctorSurname}
+                                    {viewEnglish ? "Full - name:" : "Ονομα:"} {appointment.appointmentDoctorName} {appointment.appointmentDoctorSurname}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
-                                    Speciality: {appointment.appointmentDoctorSpeciality}
+                                    {viewEnglish ? "Speciality:" : "Ειδικότητα:"} {appointment.appointmentDoctorSpeciality}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
-                                    System ID: {appointment.appointmentDoctorId}
+                                    {viewEnglish ? "System ID:" : "ID συστήματος:"} {appointment.appointmentDoctorId}
                                 </p>
                                 <p className="text-sm sm:text-md text-slate-700 font-black hover:text-sky-700">
                                     Email: {appointment.appointmentDoctorEmail}

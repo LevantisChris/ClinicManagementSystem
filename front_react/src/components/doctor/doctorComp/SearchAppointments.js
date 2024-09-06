@@ -11,7 +11,8 @@ export default function SearchAppointments() {
 
     const {
         viewDisplayAppointmentComponent,
-        setViewDisplayAppointmentComponent
+        setViewDisplayAppointmentComponent,
+        viewEnglish
     } = useContext(GlobalContext);
 
     /* To keep track of the filter selected */
@@ -181,10 +182,10 @@ export default function SearchAppointments() {
     return (
         <div className="flex flex-col h-min w-full p-5">
             <p className={"font-light text-2xl sm:text-5xl"}>
-                Search & View appointments
+                {viewEnglish ? "Search & View appointments" : "Αναζήτηση & Προβολή ραντεβού"}
             </p>
             <p className={"mt-2 font-light text-slate-400 text-xs sm:text-lg"}>
-                If you dont give any search criteria, all the appointments for the current day will be returned
+                {viewEnglish ? "If you dont give any search criteria, all the appointments for the current day will be returned" : "Αν δεν εισάγετε κριτίρια αναζήτησης, όλα τα ρεντεβού τα επιστραφούν"}
             </p>
             <div className={`grid ${selectedFilter === 'date' ? 'grid-cols-4' : 'grid-cols-3'} p-4 gap-4 h-min`}>
                 {/* Choice Box */}
@@ -194,11 +195,11 @@ export default function SearchAppointments() {
                         value={selectedFilter}
                         onChange={handleSelectedFilter}
                     >
-                        <option value="today_appointments">Today Appointments</option>
-                        <option value="surname">By Surname</option>
-                        <option value="AMKA">By AMKA</option>
-                        <option value="appointState">By Appoin. state</option>
-                        <option value="date">By Date</option>
+                        <option value="today_appointments">{viewEnglish ? "Today Appointments" : "Σημερινά ραντεβού"}</option>
+                        <option value="surname">{viewEnglish ? "By Surname" : "Με βάση επώνυμο"}</option>
+                        <option value="AMKA">{viewEnglish ? "By AMKA" : "Με βάση AMKA"}</option>
+                        <option value="appointState">{viewEnglish ? "By Appoin. state" : "Με βάση κατάσταση ραντεβού"}</option>
+                        <option value="date">{viewEnglish ? "By Date" : "Με βάση ημερομηνία"}</option>
                     </select>
                 </div>
 
@@ -211,10 +212,10 @@ export default function SearchAppointments() {
                                 value={filterAppointStateSelectedOption}
                                 onChange={handleSelectedState}
                             >
-                                <option value="appointState_Created">Created</option>
-                                <option value="appointState_Respected">Respected</option>
-                                <option value="appointState_Completed">Completed</option>
-                                <option value="appointState_Canceled">Canceled</option>
+                                <option value="appointState_Created">{viewEnglish ? "Created" : "Δημιουργημένο"}</option>
+                                <option value="appointState_Respected">{viewEnglish ? "Respected" : "Τηρημένο"}</option>
+                                <option value="appointState_Completed">{viewEnglish ? "Completed" : "Ολοκληρωμένο"}</option>
+                                <option value="appointState_Canceled">{viewEnglish ? "Canceled" : "Ακυρωμένο"}</option>
                             </select>
                         </div>
                     </>
@@ -229,7 +230,7 @@ export default function SearchAppointments() {
                             >
                                 edit_calendar
                             </span>
-                            {startDate === null ? setStartDate(new Date()) : startDate.getDate() ? startDate.toDateString() : "Select starting date"}
+                            {startDate === null ? setStartDate(new Date()) : startDate.getDate() ? startDate.toDateString() : (viewEnglish ? "Select starting date" : "Επιλέξτε αρχική ημερομηνία")}
                         </div>
                         {/* Ending Date */}
                         <div className="flex items-center sm:border-2 sm:bg-white text-xs sm:text-lg">
@@ -239,7 +240,7 @@ export default function SearchAppointments() {
                             >
                                 edit_calendar
                             </span>
-                            {endDate === null ? setEndDate(new Date()) : endDate.getDate() ? endDate.toDateString() : "Select end date"}
+                            {endDate === null ? setEndDate(new Date()) : endDate.getDate() ? endDate.toDateString() : (viewEnglish ? "Select ending date" : "Επιλέξτε τελική ημερομηνία")}
                         </div>
                     </>
                 ) : (selectedFilter !== "today_appointments" ? (
@@ -249,7 +250,7 @@ export default function SearchAppointments() {
                                 <input
                                     type="text"
                                     onChange={selectedFilter === 'AMKA' ? handleInputAMKAChange : handleInputSurnameChange}
-                                    placeholder={selectedFilter === 'AMKA' ? "Enter the AMKA" : "Enter the surname"}
+                                    placeholder={selectedFilter === 'AMKA' ? (viewEnglish ? "Enter the AMKA" : "Εισάγετε το AMKA") : (viewEnglish ? "Enter the surname" : "Εισάγετε το επώνυμο")}
                                     className="bg-white  sm:h-10 p-1 sm:px-5 sm:pr-10 rounded-full focus:outline-none w-full text-xs sm:text-base"
                                 />
                             </div>
@@ -264,7 +265,7 @@ export default function SearchAppointments() {
                     <form className="w-full">
                         <input
                             type={"button"}
-                            value="Search"
+                            value={viewEnglish ? "Search" : "Αναζήτηση"}
                             className="bg-blue-500 text-white p-1 sm:px-4 sm:py-2 rounded cursor-pointer hover:bg-blue-700 w-full text-xs sm:text-base"
                             onClick={handleSubmitButtonClick}
                         />
@@ -303,19 +304,19 @@ export default function SearchAppointments() {
                                             {/* AMKA (patient) */}
                                             <div className="text-sm sm:text-md">{"AMKA: " + appointment.appointmentPatientAMKA}</div>
                                             {/* Time */}
-                                            <div className="text-xs sm:text-sm text-gray-500">In {appointment.appointmentDate}</div>
-                                            <div className="text-xs sm:text-sm text-gray-500">From {appointment.appointmentStartTime} to {appointment.appointmentEndTime}</div>
+                                            <div className="text-xs sm:text-sm text-gray-500">{viewEnglish ? "In" : "Από"} {appointment.appointmentDate}</div>
+                                            <div className="text-xs sm:text-sm text-gray-500">{viewEnglish ? "From" : "Έως"} {appointment.appointmentStartTime} to {appointment.appointmentEndTime}</div>
                                             {/* Click to view more info about the appointment */}
                                             <span className="material-icons-outlined text-gray-600 hidden sm:block">more_horiz</span>
                                         </div>
                                         <div className="flex flex-col">
                                             {/* Reason for Appointment */}
-                                            <div className="text-md sm:text-lg font-semibold">Reason for the appointment</div>
+                                            <div className="text-md sm:text-lg font-semibold">{viewEnglish ? "Reason for the appointment" : "Λόγος ραντεβού"}</div>
                                             <div className="text-sm sm:text-md">{appointment.appointmentJustification}</div>
                                         </div>
                                     </div>
                                 </div>
-                            )) : "No appointments found"
+                            )) : viewEnglish ? "No appointments found" : "Δεν βρέθηκαν ραντεβού"
                         }
 
                         {/* Pagination Controls */}
