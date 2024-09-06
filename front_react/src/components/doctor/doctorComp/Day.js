@@ -5,7 +5,7 @@ import GlobalContext from "../../../context/GlobalContext";
 export default function Day({appointmentsOfTheDay, day, rowIdx}) {
 
     const [dayEvents, setDayEvents] = useState([]);
-    const {setDaySelected, setShowEventModal, setShowInsertModal, filteredEvents, setSelectedEvent} = useContext(GlobalContext);
+    const {setDaySelected, setShowEventModal, setShowInsertModal, filteredEvents, setSelectedEvent, viewEnglish} = useContext(GlobalContext);
 
     /* Take all the events that correspond to that day */
     useEffect(() => {
@@ -19,11 +19,29 @@ export default function Day({appointmentsOfTheDay, day, rowIdx}) {
             'bg-blue-600 text-white rounded-full w-7' : ''
     }
 
+    function dayToGreek(s) {
+        if(s === "SUN") {
+            return "ΚΥΡ"
+        } else if(s === "MON") {
+            return "ΔΕΥ"
+        } else if(s === "TUE") {
+            return "ΤΡΙ"
+        } else if(s === "WED") {
+            return "ΤΕΤ"
+        } else if(s === "THU") {
+            return "ΠΕΜ"
+        } else if(s === "FRI") {
+            return "ΠΑΡ"
+        } else if(s === "SAT") {
+            return "ΚΥΡ"
+        }
+    }
+
     return (
         <div className={`border border-gray-200 flex flex-col`}>
             <header className={'flex flex-col items-center'}>
                 {rowIdx === 0 && (
-                    <p className={'text-sm mt-1'}>{day.format('ddd').toUpperCase()}</p>
+                    <p className={'text-sm mt-1'}>{viewEnglish ? day.format('ddd').toUpperCase() : dayToGreek(day.format('ddd').toUpperCase())}</p>
                 )}
                 <p
                     className={`text-sm p-1 my-1 text-center ${getCurrentDayClass()} rounded-full hover:bg-sky-200 cursor-pointer transition duration-500 ease-in-outs`}
