@@ -72,106 +72,55 @@ export default function DisplayReg({patient}) {
         >
             {patient.statusCode === 200 ? (
                 isUpdate === false ? (
-                    <div
-                        className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-5/12 max-w-full h-5/6 overflow-auto"
-                    >
+                    <div className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-full max-w-3xl lg:w-6/12 xl:w-5/12 h-5/6 overflow-auto">
                         <header className="rounded bg-slate-200 px-4 py-2 flex justify-between items-center">
-                            <p className="text-2xl text-black font-black hover:text-sky-700">
-                                {patient.registrationAppointment.appointmentPatient.user.user_name} {patient.registrationAppointment.appointmentPatient.user.user_surname} last
-                                history registration
+                            <p className="text-xl lg:text-2xl text-black font-black hover:text-sky-700">
+                                {patient.registrationAppointment.appointmentPatient.user.user_name} {patient.registrationAppointment.appointmentPatient.user.user_surname} last history registration
                             </p>
                             <div>
                                 <button onClick={() => setViewLastReg(false)}>
-                                <span
-                                    className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out"
-                                >
-                                    close
-                                </span>
+                                    <span className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out">close</span>
                                 </button>
                             </div>
                         </header>
 
-                        <div
-                            className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 mb-5 shadow-xl">
+                        <div className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 mb-5 shadow-xl">
                             <div className="bg-blue-200 p-2 rounded-xl">
-                                <p className="text-black text-2xl font-bold hover:text-sky-700">
-                                    Registration Information
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Registration ID: {patient.patientHistoryRegistrationId}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Date Register: {patient.patientHistoryRegistrationDateRegister}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Detected Health Problem: {patient.patientHistoryRegistrationHealthProblems}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Suggested Treatment: {patient.patientHistoryRegistrationTreatment}
-                                </p>
+                                <p className="text-black text-xl lg:text-2xl font-bold hover:text-sky-700">Registration Information</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Registration ID: {patient.patientHistoryRegistrationId}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Date Register: {patient.patientHistoryRegistrationDateRegister}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Detected Health Problem: {patient.patientHistoryRegistrationHealthProblems}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Suggested Treatment: {patient.patientHistoryRegistrationTreatment}</p>
                             </div>
 
+                            {/* Relative Appointment Information */}
                             <div className="bg-slate-200 p-2 rounded-xl">
-                                <p className="text-black text-2xl font-bold hover:text-sky-700">
-                                    Relative Appointment Information
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Appointment ID: {patient.registrationAppointment.appointmentId}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Start Time: {patient.registrationAppointment.appointmentStartTime}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    End Time: {patient.registrationAppointment.appointmentEndTime}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Justification: {patient.registrationAppointment.appointmentJustification}
-                                </p>
+                                <p className="text-black text-xl lg:text-2xl font-bold hover:text-sky-700">Relative Appointment Information</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Appointment ID: {patient.registrationAppointment.appointmentId}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Start Time: {patient.registrationAppointment.appointmentStartTime}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">End Time: {patient.registrationAppointment.appointmentEndTime}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Justification: {patient.registrationAppointment.appointmentJustification}</p>
                             </div>
 
+                            {/* Patient Information */}
                             <div className="bg-slate-200 p-2 rounded-xl">
-                                <p className="text-black text-2xl font-bold hover:text-sky-700">
-                                    Patient Information
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Appointment ID: {patient.registrationAppointment.appointmentPatient.patient_id}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    First-Name: {patient.registrationAppointment.appointmentPatient.user.user_name}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Second-Name: {patient.registrationAppointment.appointmentPatient.user.user_surname}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    ID-Number: {patient.registrationAppointment.appointmentPatient.user.user_idNumber}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Email: {patient.registrationAppointment.appointmentPatient.user.email}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    AMKA: {patient.registrationAppointment.appointmentPatient.patient_AMKA}
-                                </p>
+                                <p className="text-black text-xl lg:text-2xl font-bold hover:text-sky-700">Patient Information</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Appointment ID: {patient.registrationAppointment.appointmentPatient.patient_id}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">First-Name: {patient.registrationAppointment.appointmentPatient.user.user_name}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Second-Name: {patient.registrationAppointment.appointmentPatient.user.user_surname}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">ID-Number: {patient.registrationAppointment.appointmentPatient.user.user_idNumber}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Email: {patient.registrationAppointment.appointmentPatient.user.email}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">AMKA: {patient.registrationAppointment.appointmentPatient.patient_AMKA}</p>
                             </div>
 
+                            {/* Doctor Information */}
                             <div className="bg-slate-200 p-2 rounded-xl">
-                                <p className="text-black text-2xl font-bold hover:text-sky-700">
-                                    Doctor Information
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Doctor ID: {patient.registrationAppointment.appointmentDoctor.doctor_id}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    First-Name: {patient.registrationAppointment.appointmentDoctor.user.user_name}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Second-Name: {patient.registrationAppointment.appointmentDoctor.user.user_surname}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Email: {patient.registrationAppointment.appointmentDoctor.user.email}
-                                </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
-                                    Speciality: {patient.registrationAppointment.appointmentDoctor.doctorSpeciality.specialityDescription}
-                                </p>
+                                <p className="text-black text-xl lg:text-2xl font-bold hover:text-sky-700">Doctor Information</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Doctor ID: {patient.registrationAppointment.appointmentDoctor.doctor_id}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">First-Name: {patient.registrationAppointment.appointmentDoctor.user.user_name}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Second-Name: {patient.registrationAppointment.appointmentDoctor.user.user_surname}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Email: {patient.registrationAppointment.appointmentDoctor.user.email}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Speciality: {patient.registrationAppointment.appointmentDoctor.doctorSpeciality.specialityDescription}</p>
                             </div>
                         </div>
 
@@ -180,115 +129,80 @@ export default function DisplayReg({patient}) {
                                 Error: {showAlert}
                             </Alert>
                         )}
-                        <div className="grid grid-cols-2 gap-5">
-                            <Button className="bg-red-700 p-4 text-sm" onClick={handleDeleteButton}>
-                                Delete
-                            </Button>
-                            <Button className="bg-blue-600 p-4 text-sm" onClick={handleUpdateButton}>
-                                Update
-                            </Button>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <Button className="bg-red-700 p-4 text-sm" onClick={handleDeleteButton}>Delete</Button>
+                            <Button className="bg-blue-600 p-4 text-sm" onClick={handleUpdateButton}>Update</Button>
                         </div>
                     </div>
-                )
-                    : // Update state is true
-                    <div
-                        className={"flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-5/12 max-w-full h-5/6 overflow-auto"}>
+                ) : (
+                    // Update state is true
+                    <div className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-full max-w-3xl lg:w-6/12 xl:w-5/12 h-5/6 overflow-auto">
                         <header className="rounded bg-blue-200 px-4 py-2 flex justify-between items-center">
-                            <p className="text-2xl text-black font-black hover:text-sky-700">
-                                Update {patient.registrationAppointment.appointmentPatient.user.user_name} {patient.registrationAppointment.appointmentPatient.user.user_surname} last
-                                history registration
+                            <p className="text-xl lg:text-2xl text-black font-black hover:text-sky-700">
+                                Update {patient.registrationAppointment.appointmentPatient.user.user_name} {patient.registrationAppointment.appointmentPatient.user.user_surname} last history registration
                             </p>
                             <div>
                                 <button onClick={() => setViewLastReg(false)}>
-                                <span
-                                    className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out"
-                                >
-                                    close
-                                </span>
+                                    <span className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out">close</span>
                                 </button>
                             </div>
                         </header>
-                        <div
-                            className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 mb-5 shadow-xl">
-                            <div className={"flex-grow w-full bg-blue-200 p-2 rounded-xl text-center mb-2"}>
-                                <span
-                                    className="material-icons-outlined text-blue-700 text-4xl"
-                                >
-                                    edit
-                                </span>
-                                <p className={"w-full text-center text-lg font-bold mb-2"}>
-                                    Update health problem
-                                </p>
+
+                        <div className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 mb-5 shadow-xl">
+                            <div className="flex-grow w-full bg-blue-200 p-2 rounded-xl text-center mb-2">
+                                <span className="material-icons-outlined text-blue-700 text-4xl">edit</span>
+                                <p className="w-full text-center text-lg font-bold mb-2">Update health problem</p>
                                 <textarea
-                                    className={"bg-slate-200 rounded w-full"}
+                                    className="bg-slate-200 rounded w-full"
                                     placeholder={patient.patientHistoryRegistrationHealthProblems}
                                     onChange={(event) => handleUpdateHealthProblemsChange(event)}
                                 />
                             </div>
-                            <div className={"flex-grow w-full bg-blue-200 p-2 rounded-xl text-center"}>
-                                <span
-                                    className="material-icons-outlined text-blue-700 text-4xl"
-                                >
-                                    edit
-                                </span>
-                                <p className={"w-full text-center text-lg font-bold mb-2"}>
-                                    Update suggested treatment
-                                </p>
+                            <div className="flex-grow w-full bg-blue-200 p-2 rounded-xl text-center">
+                                <span className="material-icons-outlined text-blue-700 text-4xl">edit</span>
+                                <p className="w-full text-center text-lg font-bold mb-2">Update suggested treatment</p>
                                 <textarea
-                                    className={"bg-slate-200 rounded w-full"}
+                                    className="bg-slate-200 rounded w-full"
                                     placeholder={patient.patientHistoryRegistrationTreatment}
                                     onChange={(event) => handleUpdateTreatmentChange(event)}
                                 />
                             </div>
                         </div>
+
                         {showAlert.length !== 0 && (
-                            <Alert color="red" className="mb-2 p-2">
-                                Error: {showAlert}
-                            </Alert>
+                            <Alert color="red" className="mb-2 p-2">Error: {showAlert}</Alert>
                         )}
-                        <div className="grid grid-cols-2 gap-5">
-                            <Button className="bg-green-500 p-4 text-sm" onClick={handleSubmitUpdate}>
-                                Submit
-                            </Button>
-                            <Button className="bg-red-500 p-4 text-sm" onClick={() => setIsUpdate(false)}>
-                                Go back
-                            </Button>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <Button className="bg-green-500 p-4 text-sm" onClick={handleSubmitUpdate}>Submit</Button>
+                            <Button className="bg-red-500 p-4 text-sm" onClick={() => setIsUpdate(false)}>Go back</Button>
                         </div>
                     </div>
+                )
             ) : (
                 // No history present
-                <div
-                    className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-5/12 max-w-full h-5/6 overflow-auto"
-                >
+                <div className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-full max-w-3xl lg:w-6/12 xl:w-5/12 h-5/6 overflow-auto">
                     <header className="rounded bg-slate-200 px-4 py-2 flex justify-between items-center">
-                        <p className="text-2xl text-red-500 font-black hover:text-red-700">
-                            Error
-                        </p>
+                        <p className="text-2xl text-red-500 font-black hover:text-red-700">Error</p>
                         <div>
                             <button onClick={() => setViewLastReg(false)}>
-                            <span
-                                className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out"
-                            >
-                                close
-                            </span>
+                                <span className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out">close</span>
                             </button>
                         </div>
                     </header>
 
                     <div className="flex-grow mt-2 rounded-xl bg-slate-200 border-4 p-5 flex justify-center items-center">
                         <div className="text-center">
-                        <span className="material-icons-outlined text-9xl text-red-600">
-                            trending_down
-                        </span>
-                            <p className="text-xl text-red-600">
-                                Cannot find patient history, create a new registration.
-                            </p>
+                            <span className="material-icons-outlined text-9xl text-red-600">trending_down</span>
+                            <p className="text-xl text-red-600">Cannot find patient history, create a new registration.</p>
                         </div>
                     </div>
                 </div>
             )}
         </motion.div>
     );
+
 
 
 }
