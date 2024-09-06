@@ -1,12 +1,23 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import * as XLSX from 'xlsx';
 import {Button, Card, Typography} from "@material-tailwind/react";
 import UserService from "../../../services/UserService";
 import LoadingApp from "../../Loading/LoadingApp";
+import GlobalContext from "../../../context/GlobalContext";
 
 export default function RegisterPatientsMassively() {
 
-    const TABLE_HEAD = ["Status", "First-name","Second-name", "AMKA", "Email", "ID-Number"];
+    const {
+        viewEnglish
+    } = useContext(GlobalContext)
+
+    const TABLE_HEAD = [
+        viewEnglish ? "Status" : "Κατάσταση",
+        viewEnglish ? "First-name" : "Όνομα",
+        viewEnglish ? "Second-name" : "Επώνυμο",
+        "AMKA",
+        "Email",
+        viewEnglish ? "ID-Number" : "Αριθμός ταυτότητας"];
 
     const [TABLE_ROWS, setTABLE_ROWS] = useState([])
     const [loading, setLoading] = useState(false)
@@ -94,11 +105,10 @@ export default function RegisterPatientsMassively() {
         loading ? ( <LoadingApp/>) :
             <div className="flex flex-col h-min w-full p-5">
                 <p className={"font-light text-3xl sm:text-5xl"}>
-                    Register patients massively
+                    {viewEnglish ? "Register patients massively" : "Μαζική εγγραφή ασθενών"}
                 </p>
                 <p className={"mt-3 font-light text-slate-400 text-xs sm:text-lg"}>
-                    You can use an excel file for doing it, but the file must follow a pattern. Download the file pattern
-                    bellow.
+                    {viewEnglish ? "You can use an excel file for doing it, but the file must follow a pattern. Download the file pattern bellow." : "Μπορείτε να χρησιμοποιήσετε ένα αρχείο excel για να το κάνετε, αλλά το αρχείο πρέπει να ακολουθεί ένα μοτίβο. Κατεβάστε το πρότυπο του αρχείου παρακάτω."}
                 </p>
 
 
@@ -115,9 +125,9 @@ export default function RegisterPatientsMassively() {
                                           d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                                 </svg>
                                 <p className="mb-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold">Click to upload</span> or drag and drop
+                                    <span className="font-semibold">{viewEnglish ? "Click to upload or drag and drop" : "Κάντε κλικ για να φορτώσετε ή σύρετε και αφήστε"}</span>
                                 </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">Only Excel files (.xls, .xlsx)</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">{viewEnglish ? "Only Excel files (.xls, .xlsx)" : "Μόνο αρχεία Excel (.xls, .xlsx)"}</p>
                             </div>
                             <input id="dropzone-file" type="file" accept=".xls,.xlsx" className="hidden"
                                    onChange={handleFileUpload} onClick={() => setUnsuccedRegistrations([])}
@@ -137,8 +147,8 @@ export default function RegisterPatientsMassively() {
                                           d="M5 9v4a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V9m-4 4V3m-4 5 4 4 4-4"/>
                                 </svg>
                                 <p className="mb-2 text-xs text-center sm:text-sm text-gray-500 dark:text-gray-400"><span
-                                    className="font-semibold">Click to download the pattern file</span></p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center">Download your file here</p>
+                                    className="font-semibold">{viewEnglish ? "Click to download the pattern file" : "Κάντε κλικ για να κατεβάσετε το αρχείο πατρόν"}</span></p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center">{viewEnglish ? "Download your file here" : "Κατεβάστε το αρχείο σας εδώ"}</p>
                             </div>
                         </a>
                     </div>
@@ -153,10 +163,10 @@ export default function RegisterPatientsMassively() {
                                     <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
                                         fact_check
                                     </span>
-                                The data successfully loaded, when you are ready proceed to registration
+                                {viewEnglish ? "The data successfully loaded, when you are ready proceed to registration" : "Τα δεδομένα φορτώθηκαν επιτυχώς, όταν είστε έτοιμοι προχωρήστε στην εγγραφή."}
                             </label>
                             <Button className={"w-full h-full bg-green-500"} onClick={handleSubmitClick}>
-                                Register patients
+                                {viewEnglish ? "Register patients" : "Εγγραφη ασθενων"}
                             </Button>
                         </div>
                         <Card className="w-full overflow-y-auto h-80 mt-4">
@@ -218,7 +228,7 @@ export default function RegisterPatientsMassively() {
                     : TABLE_ROWS.length === 0 && unsuccedRegistrations.length !== 0 ?
                         <div className={"mr-10 sm:mr-0 mt-2"}>
                             <p className={"text-red-600 font-bold text-lg sm:text-3xl"}>
-                                The following patients fail to registered, please choose another file
+                                {viewEnglish ? "The following patients fail to registered, please choose another file" : "Οι ακόλουθοι ασθενείς αποτυγχάνουν να εγγραφούν, παρακαλώ επιλέξτε ένα άλλο αρχείο"}
                             </p>
                             <Card className="h-full w-full overflow-scroll mt-4">
                                 <table className="w-full min-w-max table-auto text-left">
