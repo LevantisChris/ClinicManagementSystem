@@ -1,8 +1,13 @@
-import React, {useState} from 'react'
+import React, {useContext, useState} from 'react'
 import UserService from "../../../services/UserService";
 import {Alert} from "@material-tailwind/react";
+import GlobalContext from "../../../context/GlobalContext";
 
 export default function CreateHistoryReg() {
+
+    const {
+        viewEnglish
+    } = useContext(GlobalContext)
 
     const [apppointList, setAppointList] = useState([]);
     const [selectedAppoint, setSelectedAppoint] = useState("")
@@ -87,10 +92,10 @@ export default function CreateHistoryReg() {
     return(
         <div className="flex flex-col max-h-screen sm:overflow-y-auto h-min w-full p-4 sm:p-10 cursor-default">
             <p className={"font-light text-3xl sm:text-5xl"}>
-                Create a History Registration
+                {viewEnglish ? "Create a History Registration" : "Δημιουργία Εγγραφής Ιστορικού"}
             </p>
             <p className={"mt-2 text-sm sm:text-lg font-light text-slate-400"}>
-                Insert the information about the problem and treatment you suggest
+                {viewEnglish ? "Insert the information about the problem and treatment you suggest" : "Εισάγετε τις πληροφορίες σχετικά με το πρόβλημα και τη θεραπεία που προτείνετε"}
             </p>
 
             {/* Form to register the user */}
@@ -108,8 +113,12 @@ export default function CreateHistoryReg() {
                     }
                             onClick={(event) => selectAppointment(event)}
                     >
-                        {apppointList.length === 0 ? "Select relevant appointment" : selectedAppoint === "" ? "Close" : (
-                            "Successfully Selected"
+                        {apppointList.length === 0
+                            ? (viewEnglish
+                                ? "Select relevant appointment" : "Επιλέξτε το σχετικό ραντεβού")
+                            : selectedAppoint === ""
+                                ? (viewEnglish ? "Close" : "Κλείσιμο") : (
+                            viewEnglish ? "Successfully Selected" : "Επιλέχθηκε με επιτυχία"
                         )}
                     </button>
 
@@ -118,8 +127,9 @@ export default function CreateHistoryReg() {
                         selectedAppoint != null && selectedAppoint !== "" && showAppointments !== true
                             ?
                             <form className="w-full mx-auto">
-                                <p className={" sm:text-2xl mb-3 text-blue-500 hover:text-blue-700"}>Relevant
-                                    Appointment Information</p>
+                                <p className={" sm:text-2xl mb-3 text-blue-500 hover:text-blue-700"}>
+                                    {viewEnglish ? "Relevant Appointment Information" : "Σχετικές πληροφορίες ραντεβού"}
+                                </p>
                                 <div className="z-0 w-full mb-5 group">
                                     <input type="email" name="floating_email" id="floating_email" disabled={true}
                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -216,7 +226,7 @@ export default function CreateHistoryReg() {
                                 <button type="none"
                                         className="bg-red-700 p-2 rounded-xl w-full text-white text-lg"
                                         onClick={handleClearClick}>
-                                    Clear
+                                    {viewEnglish ? "Clear" : "Εκκαθάριση"}
                                 </button>
                             </form>
 
@@ -242,15 +252,15 @@ export default function CreateHistoryReg() {
                                     </div>
                                     {/* Time */}
                                     <div className="text-xs sm:text-sm text-gray-500">
-                                        In {appointment.appointmentDate}
+                                        {viewEnglish ? "In" : "Από:"} {appointment.appointmentDate}
                                     </div>
                                     <div className="text-xs sm:text-sm text-gray-500">
-                                        From {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
+                                        {viewEnglish ? "From" : "Εώς:"} {appointment.appointmentStartTime} to {appointment.appointmentEndTime}
                                     </div>
                                 </div>
                                 <div className="flex flex-col justify-start">
                                     {/* Code */}
-                                    <div className="text-xs sm:text-sm font-semibold">Reason for the appointment</div>
+                                    <div className="text-xs sm:text-sm font-semibold">{viewEnglish ? "Reason for the appointment" : "Αιτιολογία Ραντεβού"}</div>
                                     <div className="text-xs sm:text-sm">
                                         {appointment.appointmentJustification}
                                     </div>
@@ -267,7 +277,7 @@ export default function CreateHistoryReg() {
                         </span>
                         <textarea
                             className="p-2 text-sm sm:text-lg border border-gray-300 rounded w-full h-40"
-                            placeholder="Enter the detected health problems"
+                            placeholder={viewEnglish ? "Enter the detected health problems" : "Εισάγετε τα εντοπισμένα προβλήματα υγείας"}
                             value={healthProblem}
                             onChange={(event) => handleDetectedHealthProblemsChange(event)}
                         />
@@ -279,7 +289,7 @@ export default function CreateHistoryReg() {
                         </span>
                         <textarea
                             className="p-2 text-sm sm:text-lg border border-gray-300 rounded w-full h-40"
-                            placeholder="Enter the suggested treatment"
+                            placeholder={viewEnglish ? "Enter the suggested treatment" : "Εισάγετε την προτεινόμενη θεραπεία"}
                             value={suggestedTreatment}
                             onChange={(event) => handleSuggestedTreatmentChange(event)}
                         />
@@ -296,7 +306,7 @@ export default function CreateHistoryReg() {
                     className={"bg-green-400 p-2 text-cyan-50 rounded w-full hover:bg-green-500 transition ease-linear mt-2"}
                     onClick={(event) => handleSubmitButton(event)}
                 >
-                    Submit
+                    {viewEnglish ? "Submit" : "Καταχώρηση"}
                 </button>
 
 

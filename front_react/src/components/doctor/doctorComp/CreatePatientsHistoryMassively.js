@@ -1,12 +1,21 @@
-import {React, useState} from 'react'
+import {React, useContext, useState} from 'react'
 import * as XLSX from "xlsx";
 import UserService from "../../../services/UserService";
 import LoadingApp from "../../Loading/LoadingApp";
 import {Button, Card, Typography} from "@material-tailwind/react";
+import GlobalContext from "../../../context/GlobalContext";
 
 export default function CreatePatientsHistoryMassively() {
 
-    const TABLE_HEAD = ["Status", "Relevant Appointment ID", "Detected Health Problems", "Suggested Treatment"];
+    const {
+        viewEnglish
+    } = useContext(GlobalContext)
+
+    const TABLE_HEAD = [
+        viewEnglish ? "Status" : "Κατάσταση",
+        viewEnglish ? "Relevant Appointment ID" : "ID σχετικού ραντεβού",
+        viewEnglish ? "Detected Health Problems" : "Εντοπισμένα προβλήματα υγείας",
+        viewEnglish ? "Suggested Treatment" : "Προτεινόμενη θεραπεία"];
 
     const [TABLE_ROWS, setTABLE_ROWS] = useState([])
     const [loading, setLoading] = useState(false)
@@ -68,14 +77,15 @@ export default function CreatePatientsHistoryMassively() {
         loading ? ( <LoadingApp/>) :
             <div className="flex flex-col h-min w-full p-5">
                 <p className={"font-light text-3xl sm:text-5xl"}>
-                    Create history registrations massively
+                    {viewEnglish ? "Create history registrations massively" : "Δημιουργήστε μαζικά εγγραφές ιστορικού"}
                 </p>
                 <p className={"mt-3 text-sm sm:text-lg font-light text-slate-400"}>
-                    You can use an excel file for doing it, but the file must follow a pattern. Download the file pattern
-                    bellow
+                    {
+                        viewEnglish ? "You can use an excel file for doing it, but the file must follow a pattern. Download the file pattern bellow" : "Μπορείτε να χρησιμοποιήσετε ένα αρχείο excel για να το κάνετε αυτό, αλλά το αρχείο πρέπει να ακολουθεί ένα μοτίβο. Κατεβάστε το παρακάτω μοτίβο αρχείου"
+                    }
                 </p>
                 <p className={"font-light text-xs sm:text-sm text-slate-400"}>
-                    Note, if a user dont have a history, the system automatically will create one
+                    {viewEnglish ? "Note, if a user dont have a history, the system automatically will create one" : "Σημείωση, εάν ένας χρήστης δεν έχει ιστορικό, το σύστημα θα δημιουργήσει αυτόματα ένα."}
                 </p>
 
 
@@ -92,9 +102,9 @@ export default function CreatePatientsHistoryMassively() {
                                           d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                                 </svg>
                                 <p className="mb-2 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold">Click to upload</span> or drag and drop
+                                    <span className="font-semibold">{viewEnglish ? "Click to upload or drag and drop" : "Κάντε κλικ για να φορτώσετε ή σύρετε και αφήστε"}</span>
                                 </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">Only Excel files (.xls, .xlsx)</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">{viewEnglish ? "Only Excel files (.xls, .xlsx)" : "Μόνο αρχεία Excel (.xls, .xlsx)"}</p>
                             </div>
                             <input id="dropzone-file" type="file" accept=".xls,.xlsx" className="hidden"
                                    onChange={handleFileUpload} onClick={() => setUnsuccedRegistrations([])}
@@ -114,8 +124,8 @@ export default function CreatePatientsHistoryMassively() {
                                           d="M5 9v4a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V9m-4 4V3m-4 5 4 4 4-4"/>
                                 </svg>
                                 <p className="mb-2 text-xs text-center sm:text-sm text-gray-500 dark:text-gray-400"><span
-                                    className="font-semibold">Click to download the pattern file</span></p>
-                                <p className="text-xs text-center text-gray-500 dark:text-gray-400">Download your file here</p>
+                                    className="font-semibold">{viewEnglish ? "Click to download the pattern file" : "Κάντε κλικ για να κατεβάσετε το βασικό αρχείο"}</span></p>
+                                <p className="text-xs text-center text-gray-500 dark:text-gray-400">{viewEnglish ? "Download your file here" : "Κατεβάστε το αρχείο εδώ"}</p>
                             </div>
                         </a>
                     </div>
@@ -130,10 +140,10 @@ export default function CreatePatientsHistoryMassively() {
                                     <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
                                         fact_check
                                     </span>
-                                The data successfully loaded, when you are ready proceed to the creation
+                                {viewEnglish ? "The data successfully loaded, when you are ready proceed to the creation" : "Τα δεδομένα φορτώθηκαν με επιτυχία, όταν είστε έτοιμοι προχωρήστε στη δημιουργία"}
                             </label>
                             <Button className={"w-full h-full bg-green-500"} onClick={handleSubmitClick}>
-                                Create registrations
+                                {viewEnglish ? "Create registrations" : "Δημιουργια εγγραφών"}
                             </Button>
                         </div>
                         <Card className="w-full overflow-y-auto h-80 mt-4">
@@ -185,7 +195,7 @@ export default function CreatePatientsHistoryMassively() {
                     : TABLE_ROWS.length === 0 && unsuccedRegistrations.length !== 0 ?
                         <div className={"mr-10 sm:mr-0 mt-2"}>
                             <p className={"text-red-600 font-bold text-lg sm:text-3xl"}>
-                                The following registrations fail to be created, please choose another file
+                                {viewEnglish ? "The following registrations fail to be created, please choose another file" : "Η δημιουργία των ακόλουθων καταχωρίσεων αποτυγχάνει, παρακαλούμε επιλέξτε ένα άλλο αρχείο"}
                             </p>
                             <Card className="h-full w-full overflow-scroll mt-4">
                                 <table className="w-full min-w-max table-auto text-left">
