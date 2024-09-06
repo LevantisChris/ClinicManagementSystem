@@ -7,7 +7,8 @@ import UserService from "../../../services/UserService";
 export default function DisplayReg({patient}) {
 
     const {
-        setViewLastReg
+        setViewLastReg,
+        viewEnglish
     } = useContext(GlobalContext);
 
     /* To show the alert */
@@ -75,7 +76,7 @@ export default function DisplayReg({patient}) {
                     <div className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-full max-w-3xl lg:w-6/12 xl:w-5/12 h-5/6 overflow-auto">
                         <header className="rounded bg-slate-200 px-4 py-2 flex justify-between items-center">
                             <p className="text-xl lg:text-2xl text-black font-black hover:text-sky-700">
-                                {patient.registrationAppointment.appointmentPatient.user.user_name} {patient.registrationAppointment.appointmentPatient.user.user_surname} last history registration
+                                {patient.registrationAppointment.appointmentPatient.user.user_name} {patient.registrationAppointment.appointmentPatient.user.user_surname} {viewEnglish ? "last history registration" : " τελευταία καταχώριση ιστορικού του"}
                             </p>
                             <div>
                                 <button onClick={() => setViewLastReg(false)}>
@@ -86,53 +87,53 @@ export default function DisplayReg({patient}) {
 
                         <div className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 mb-5 shadow-xl">
                             <div className="bg-blue-200 p-2 rounded-xl">
-                                <p className="text-black text-xl lg:text-2xl font-bold hover:text-sky-700">Registration Information</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Registration ID: {patient.patientHistoryRegistrationId}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Date Register: {patient.patientHistoryRegistrationDateRegister}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Detected Health Problem: {patient.patientHistoryRegistrationHealthProblems}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Suggested Treatment: {patient.patientHistoryRegistrationTreatment}</p>
+                                <p className="text-black text-xl lg:text-xl font-bold hover:text-sky-700">{viewEnglish ? "Registration Information" : "Πληροφορίες εγγραφής"}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Registration ID:" : "ID εγγραφής:"} {patient.patientHistoryRegistrationId}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Date Register:" : "Ημερομηνία καταχώρησης:"} {patient.patientHistoryRegistrationDateRegister}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Detected Health Problem:" : "Ανιχνευμένο πρόβλημα υγείας"} {patient.patientHistoryRegistrationHealthProblems}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Suggested Treatment:" : "Προτεινόμενη θεραπεία:"} {patient.patientHistoryRegistrationTreatment}</p>
                             </div>
 
                             {/* Relative Appointment Information */}
                             <div className="bg-slate-200 p-2 rounded-xl">
-                                <p className="text-black text-xl lg:text-2xl font-bold hover:text-sky-700">Relative Appointment Information</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Appointment ID: {patient.registrationAppointment.appointmentId}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Start Time: {patient.registrationAppointment.appointmentStartTime}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">End Time: {patient.registrationAppointment.appointmentEndTime}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Justification: {patient.registrationAppointment.appointmentJustification}</p>
+                                <p className="text-black text-xl lg:text-xl font-bold hover:text-sky-700">{viewEnglish ? "Relative Appointment Information" : "Πληροφορίες Σχετικού Ραντεβού"}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Appointment ID:" : "ID Ραντεβού:"} {patient.registrationAppointment.appointmentId}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Start Time:" : "Ημερομηνία έναρξης:"} {patient.registrationAppointment.appointmentStartTime}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "End Time:" : "Ημερομηνία ολοκλήρωσης:"} {patient.registrationAppointment.appointmentEndTime}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Justification:" : "Αιτιολόγηση:"} {patient.registrationAppointment.appointmentJustification}</p>
                             </div>
 
                             {/* Patient Information */}
                             <div className="bg-slate-200 p-2 rounded-xl">
-                                <p className="text-black text-xl lg:text-2xl font-bold hover:text-sky-700">Patient Information</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Appointment ID: {patient.registrationAppointment.appointmentPatient.patient_id}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">First-Name: {patient.registrationAppointment.appointmentPatient.user.user_name}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Second-Name: {patient.registrationAppointment.appointmentPatient.user.user_surname}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">ID-Number: {patient.registrationAppointment.appointmentPatient.user.user_idNumber}</p>
+                                <p className="text-black text-xl lg:text-xl font-bold hover:text-sky-700">{viewEnglish ? "Patient Information" : "Πληροφορίες Ασθενούς"}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Appointment ID:" : "ID Ραντεβού:"} {patient.registrationAppointment.appointmentPatient.patient_id}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "First - Name:" : "Όνομα:"} {patient.registrationAppointment.appointmentPatient.user.user_name}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Second - Name:" : "Επώνυμο:"} {patient.registrationAppointment.appointmentPatient.user.user_surname}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "ID - Number:" : "Αριθμός Ταυτότητας:"} {patient.registrationAppointment.appointmentPatient.user.user_idNumber}</p>
                                 <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Email: {patient.registrationAppointment.appointmentPatient.user.email}</p>
                                 <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">AMKA: {patient.registrationAppointment.appointmentPatient.patient_AMKA}</p>
                             </div>
 
                             {/* Doctor Information */}
                             <div className="bg-slate-200 p-2 rounded-xl">
-                                <p className="text-black text-xl lg:text-2xl font-bold hover:text-sky-700">Doctor Information</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Doctor ID: {patient.registrationAppointment.appointmentDoctor.doctor_id}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">First-Name: {patient.registrationAppointment.appointmentDoctor.user.user_name}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Second-Name: {patient.registrationAppointment.appointmentDoctor.user.user_surname}</p>
+                                <p className="text-black text-xl lg:text-xl font-bold hover:text-sky-700">{viewEnglish ? "Doctor Information" : "Πληροφορίες Γιατρού"}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Doctor ID:" : "ID Γιατρού:"} {patient.registrationAppointment.appointmentDoctor.doctor_id}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "First - Name:" : "Όνομα:"} {patient.registrationAppointment.appointmentDoctor.user.user_name}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Second - Name:" : "Επώνυμο:"} {patient.registrationAppointment.appointmentDoctor.user.user_surname}</p>
                                 <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Email: {patient.registrationAppointment.appointmentDoctor.user.email}</p>
-                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">Speciality: {patient.registrationAppointment.appointmentDoctor.doctorSpeciality.specialityDescription}</p>
+                                <p className="text-black text-sm lg:text-lg font-light hover:text-sky-700">{viewEnglish ? "Speciality:" : "Ειδικότητα:"} {patient.registrationAppointment.appointmentDoctor.doctorSpeciality.specialityDescription}</p>
                             </div>
                         </div>
 
                         {showAlert.length !== 0 && (
                             <Alert color="red" className="mb-2 p-2">
-                                Error: {showAlert}
+                                {viewEnglish ? "Error:" : "Σφάλμα:"} {showAlert}
                             </Alert>
                         )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <Button className="bg-red-700 p-4 text-sm" onClick={handleDeleteButton}>Delete</Button>
-                            <Button className="bg-blue-600 p-4 text-sm" onClick={handleUpdateButton}>Update</Button>
+                            <Button className="bg-red-700 p-4 text-sm" onClick={handleDeleteButton}>{viewEnglish ? "Delete" : "Διαγραφη"}</Button>
+                            <Button className="bg-blue-600 p-4 text-sm" onClick={handleUpdateButton}>{viewEnglish ? "Update" : "Ενημερωση"}</Button>
                         </div>
                     </div>
                 ) : (
@@ -140,7 +141,8 @@ export default function DisplayReg({patient}) {
                     <div className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-full max-w-3xl lg:w-6/12 xl:w-5/12 h-5/6 overflow-auto">
                         <header className="rounded bg-blue-200 px-4 py-2 flex justify-between items-center">
                             <p className="text-xl lg:text-2xl text-black font-black hover:text-sky-700">
-                                Update {patient.registrationAppointment.appointmentPatient.user.user_name} {patient.registrationAppointment.appointmentPatient.user.user_surname} last history registration
+                                Update {patient.registrationAppointment.appointmentPatient.user.user_name} {patient.registrationAppointment.appointmentPatient.user.user_surname}
+                                {viewEnglish ? " last history registration" : " τελευταία καταχώριση ιστορικού"}
                             </p>
                             <div>
                                 <button onClick={() => setViewLastReg(false)}>
@@ -152,7 +154,7 @@ export default function DisplayReg({patient}) {
                         <div className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 mb-5 shadow-xl">
                             <div className="flex-grow w-full bg-blue-200 p-2 rounded-xl text-center mb-2">
                                 <span className="material-icons-outlined text-blue-700 text-4xl">edit</span>
-                                <p className="w-full text-center text-lg font-bold mb-2">Update health problem</p>
+                                <p className="w-full text-center text-lg font-bold mb-2">{viewEnglish ? "Update health problem" : "Ενημέρωση προβλήματος υγείας"}</p>
                                 <textarea
                                     className="bg-slate-200 rounded w-full"
                                     placeholder={patient.patientHistoryRegistrationHealthProblems}
@@ -161,7 +163,7 @@ export default function DisplayReg({patient}) {
                             </div>
                             <div className="flex-grow w-full bg-blue-200 p-2 rounded-xl text-center">
                                 <span className="material-icons-outlined text-blue-700 text-4xl">edit</span>
-                                <p className="w-full text-center text-lg font-bold mb-2">Update suggested treatment</p>
+                                <p className="w-full text-center text-lg font-bold mb-2">{viewEnglish ? "Update suggested treatment" : "Ενημέρωση προτεινόμενης θεραπείας"}</p>
                                 <textarea
                                     className="bg-slate-200 rounded w-full"
                                     placeholder={patient.patientHistoryRegistrationTreatment}
@@ -184,7 +186,7 @@ export default function DisplayReg({patient}) {
                 // No history present
                 <div className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-full max-w-3xl lg:w-6/12 xl:w-5/12 h-5/6 overflow-auto">
                     <header className="rounded bg-slate-200 px-4 py-2 flex justify-between items-center">
-                        <p className="text-2xl text-red-500 font-black hover:text-red-700">Error</p>
+                        <p className="text-2xl text-red-500 font-black hover:text-red-700">{viewEnglish ? "Error" : "Σφάλμα"}</p>
                         <div>
                             <button onClick={() => setViewLastReg(false)}>
                                 <span className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out">close</span>
@@ -195,7 +197,7 @@ export default function DisplayReg({patient}) {
                     <div className="flex-grow mt-2 rounded-xl bg-slate-200 border-4 p-5 flex justify-center items-center">
                         <div className="text-center">
                             <span className="material-icons-outlined text-9xl text-red-600">trending_down</span>
-                            <p className="text-xl text-red-600">Cannot find patient history, create a new registration.</p>
+                            <p className="text-xl text-red-600">{viewEnglish ? "Cannot find patient history, create a new registration." : "Δεν μπορεί να βρεθεί το ιστορικό του ασθενούς, δημιουργήστε μια νέα εγγραφή."}</p>
                         </div>
                     </div>
                 </div>
