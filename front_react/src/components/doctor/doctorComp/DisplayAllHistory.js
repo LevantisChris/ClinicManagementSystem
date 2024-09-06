@@ -109,7 +109,7 @@ export function DisplayAllHistory() {
                     :
                     patientHistoryToSee.statusCode === 200 ?
                         <div className={"p-2 rounded shadow-5xl"}>
-                            <p className="font-light text-5xl">
+                            <p className="font-light text-xl sm:text-5xl">
                                 Display all the history of a patient
                             </p>
                             <p className="mt-2 font-light text-slate-400">
@@ -120,11 +120,11 @@ export function DisplayAllHistory() {
                                 <div
                                     className={"flex flex-col text-center bg-blue-200 p-4 hover:bg-blue-300 transition ease-in rounded cursor-default shadow-lg"}>
                                     <span
-                                        className="material-icons-outlined text-gray-600 mx-2 align-text-top text-4xl"
+                                        className="material-icons-outlined text-gray-600 mx-2 align-text-top text-2xl sm:text-4xl"
                                     >
                                         person_search
                                     </span>
-                                    <p className="text-2xl text-black font-black hover:text-sky-700">
+                                    <p className="text-sm sm:text-2xl text-black font-black hover:text-sky-700">
                                         {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_name} {patientHistoryToSee.patientHistoryRegistrations[0].appointment.appointmentPatient.user.user_surname} History
                                     </p>
                                     <Button
@@ -139,7 +139,7 @@ export function DisplayAllHistory() {
                                     </Button>
                                 </div>
                                 <div>
-                                    <Button className={"text-xl text-white bg-blue-500"}
+                                    <Button className={"text-xs ml-2 sm:text-xl text-white bg-blue-500"}
                                             onClick={() => setPatientHistoryToSee(null)}>
                                         Go Back
                                     </Button>
@@ -148,27 +148,30 @@ export function DisplayAllHistory() {
 
                             {/* Add the filters, by date and by health problem detected */}
                             {/* Calendar Picker Component from https://github.com/onesine/react-tailwindcss-datepicker?tab=readme-ov-file */}
-                            <div  className={
+                            <div
+                                className={
                                 showClearButton
                                     ? "grid grid-rows-2 gap-2 bg-slate-200 rounded-xl border-4 p-2"
                                     : "grid grid-rows-1 gap-2 bg-slate-200 rounded-xl border-4 p-2"
-                            }>
-                                <div className={"grid grid-cols-4 gap-2"}>
+                                }
+                            >
+                                <div className={"flex flex-col sm:grid sm:grid-cols-4 gap-2"}>
                                     <div className="flex col-span-1 w-full items-center">
                                             <span className="material-icons-outlined text-gray-600 mx-2">
                                               filter_list
                                             </span>
                                         <Button className="bg-green-500 w-full" onClick={handleFilterSubmit}>
-                                            Apply
-                                            filters
+                                            Apply filters
                                         </Button>
                                     </div>
-                                    <Datepicker
-                                        primaryColor="blue"
-                                        showShortcuts={true}
-                                        value={value}
-                                        onChange={newValue => setValue(newValue)}
-                                    />
+                                    <div className={"z-0"}>
+                                        <Datepicker
+                                            primaryColor="blue"
+                                            showShortcuts={true}
+                                            value={value}
+                                            onChange={newValue => setValue(newValue)}
+                                        />
+                                    </div>
                                     <input
                                         className="rounded-lg col-span-2"
                                         placeholder="Detected health problem"
@@ -179,7 +182,7 @@ export function DisplayAllHistory() {
 
                                 {
                                     showClearButton ?
-                                        <Button className="bg-red-500 w-full" onClick={handleClearFilters}>
+                                        <Button className="bg-red-500 w-full h-1/2 sm:h-full" onClick={handleClearFilters}>
                                             Clear filters
                                         </Button> : ""
                                 }
@@ -193,10 +196,11 @@ export function DisplayAllHistory() {
                                         paginatedData.map((registration) => (
                                             <div
                                                 key={registration.patientHistoryRegistrationId}
-                                                className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-200 hover:shadow-lg transition-shadow duration-300 mb-4"
+                                                className="flex flex-col cursor-pointer w-full h-full p-3 sm:p-4 rounded-2xl bg-blue-200 hover:shadow-lg transition-shadow duration-300 mb-4"
                                                 onClick={() => setRegistrationToSee(registration)}
                                             >
-                                                <div className="grid grid-cols-3 w-max h-full">
+                                                <div
+                                                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full h-full">
                                                     <div className="flex flex-col justify-start">
                                                         <div className="text-lg font-semibold">
                                                             <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
@@ -205,21 +209,20 @@ export function DisplayAllHistory() {
                                                             {"ID: " + registration.patientHistoryRegistrationId}
                                                         </div>
                                                         <div className="text-md">
-                                                            Health problem:{" "}
-                                                            {registration.patientHistoryRegistrationHealthProblems}
+                                                            Health
+                                                            problem: {registration.patientHistoryRegistrationHealthProblems}
                                                         </div>
                                                         <div className="text-sm text-gray-500">
-                                                            Suggested Treatment:{" "}
-                                                            {registration.patientHistoryRegistrationTreatment}
+                                                            Suggested
+                                                            Treatment: {registration.patientHistoryRegistrationTreatment}
                                                         </div>
                                                         <div className="text-sm text-gray-500">
-                                                            Doctor:{" "}
-                                                            {registration.appointment.appointmentDoctor.user.user_name}{" "}
+                                                            Doctor: {registration.appointment.appointmentDoctor.user.user_name}{" "}
                                                             {registration.appointment.appointmentDoctor.user.user_surname}
                                                         </div>
                                                         <div className="text-sm text-gray-500">
-                                                            Relative appointment date:{" "}
-                                                            {registration.appointment.appointmentDate}
+                                                            Relative appointment
+                                                            date: {registration.appointment.appointmentDate}
                                                         </div>
                                                         <span className="material-icons-outlined text-gray-600">
                                                             more_horiz
@@ -228,22 +231,24 @@ export function DisplayAllHistory() {
                                                 </div>
                                             </div>
 
-                                    ))
-                                    : (filteredResults.statusCode === 200
-                                        ? filteredResults.patientHistoryRegistrations.map((registration) => (
-                                            <div
-                                                key={registration.patientHistoryRegistrationId}
-                                                className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-200 hover:shadow-lg transition-shadow duration-300 mb-4"
-                                                onClick={() => setRegistrationToSee(registration)}
-                                            >
-                                                <div className="grid grid-cols-3 w-max h-full">
-                                                    <div className="flex flex-col justify-start">
-                                                        <div className="text-lg font-semibold">
-                                                            <span className="material-icons-outlined text-gray-600 mx-2 align-text-top">
+
+                                        ))
+                                        : (filteredResults.statusCode === 200
+                                                ? filteredResults.patientHistoryRegistrations.map((registration) => (
+                                                    <div
+                                                        key={registration.patientHistoryRegistrationId}
+                                                        className="flex flex-col cursor-pointer w-full h-full p-4 rounded-2xl bg-blue-200 hover:shadow-lg transition-shadow duration-300 mb-4"
+                                                        onClick={() => setRegistrationToSee(registration)}
+                                                    >
+                                                        <div className="grid grid-cols-3 w-max h-full">
+                                                            <div className="flex flex-col justify-start">
+                                                                <div className="text-lg font-semibold">
+                                                            <span
+                                                                className="material-icons-outlined text-gray-600 mx-2 align-text-top">
                                                               fact_check
                                                             </span>
-                                                            {"ID: " + registration.patientHistoryRegistrationId}
-                                                        </div>
+                                                                    {"ID: " + registration.patientHistoryRegistrationId}
+                                                                </div>
                                                         <div className="text-md">
                                                             Health problem:{" "}
                                                             {registration.patientHistoryRegistrationHealthProblems}
@@ -341,121 +346,127 @@ export function DisplayAllHistory() {
                     className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
                 >
                     <div
-                        className="flex flex-col justify-between p-5 bg-white rounded-lg cursor-default shadow-2xl w-5/12 max-w-full h-5/6 overflow-auto"
+                        className="flex flex-col justify-between p-4 sm:p-5 bg-white rounded-lg cursor-default shadow-2xl w-full sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-5/12 max-w-full h-5/6 overflow-auto"
                     >
                         <header className="rounded bg-slate-200 px-4 py-2 flex justify-between items-center">
-                            <p className="text-2xl text-black font-black hover:text-sky-700">
+                            <p className="text-xl sm:text-2xl text-black font-black hover:text-sky-700">
                                 Registration with ID: {registrationToSee.patientHistoryRegistrationId}
                             </p>
                             <div>
                                 <button onClick={() => setRegistrationToSee(null)}>
-                                    <span
-                                        className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out"
-                                    >
-                                        close
-                                    </span>
+          <span
+              className="material-icons-outlined text-black-400 hover:bg-red-400 rounded-xl transition duration-500 ease-in-out"
+          >
+            close
+          </span>
                                 </button>
                             </div>
                         </header>
 
                         <Button
-                            className={"text-xs mt-2 text-white bg-blue-500"}
-                            onClick={() => GeneratePDF.createPDF(
-                                registrationToSee.appointment.appointmentPatient.user.user_name + " " + registrationToSee.appointment.appointmentPatient.user.user_surname,
-                                registrationToSee
-                                )}
+                            className="text-xs mt-2 text-white bg-blue-500"
+                            onClick={() =>
+                                GeneratePDF.createPDF(
+                                    registrationToSee.appointment.appointmentPatient.user.user_name +
+                                    ' ' +
+                                    registrationToSee.appointment.appointmentPatient.user.user_surname,
+                                    registrationToSee
+                                )
+                            }
                         >
                             Generate as PDF
                         </Button>
 
                         <div
-                            className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 mb-5 shadow-xl">
+                            className="flex-grow overflow-x-auto mt-2 rounded-xl border-4 p-5 gap-6 grid grid-cols-1 sm:grid-cols-1 mb-5 shadow-xl"
+                        >
                             <div className="bg-blue-200 p-2 rounded-xl">
-                                <p className="text-black text-2xl font-bold hover:text-sky-700">
+                                <p className="text-black text-xl sm:text-2xl font-bold hover:text-sky-700">
                                     Registration Information
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Registration ID: {registrationToSee.patientHistoryRegistrationId}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Date Register: {registrationToSee.patientHistoryRegistrationDateRegister}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Detected Health
                                     Problem: {registrationToSee.patientHistoryRegistrationHealthProblems}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Suggested Treatment: {registrationToSee.patientHistoryRegistrationTreatment}
                                 </p>
                             </div>
 
                             <div className="bg-slate-200 p-2 rounded-xl">
-                                <p className="text-black text-2xl font-bold hover:text-sky-700">
+                                <p className="text-black text-xl sm:text-2xl font-bold hover:text-sky-700">
                                     Relative Appointment Information
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Appointment ID: {registrationToSee.appointment.appointmentId}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Start Time: {registrationToSee.appointment.appointmentStartTime}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     End Time: {registrationToSee.appointment.appointmentEndTime}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Justification: {registrationToSee.appointment.appointmentJustification}
                                 </p>
                             </div>
 
                             <div className="bg-slate-200 p-2 rounded-xl">
-                                <p className="text-black text-2xl font-bold hover:text-sky-700">
+                                <p className="text-black text-xl sm:text-2xl font-bold hover:text-sky-700">
                                     Patient Information
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Appointment ID: {registrationToSee.appointment.appointmentPatient.patient_id}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     First-Name: {registrationToSee.appointment.appointmentPatient.user.user_name}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Second-Name: {registrationToSee.appointment.appointmentPatient.user.user_surname}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     ID-Number: {registrationToSee.appointment.appointmentPatient.user.user_idNumber}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Email: {registrationToSee.appointment.appointmentPatient.user.email}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     AMKA: {registrationToSee.appointment.appointmentPatient.patient_AMKA}
                                 </p>
                             </div>
 
                             <div className="bg-slate-200 p-2 rounded-xl">
-                                <p className="text-black text-2xl font-bold hover:text-sky-700">
+                                <p className="text-black text-xl sm:text-2xl font-bold hover:text-sky-700">
                                     Doctor Information
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Doctor ID: {registrationToSee.appointment.appointmentDoctor.doctor_id}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     First-Name: {registrationToSee.appointment.appointmentDoctor.user.user_name}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Second-Name: {registrationToSee.appointment.appointmentDoctor.user.user_surname}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Email: {registrationToSee.appointment.appointmentDoctor.user.email}
                                 </p>
-                                <p className="text-black text-lg font-light hover:text-sky-700">
+                                <p className="text-black text-base sm:text-lg font-light hover:text-sky-700">
                                     Speciality: {registrationToSee.appointment.appointmentDoctor.doctorSpeciality.specialityDescription}
                                 </p>
                             </div>
                         </div>
                     </div>
                 </motion.div>
-                    : null
-                    }
-                </div>
-                );
+
+                : null
             }
+        </div>
+    );
+}
