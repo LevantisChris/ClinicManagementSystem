@@ -1,7 +1,7 @@
 import React from 'react';
 import './LoadingApp.css';
-import logo from "../../assets/health.png";
-import UserService from "../../services/UserService"; // Import stylesheet for custom styling
+import logo from "../assets/health.png";
+import UserService from "../services/UserService"; // Import stylesheet for custom styling
 
 const LoadingApp = () => {
     return (

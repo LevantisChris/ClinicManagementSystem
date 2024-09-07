@@ -1,24 +1,24 @@
 import React, { useState, useContext, useEffect } from "react";
-import './DoctorApp.css';
+import './PatientApp.css';
 import { getMonth } from './util'
-import CalendarHeader from "./doctorComp/CalendarHeader";
-import SideBar from "./doctorComp/SideBar";
-import Month from "./doctorComp/Month";
+import CalendarHeader from "./patientComp/CalendarHeader";
+import SideBar from "./patientComp/SideBar";
+import Month from "./patientComp/Month";
 import GlobalContext from "../../context/GlobalContext";
-import EventModal from "./doctorComp/EventModal";
-import InsertModal from "./doctorComp/InsertModal";
-import SearchAppointments from "./doctorComp/SearchAppointments";
+import EventModal from "./patientComp/EventModal";
+import InsertModal from "./patientComp/InsertModal";
+import SearchAppointments from "./patientComp/SearchAppointments";
 import UserService from "../../services/UserService";
 import LoadingApp from "../../Loading/LoadingApp";
-import RegisterPatient from "./doctorComp/RegisterPatient";
-import SearchPatients from "./doctorComp/SearchPatients";
-import RegisterPatientsMassively from "./doctorComp/RegisterPatientsMassively";
-import CreateHistoryReg from "./doctorComp/CreateHistoryReg";
-import ConfigureHistoryReg from "./doctorComp/ConfigureHistoryReg";
-import {DisplayAllHistory} from "./doctorComp/DisplayAllHistory";
-import CreatePatientsHistoryMassively from "./doctorComp/CreatePatientsHistoryMassively";
+import RegisterPatient from "./patientComp/RegisterPatient";
+import SearchPatients from "./patientComp/SearchPatients";
+import RegisterPatientsMassively from "./patientComp/RegisterPatientsMassively";
+import CreateHistoryReg from "./patientComp/CreateHistoryReg";
+import ConfigureHistoryReg from "./patientComp/ConfigureHistoryReg";
+import {DisplayAllHistory} from "./patientComp/DisplayAllHistory";
+import CreatePatientsHistoryMassively from "./patientComp/CreatePatientsHistoryMassively";
 
-function DoctorApp() {
+function PatientApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
     const [appointmentsMonth, setAppointmentsMonth] = useState(null)
     const {
@@ -204,4 +204,4 @@ function DoctorApp() {
     );
 }
 
-export default DoctorApp;
+export default PatientApp;
