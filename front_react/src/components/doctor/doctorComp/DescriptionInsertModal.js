@@ -23,7 +23,8 @@ export default function DescriptionInsertModal({appointmentClicked}) {
     setSuccessMessage,
     errorMessage,
     setErrorMessage,
-    setReloadDoctorApp
+    setReloadDoctorApp,
+    viewEnglish
   } = useContext(GlobalContext);
 
   /* States to access the filed values */
@@ -65,7 +66,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
 
     //console.log(`Time selected ${selectedOptions}`);
 
-    return `${start} to ${finish}`;
+    return `${start} ${viewEnglish ? "to" : "εώς"} ${finish}`;
   }
 
   const handleClickCancel = async () => {
@@ -177,6 +178,54 @@ export default function DescriptionInsertModal({appointmentClicked}) {
     return `${String(hours).padStart(2, '0')}:${minutes}`;
   };
 
+  function getGreekDate(date) {
+    return getGreekDay(date.format("dddd")) + " " + getGreekMonth(date.format("MMMM")) + " " + date.format("DD")
+  }
+
+  function getGreekMonth(formattedDate) {
+    if(formattedDate === "September") {
+      return "Σεπτέμβριος "
+    } else if(formattedDate === "October") {
+      return "Οκτώβριος "
+    } else if(formattedDate === "November") {
+      return "Νοεμβριος "
+    } else if(formattedDate === "December") {
+      return "Δεκέμβριος "
+    } else if(formattedDate === "January") {
+      return "Ιανουάριος "
+    } else if(formattedDate === "February") {
+      return "Φεβρουάριος "
+    } else if(formattedDate === "March") {
+      return "Μαρτιος "
+    } else if(formattedDate === "April") {
+      return "Απρίλιος "
+    } else if(formattedDate === "May") {
+      return "Μάιος "
+    } else if(formattedDate === "June") {
+      return "Ιούνιος "
+    } else if(formattedDate === "July") {
+      return "Ιούλιος "
+    } else if(formattedDate === "August") {
+      return "Άυγουστος "
+    }
+    return "Greek Date";
+  }
+
+  function getGreekDay(formattedDay) {
+    const greekDays = {
+      "Monday": "Δευτέρα",
+      "Tuesday": "Τρίτη",
+      "Wednesday": "Τετάρτη",
+      "Thursday": "Πέμπτη",
+      "Friday": "Παρασκευή",
+      "Saturday": "Σάββατο",
+      "Sunday": "Κυριακή"
+    };
+
+    return greekDays[formattedDay] || "Greek Day";
+  }
+
+
   return (
       <motion.div
           initial={{ opacity: 0 }}
@@ -198,7 +247,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
             schedule
           </span>
                 <p className="text-4xl">
-                  {daySelected.format("dddd MMMM DD")},{" "}
+                  {viewEnglish ? daySelected.format("dddd MMMM DD") : getGreekDate(daySelected)}{" "}
                   <React.Fragment>
               <span className="font-bold">
                 {selectedOptions[0] !== undefined ? findTime() : ""}
@@ -249,7 +298,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                   <div>
                     <MenuButton
                         className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                      Current State
+                      {viewEnglish ? "Current State" : "Τρέχουσα κατάσταση"}
                       <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400"/>
                     </MenuButton>
                   </div>
@@ -264,7 +313,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                             className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
                             onClick={() => setStateSelected("Created")}
                         >
-                          Created
+                          {viewEnglish ? "Created" : "Δημιουργημένο"}
                           { stateSelected === "Created" ?
                             <span className="material-icons-outlined text-gray-400">
                               check
@@ -278,7 +327,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                             className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
                             onClick={() => setStateSelected("Respected")}
                         >
-                          Respected
+                          {viewEnglish ? "Respected" : "Τηρημένο"}
                           { stateSelected === "Respected" ?
                               <span className="material-icons-outlined text-gray-400">
                               check
@@ -292,7 +341,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                             className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
                             onClick={() => setStateSelected("Completed")}
                         >
-                          Completed
+                          {viewEnglish ? "Completed" : "Ολοκληρωμένο"}
                           { stateSelected === "Completed" ?
                               <span className="material-icons-outlined text-gray-400">
                               check
@@ -309,7 +358,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
           </span>
                 <textarea
                     name="description"
-                    placeholder="Reason for the appointment"
+                    placeholder={viewEnglish ? "Reason for the appointment" : "Λόγος ραντεβού"}
                     style={{height: "200px", resize: "none"}}
                     disabled={!!appointmentClicked}
                     className="pt-3 border-0 text-gray-600 bg-gray-200 pd-2 w-full border-b-2 rounded border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
@@ -329,7 +378,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                           onClick={handleClickDelete}
                           className="bg-red-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
                       >
-                        Cancel appointment
+                        {viewEnglish ? "Cancel appointment" : "Ακύρωση ραντεβού"}
                       </button>
                       : ""
                 }
@@ -341,7 +390,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                           onClick={handleClickUpdate}
                           className="bg-purple-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
                       >
-                        Update state
+                        {viewEnglish ? "Update state" : "Ενημέρωση κατάστασης"}
                       </button>
                       :
                       <button
@@ -349,7 +398,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                           onClick={handleClickSave}
                           className="bg-blue-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
                       >
-                        Save
+                        {viewEnglish ? "Save" : "Αποθήκευση"}
                       </button>
                 }
                 <button
@@ -357,7 +406,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                     onClick={handleClickCancel}
                     className="bg-red-500 w-2/4 hover:bg-red-600 px-6 py-2 ml-2 transition duration-500 ease-in-outs rounded text-white"
                 >
-                  Cancel
+                  {viewEnglish ? "Cancel" : "Ακύρωση"}
                 </button>
               </div>
             </div>

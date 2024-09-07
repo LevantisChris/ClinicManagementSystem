@@ -51,6 +51,7 @@ export default function CalendarHeader() {
 
     /* If the Modal for active hours is not alrady shown then set showActiveHoursModal to true. */
     function showActiveHoursModalHandler() {
+        setMenuOpen(false)
         setShowActiveHoursModal(true);
     }
 
@@ -85,12 +86,11 @@ export default function CalendarHeader() {
         } else if(formattedDate === "August") {
             return "Άυγουστος " + year
         }
-
-        // Implement Greek date formatting logic here
-        return "Greek Date"; // Replace this with the actual Greek date format
+        return "Greek Date";
     }
 
     function changeLanguage() {
+        setMenuOpen(false)
         if(viewEnglish === false)
             setViewEnglish(true)
         else
@@ -176,6 +176,7 @@ export default function CalendarHeader() {
                                     onClick={() => {
                                         UserService.logout();
                                         navigate("/auth", {replace: true});
+                                        setMenuOpen(false)
                                     }}
                                 >
                                     {viewEnglish ? "Logout" : "Αποσύνδεση"}

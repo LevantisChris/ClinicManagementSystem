@@ -68,9 +68,7 @@ export default function SmallCalendar() {
     } else if(formattedDate === "August") {
       return "Άυγουστος " + year
     }
-
-    // Implement Greek date formatting logic here
-    return "Greek Date"; // Replace this with the actual Greek date format
+    return "Greek Date";
   }
 
   return (
