@@ -264,11 +264,11 @@ export default function SideBar() {
                         {/* Close button for small screens */}
                         <Button className="sm:hidden w-full mb-4 p-2 bg-blue-600 text-white rounded"
                                 onClick={toggleSideNav}>
-                            Close Menu
+                            {viewEnglish ? "Close Menu" : "Κλεισιμο"}
                         </Button>
 
                         <p className={'font-bold'}>
-                            Functions
+                            {viewEnglish ? "Functions" : "Λειτουργίες"}
                         </p>
 
                         <div>
@@ -278,7 +278,7 @@ export default function SideBar() {
                             >
                                 <div className="flex items-center">
                                     <span className="material-icons-outlined">handshake</span>
-                                    <span className="ml-2 text-sm">Manage Appointments</span>
+                                    <span className="ml-2 text-sm">{viewEnglish ? "Manage Appointments" : "Διαχείριση Ραντεβού"}</span>
                                 </div>
                             </a>
 
@@ -294,7 +294,7 @@ export default function SideBar() {
                                             }`}
                                             onClick={() => setShowSearchAppointments(!showSearchAppointments)}
                                         >
-                                            Search & View Appointments
+                                            {viewEnglish ? "Search & View Appointments" : "Αναζήτηση & Προβολή Ραντεβού"}
                                         </a>
                                     </div>
                                 </div>
@@ -308,7 +308,7 @@ export default function SideBar() {
                             >
                                 <div className="flex items-center">
                                     <span className="material-icons-outlined">personal_injury</span>
-                                    <span className="ml-2 text-sm">Manage Patients</span>
+                                    <span className="ml-2 text-sm">{viewEnglish ? "Manage Patients" : "Διαχείριση Ασθενών"}</span>
                                 </div>
                             </a>
 
@@ -324,7 +324,7 @@ export default function SideBar() {
                                             }`}
                                             onClick={() => setShowRegisterPatient(!showRegisterPatient)}
                                         >
-                                            Register patients
+                                            {viewEnglish ? "Register patients" : "Εισαγωγή ασθενών"}
                                         </a>
                                     </div>
                                     <div className={"flex items-center ml-5"}>
@@ -339,7 +339,7 @@ export default function SideBar() {
                                             }
                                             onClick={() => (showSearchPatients === false ? setShowSearchPatients(true) : setShowSearchPatients(false))}
                                         >
-                                            Search patients
+                                            {viewEnglish ? "Search patients" : "Αναζήτηση ασθενών"}
                                         </a>
                                     </div>
                                     <div className={"flex items-center ml-5"}>
@@ -354,7 +354,7 @@ export default function SideBar() {
                                             }
                                             onClick={() => (showRegisterPatientMassively === false ? setShowRegisterPatientMassively(true) : setShowRegisterPatientMassively(false))}
                                         >
-                                            Register patients massively
+                                            {viewEnglish ? "Register patients massively" : "Εισαγωγή ασθενών μαζικά"}
                                         </a>
                                     </div>
                                 </div>
@@ -372,7 +372,7 @@ export default function SideBar() {
                                         <span className="material-icons-outlined">
                                             history
                                         </span>
-                                    <span className="ml-2 text-sm">Manage Patient History</span>
+                                    <span className="ml-2 text-sm">{viewEnglish ? "Manage Patient History" : "Διαχείριση Ιστορικού Ασθενούς"}</span>
                                 </div>
                             </a>
 
@@ -390,7 +390,7 @@ export default function SideBar() {
                                             }
                                             onClick={() => (showCreateHistoryReg === false ? setShowCreateHistoryReg(true) : setShowCreateHistoryReg(false))}
                                         >
-                                            Create history registration
+                                            {viewEnglish ? "Create history registration" : "Δημιουργία εγγραφής ιστορικού"}
                                         </a>
                                     </div>
                                     <div className={"flex items-center ml-5"}>
@@ -405,7 +405,7 @@ export default function SideBar() {
                                             }
                                             onClick={() => (showRegisterPatientHistoryMassively === false ? setShowRegisterPatientHistoryMassively(true) : setShowRegisterPatientHistoryMassively(false))}
                                         >
-                                            Create history registrations massively
+                                            {viewEnglish ? "Create history registrations massively" : "Δημιουργία εγγραφών ιστορικού μαζικά"}
                                         </a>
                                     </div>
                                     <div className={"flex items-center ml-5"}>
@@ -420,7 +420,7 @@ export default function SideBar() {
                                             }
                                             onClick={() => (showConfigureHistoryReg === false ? setShowConfigureHistoryReg(true) : setShowConfigureHistoryReg(false))}
                                         >
-                                            Configure last patient registration
+                                            {viewEnglish ? "Configure last patient registration" : "Επεξεργασία τελευταίας εγγραφής ιστορικού"}
                                         </a>
                                     </div>
                                     <div className={"flex items-center ml-5"}>
@@ -435,7 +435,7 @@ export default function SideBar() {
                                             }
                                             onClick={() => (showDisplayAllHistory === false ? setShowDisplayAllHistory(true) : setShowDisplayAllHistory(false))}
                                         >
-                                            Display & Search patient history
+                                            {viewEnglish ? "Display & Search patient history" : "Προβολή & Αναζήτηση ιστορικού ασθενούς"}
                                         </a>
                                     </div>
                                 </div>
