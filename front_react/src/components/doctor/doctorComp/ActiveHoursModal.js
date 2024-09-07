@@ -362,10 +362,10 @@ export default function ActiveHoursModal({onClose}) {
 
     return (
         <motion.div
-            initial={{opacity: 0}}
-            animate={{opacity: 1}}
-            transition={{duration: 0.1, ease: 'easeOut'}}
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.1, ease: 'easeOut' }}
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-default z-50"
         >
             {loading ? (
                 <LoadingApp />
@@ -374,182 +374,147 @@ export default function ActiveHoursModal({onClose}) {
             ) : errorMessage !== null ? (
                 <ErrorApp />
             ) : (
-            <div className="grid grid-cols-2 gap-4 w-10/12 h-3/6 bg-white shadow-2xl p-5 relative">
-                <Calendar
-                    onChange={handleDateChange}
-                    value={date}
-                    className="row-span-2 h-full"
-                />
+                <div
+                    className="grid grid-cols-1 grid-rows-4 gap-5 sm:grid-cols-2 sm:grid-rows-1 overflow-x-auto sm:gap-10 w-11/12 max-w-4xl sm:h-[400px] h-5/6 bg-white shadow-2xl p-6 rounded-lg relative"
+                >
+                    {/* Calendar */}
+                    <div className="row-span-3 sm:row-span-2 border-r pr-4 sm:pr-10">
+                        <Calendar
+                            onChange={handleDateChange}
+                            value={date}
+                            className="w-full h-auto"
+                        />
+                    </div>
 
-                <header className="col-span-1">
-                    <p className="text-slate-700 font-black hover:text-sky-700">
+                    {/* Header */}
+                    <p className="text-slate-700 hidden sm:block font-extrabold text-lg hover:text-sky-700 mt-10 sm:mt-0">
                         {viewEnglish ? date.toDateString() : getFullGreekDate(date)}
                     </p>
-                </header>
 
-                <form className="overflow-auto" key={date.toString()}>
-                    <div className="grid grid-cols-1 gap-4 bg-white">
-                        <motion.div
-                            initial={{opacity: 0}}
-                            animate={{opacity: 1}}
-                            transition={{duration: 0.2, ease: 'easeOut'}}
-                            className="overflow-y-auto"
-                            style={{maxHeight: '600px'}}
-                        >
-                            {
-                                (showSubmitDialog && selectedOptions.length > 0) ? (
-                                    <div className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
+                    {/* Form */}
+                    <form className="overflow-x-auto sm:mt-0 h-full sm:h-[200px]" key={date.toString()}>
+                        <div className="space-y-4 bg-white">
+                            <motion.div
+                                initial={{opacity: 0}}
+                                animate={{opacity: 1}}
+                                transition={{duration: 0.2, ease: 'easeOut'}}
+                                style={{maxHeight: '550px'}}
+                            >
+                                {showSubmitDialog && selectedOptions.length > 0 ? (
+                                    <div
+                                        className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10">
                                         <a
                                             className="block px-4 py-2 text-gray-800 hover:bg-green-200"
-                                            onClick={() => handleSubmit()}
+                                            onClick={handleSubmit}
                                         >
                                             {viewEnglish ? "Submit" : "Καταχώρηση"}
                                         </a>
                                         <a
                                             className="block px-4 py-2 text-gray-800 hover:bg-red-200"
-                                            onClick={() => handleCloseSubmitDialog()}
+                                            onClick={handleCloseSubmitDialog}
                                         >
                                             {viewEnglish ? "Close" : "Κλείσιμο"}
                                         </a>
-                                    </div> )
-                                : (showDeleteDialog ? (
-                                    <div className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
+                                    </div>
+                                ) : showDeleteDialog ? (
+                                    <div
+                                        className="absolute right-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10">
                                         <a
                                             className="block px-4 py-2 text-red-600 hover:bg-red-400"
-                                            onClick={() => handleDelete()}
+                                            onClick={handleDelete}
                                         >
                                             {viewEnglish ? "Delete" : "Διαγραφή"}
                                         </a>
                                         <a
                                             className="block px-4 py-2 text-gray-800 hover:bg-red-200"
-                                            onClick={() => handleCloseDeleteDialog()}
+                                            onClick={handleCloseDeleteDialog}
                                         >
                                             {viewEnglish ? "Close" : "Κλείσιμο"}
                                         </a>
                                     </div>
-                                ) : null)
-                            }
+                                ) : null}
 
-                            {hours.map(hour => (
-                                <React.Fragment key={hour.id}>
-                                    <div
-                                        id={"00-" + hour.id}
-                                        className={`border rounded-md p-2 
-                                                ${
-                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":00" + ":00") ? "bg-green-600" :
-                                                ((draggedId === "00-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:00:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-400 transition duration-100 ease-in-outs" : "NOT"))
-                                            }`
-                                    }
-                                        onMouseDown={e => handleMouseDown(e, hour.id, '00')}
-                                        onMouseMove={e => handleMouseMove(e, hour.id, '00', hour.ampm === pm_str ? pm_str : am_str)}
-                                        onMouseUp={handleMouseUp}
-                                        onTouchStart={e => handleTouchStart(e, hour.id, '00')}
-                                        onTouchMove={e => handleTouchMove(e, hour.id, '00')}
-                                        onTouchEnd={handleTouchEnd}
-                                        onTouchCancel={handleTouchCancel}
-                                    >
-                                    <span className="text-slate-700 font-bold">
-                                      {
-                                          hour.hour === 12 && hour.ampm === pm_str ?
-                                          (
-                                              <>
-                                                  <span className="material-icons-outlined text-yellow-600 mr-1">
-                                                    light_mode
-                                                  </span>
-                                                    {hour.hour}
-                                                </>
-                                          )
-                                              : hour.hour === 12 && hour.ampm === am_str ?
-                                                  (
-                                                      <>
-                                                          <span className="material-icons-outlined text-blue-600 mr-1">
-                                                            dark_mode
-                                                          </span>
-                                                            {hour.hour}
-                                                      </>
-                                                  )
-                                                  : (hour.hour)
-                                      }
+                                {/* Hours Grid */}
+                                {hours.map((hour) => (
+                                    <React.Fragment key={hour.id}>
+                                        <div
+                                            id={"00-" + hour.id}
+                                            className={`border rounded-md p-2 mb-1 text-center ${
+                                                checkDateSimilarity(date.toISOString().split('T')[0], hour.id.toString().padStart(2, '0') + ":00:00")
+                                                    ? "bg-green-600"
+                                                    : draggedId === "00-" + hour.id && isDragging || selectedOptions.includes(`${hour.id}:00:${hour.ampm === pm_str ? pm_str : am_str}`)
+                                                        ? "bg-blue-400 transition duration-100 ease-in-out"
+                                                        : ""
+                                            }`}
+                                            onMouseDown={(e) => handleMouseDown(e, hour.id, "00")}
+                                            onMouseMove={(e) => handleMouseMove(e, hour.id, "00", hour.ampm)}
+                                            onMouseUp={handleMouseUp}
+                                            onTouchStart={(e) => handleTouchStart(e, hour.id, "00")}
+                                            onTouchMove={(e) => handleTouchMove(e, hour.id, "00")}
+                                            onTouchEnd={handleTouchEnd}
+                                            onTouchCancel={handleTouchCancel}
+                                        >
+                        <span className="text-slate-700 font-bold">
+                            {hour.hour === 12 && hour.ampm === pm_str ? (
+                                <>
+                                    <span className="material-icons-outlined text-yellow-600 mr-1">
+                                        light_mode
                                     </span>
-                                        <span className="text-slate-600 ml-1">{hour.ampm}</span>
-                                    </div>
-                                    <React.Fragment>
-                                        <div
-                                            className={`border rounded-md p-2 text-xs 
-                                                ${
-                                                    (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") ? "bg-green-400" :
-                                                    ((draggedId === "15-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:15:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-300 ease-in-outs" : "NOT"))
-                                                }`
-                                            }
-                                            id={"15-" + hour.id}
-                                            onMouseDown={(e) => handleMouseDown(e, hour.id, 15)}
-                                            onMouseMove={(e) => handleMouseMove(e, hour.id, 15, hour.ampm === pm_str ? pm_str : am_str)}
-                                            onMouseUp={handleMouseUp}
-                                            onTouchStart={(e) => handleTouchStart(e, hour.id, 15)}
-                                            onTouchMove={(e) => handleTouchMove(e, hour.id, 15)}
-                                            onTouchEnd={handleTouchEnd}
-                                            onTouchCancel={handleTouchCancel}
-                                        >
-                                            {hour.hour}:15 {hour.ampm === pm_str ? pm_str : am_str}
+                                    {hour.hour}
+                                </>
+                            ) : hour.hour === 12 && hour.ampm === am_str ? (
+                                <>
+                                    <span className="material-icons-outlined text-blue-600 mr-1">
+                                        dark_mode
+                                    </span>
+                                    {hour.hour}
+                                </>
+                            ) : (
+                                hour.hour
+                            )}
+                        </span>
+                                            <span className="text-slate-600 ml-1">{hour.ampm}</span>
                                         </div>
 
-                                        <div
-                                            className={`border rounded-md p-2 text-xs 
-                                                    ${() => "w-3/6"} 
-                                                        ${
-                                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") ? "bg-green-400" :
-                                                            ((draggedId === "30-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:30:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200" : "NOT"))
-                                                    }`
-                                            }
-                                            id={"30-" + hour.id}
-                                            onMouseDown={(e) => handleMouseDown(e, hour.id, 30)}
-                                            onMouseMove={(e) => handleMouseMove(e, hour.id, 30, hour.ampm === pm_str ? pm_str : am_str)}
-                                            onMouseUp={handleMouseUp}
-                                            onTouchStart={(e) => handleTouchStart(e, hour.id, 30)}
-                                            onTouchMove={(e) => handleTouchMove(e, hour.id, 30)}
-                                            onTouchEnd={handleTouchEnd}
-                                            onTouchCancel={handleTouchCancel}
-                                        >
-                                            {hour.hour}:30 {hour.ampm === pm_str ? pm_str : am_str}
-                                        </div>
-
-                                        <div
-                                            className={`border rounded-md p-2 text-xs 
-                                                    ${() => "w-3/6"} 
-                                                        ${
-                                                            (checkDateSimilarity(date.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") ? "bg-green-400" :
-                                                            ((draggedId === "45-" + hour.id && isDragging) || selectedOptions.includes(`${hour.id}:45:${hour.ampm === pm_str ? pm_str : am_str}`) ? "bg-blue-200 transition duration-00 ease-in-outs" : "NOT"))
-                                                }`
-                                            }
-                                            id={"45-" + hour.id}
-                                            onMouseDown={(e) => handleMouseDown(e, hour.id, 45)}
-                                            onMouseMove={(e) => handleMouseMove(e, hour.id, 45, hour.ampm === pm_str ? pm_str : am_str)}
-                                            onMouseUp={handleMouseUp}
-                                            onTouchStart={(e) => handleTouchStart(e, hour.id, 45)}
-                                            onTouchMove={(e) => handleTouchMove(e, hour.id, 45)}
-                                            onTouchEnd={handleTouchEnd}
-                                            onTouchCancel={handleTouchCancel}
-                                        >
-                                            {hour.hour}:45 {hour.ampm === pm_str ? pm_str : am_str}
-                                        </div>
+                                        {["15", "30", "45"].map((minute) => (
+                                            <div
+                                                key={minute}
+                                                className={`border rounded-md p-2 text-xs text-center mb-1 ${
+                                                    checkDateSimilarity(date.toISOString().split('T')[0], `${hour.id.toString().padStart(2, '0')}:${minute}:00`)
+                                                        ? "bg-green-400"
+                                                        : draggedId === `${minute}-${hour.id}` && isDragging || selectedOptions.includes(`${hour.id}:${minute}:${hour.ampm === pm_str ? pm_str : am_str}`)
+                                                            ? "bg-blue-200 transition duration-300 ease-in-out"
+                                                            : ""
+                                                }`}
+                                                id={`${minute}-${hour.id}`}
+                                                onMouseDown={(e) => handleMouseDown(e, hour.id, minute)}
+                                                onMouseMove={(e) => handleMouseMove(e, hour.id, minute, hour.ampm)}
+                                                onMouseUp={handleMouseUp}
+                                                onTouchStart={(e) => handleTouchStart(e, hour.id, minute)}
+                                                onTouchMove={(e) => handleTouchMove(e, hour.id, minute)}
+                                                onTouchEnd={handleTouchEnd}
+                                                onTouchCancel={handleTouchCancel}
+                                            >
+                                                {hour.hour}:{minute} {hour.ampm === pm_str ? pm_str : am_str}
+                                            </div>
+                                        ))}
                                     </React.Fragment>
-                                </React.Fragment>))
-                            }
-                        </motion.div>
-                    </div>
-                </form>
+                                ))}
+                            </motion.div>
+                        </div>
+                    </form>
 
-                <div className={"bg-red-500 flex flex-col items-center justify-center h-full col-span-2 rounded-2xl cursor-pointer"}
-                     onClick={onClose}
-                >
-                    <button
-                        onClick={onClose}
-                        className="text-white text-sm"
-                    >
-                        {viewEnglish ? "Close" : "Κλείσιμο"}
-                    </button>
+
+                    {/* Close Button */}
+                    <div
+                        className="bg-red-500 flex flex-col items-center justify-center h-auto sm:h-full sm:col-span-2 rounded-2xl cursor-pointer mt-5 sm:mt-0">
+                        <button onClick={onClose} className="text-white text-lg font-semibold">
+                            {viewEnglish ? "Close" : "Κλείσιμο"}
+                        </button>
+                    </div>
                 </div>
-            </div>
             )}
-        </motion.div>)
+        </motion.div>
+    );
+
 }
