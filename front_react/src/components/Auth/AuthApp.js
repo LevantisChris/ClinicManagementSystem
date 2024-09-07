@@ -142,7 +142,9 @@ const AuthApp = () => {
     function roleNavigator(role_str) {
         if(role_str === "USER_DOCTOR")
             navigate('/doctor')
-        else /* Add the other roles */
+        else if(role_str === "USER_PATIENT") {
+            navigate('/patient')
+        } else/* Add the other roles */
             navigate('/')
     }
 

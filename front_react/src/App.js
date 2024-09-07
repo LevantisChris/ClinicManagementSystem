@@ -3,6 +3,7 @@ import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import DoctorApp from "./components/doctor/DoctorApp";
 import AuthApp  from "./components/Auth/AuthApp";
 import './App.css';
+import PatientApp from "./components/Patient/PatientApp";
 
 const App = () => {
     return (
@@ -21,6 +22,8 @@ const App = () => {
                     {/* Protected routes */}
                     <Route path={"/doctor"}
                            element={<DoctorApp/>}/>
+                    <Route path={"/patient"}
+                           element={<PatientApp/>}/>
                     <Route path={"*"}
                            element={<Navigate to="/auth"/>}/>
 
