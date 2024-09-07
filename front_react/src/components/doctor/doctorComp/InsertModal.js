@@ -268,7 +268,7 @@ export default function InsertModal() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.1, ease: "easeOut" }}
-          className="h-screen w-screen fixed flex justify-center items-center"
+          className="h-screen w-screen fixed flex justify-center items-center z-50"
       >
         {loading ? (
             <LoadingApp />
@@ -297,9 +297,9 @@ export default function InsertModal() {
                 </div>
               </header>
 
-              <div className={showDescriptionInsertModal ? "flex" : ""}>
+              <div className={showDescriptionInsertModal ? "flex sm:flex-row flex-col" : ""}>
                 <div
-                    className={`grid grid-cols-1 gap-4 bg-white ${showDescriptionInsertModal ? "w-3/6" : ""}`}
+                    className={`grid grid-cols-1 gap-4 bg-white ${showDescriptionInsertModal ? "w-full sm:w-3/6" : ""}`}
                 >
                   <motion.div
                       initial={{ opacity: 0 }}

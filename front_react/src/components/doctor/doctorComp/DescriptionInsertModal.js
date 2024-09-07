@@ -232,7 +232,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.75, ease: "easeOut" }}
           ref={componentRef}
-          className="w-6/12 bg-white shadow-2xl p-5"
+          className="w-full sm:w-6/12 bg-white shadow-2xl p-5 z-50"
       >
         {loading ? (
             <LoadingApp />
@@ -243,10 +243,10 @@ export default function DescriptionInsertModal({appointmentClicked}) {
         ) : (
             <div className="p-3">
               <div className="grid grid-cols-1/5 gap-y-7 items-center">
-          <span className="text-center material-icons-outlined text-gray-400 text-5xl">
-            schedule
-          </span>
-                <p className="text-4xl">
+                <span className="text-center material-icons-outlined text-gray-400 text-3xl sm:text-5xl">
+                  schedule
+                </span>
+                <p className="text-xl sm:text-4xl">
                   {viewEnglish ? daySelected.format("dddd MMMM DD") : getGreekDate(daySelected)}{" "}
                   <React.Fragment>
               <span className="font-bold">
