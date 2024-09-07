@@ -105,19 +105,66 @@ export default function InsertModal() {
   };
 
   const handleTouchMove = (event, hourId, minute) => {
+    // Handle the touch end logic, similar to mouse up
+    const touch = event.changedTouches[0]; // Gets the first touch point that was lifted
+    const { clientX, clientY } = touch; // Coordinates where the touch ended
+
+    // Block the overflow
+    document.body.style.overflow = 'hidden';
+
+    // Optionally, after some condition or timeout, re-enable the overflow
+    setTimeout(() => {
+      document.body.style.overflow = 'auto'; // Or restore it based on your needs
+    }, 1000); // Change the timeout as necessary
+
+
     event.preventDefault();
     if (isDragging) {
-      setDraggedId(minute + "-" + hourId);
-      //addObjectToList(minute, hourId);
-      //console.log("Dragging over TouchMove:", hourId, minute);
+      setAppointClicked(null)
+      /* We have to check wheaten that hour the user
+            *  select is already selected.
+            *  If its already selected then
+            *  send request to the server to delete it.
+            *  */
+      const temp1 = checkDateSimilarity_WH(
+          daySelected.format("YYYY-MM-DD"),
+          (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")
+      const temp2 = checkDateSimilarity_APP(
+          (hourId >= 0 && hourId <= 10 ? "0" + hourId : hourId) + ":" + minute + ":00")
+      if (temp1 === null || temp2 !== null) {
+        setIsDragging(false);
+        dragItemRef.current = null;
+      } else {
+        setDraggedId(minute + "-" + hourId);
+        addToList(hourId + ":" + minute);
+        //console.log("Dragging over MouseMove:", hourId, minute);
+      }
     }
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e) => {
+    // Handle the touch end logic, similar to mouse up
+    const touch = e.changedTouches[0]; // Gets the first touch point that was lifted
+    const { clientX, clientY } = touch; // Coordinates where the touch ended
+
+    // Block the overflow
+    document.body.style.overflow = 'hidden';
+
+    // Optionally, after some condition or timeout, re-enable the overflow
+    setTimeout(() => {
+      document.body.style.overflow = 'auto'; // Or restore it based on your needs
+    }, 1000); // Change the timeout as necessary
+
+
     setIsDragging(false);
     dragItemRef.current = null;
     //setDraggedId(null);
-    //console.log("dragging-touchEnd stopped");
+    selectedOptions[0] !== undefined &&
+    selectedOptions.length > 1 &&
+    (isLater() ? true : clearList())
+        ? setShowDescriptionInsertModal(true)
+        : setShowDescriptionInsertModal(false);
+    //console.log("dragging-mouseUp stopped");
   };
 
   const handleTouchCancel = () => {
@@ -331,7 +378,7 @@ export default function InsertModal() {
                               onMouseUp={handleMouseUp}
                               onTouchStart={(e) => handleTouchStart(e, hour.id, "00")}
                               onTouchMove={(e) => handleTouchMove(e, hour.id, "00")}
-                              onTouchEnd={handleTouchEnd}
+                              onTouchEnd={(e) => handleTouchEnd}
                               onTouchCancel={handleTouchCancel}
                               onClick={() => handleHourClick(
                                   `${hour.id >= 0 && hour.id <= 10 ? `0${hour.id}` : hour.id}:00:00`
@@ -384,7 +431,7 @@ export default function InsertModal() {
                               onMouseUp={handleMouseUp}
                               onTouchStart={(e) => handleTouchStart(e, hour.id, 15)}
                               onTouchMove={(e) => handleTouchMove(e, hour.id, 15)}
-                              onTouchEnd={handleTouchEnd}
+                              onTouchEnd={(e) => handleTouchEnd}
                               onTouchCancel={handleTouchCancel}
                               onClick={() => handleHourClick(
                                   (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00"
@@ -413,7 +460,7 @@ export default function InsertModal() {
                               onMouseUp={handleMouseUp}
                               onTouchStart={(e) => handleTouchStart(e, hour.id, 30)}
                               onTouchMove={(e) => handleTouchMove(e, hour.id, 30)}
-                              onTouchEnd={handleTouchEnd}
+                              onTouchEnd={(e) => handleTouchEnd}
                               onTouchCancel={handleTouchCancel}
                               onClick={() => handleHourClick(
                                   (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00"
@@ -442,7 +489,7 @@ export default function InsertModal() {
                               onMouseUp={handleMouseUp}
                               onTouchStart={(e) => handleTouchStart(e, hour.id, 45)}
                               onTouchMove={(e) => handleTouchMove(e, hour.id, 45)}
-                              onTouchEnd={handleTouchEnd}
+                              onTouchEnd={(e) => handleTouchEnd}
                               onTouchCancel={handleTouchCancel}
                               onClick={() => handleHourClick(
                                   (hour.id >= 0 && hour.id <= 10 ? `0${hour.id}` : hour.id) + ":45:00"
