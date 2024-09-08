@@ -253,16 +253,17 @@ export default function InsertModal() {
   React.useEffect(() => {
     const loadAppointments = async () => {
       const params = {
-        appointmentDate: daySelected.format("YYYY-MM-DD")
+        patientId: 0 // because we use the token
       };
       try {
         //setLoading(true); // Set loading to true when starting to fetch data
-        const appointments = await UserService.getAllForADayAppointments(params);
-        if (appointments && appointments.statusCode !== 404) {
-          setAppointments(appointments.appointmentList);
+        const response = await UserService.getPatientAppointments(params);
+        if (response.statusCode === 200) {
+          console.log("TST: ", response)
+          setAppointments(response.appointmentList);
         }
       } catch (error) {
-        console.log("Error to fetch appointments: ", error);
+        console.log("Error to fetch appointments for the patient: ", error);
       } finally {
         setLoading(false); // Ensure loading is set to false regardless of success or failure
       }
