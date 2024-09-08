@@ -250,39 +250,51 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                 <p className="text-xl sm:text-4xl">
                   {viewEnglish ? daySelected.format("dddd MMMM DD") : getGreekDate(daySelected)}{" "}
                   <React.Fragment>
-              <span className="font-bold">
-                {selectedOptions[0] !== undefined ? findTime() : ""}
-              </span>
+                  <span className="font-bold">
+                    {selectedOptions[0] !== undefined ? findTime() : ""}
+                  </span>
                   </React.Fragment>
                 </p>
 
                 <span className="text-center material-icons-outlined text-gray-400">
-            person
-          </span>
-                {/*      <input*/}
-                {/*          type="text"*/}
-                {/*          name="patient_name"*/}
-                {/*          placeholder="Patient name"*/}
-                {/*          className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"*/}
-                {/*          value={patientName}*/}
-                {/*          onChange={(e) => setPatientName(e.target.value)}*/}
-                {/*      />*/}
+                  person
+                </span>
+                <input
+                    type="text"
+                    name="patient_name"
+                    placeholder="Patient name"
+                    disabled={true}
+                    className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
+                    value={userAuthedDetails.user.user_name}
+                />
 
-                {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
-                {/*  person*/}
-                {/*</span>*/}
-                {/*      <input*/}
-                {/*          type="text"*/}
-                {/*          name="patient_surname"*/}
-                {/*          placeholder="Patient surname"*/}
-                {/*          className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"*/}
-                {/*          value={patientSurname}*/}
-                {/*          onChange={(e) => setPatientSurname(e.target.value)}*/}
-                {/*      />*/}
+                <span className="text-center material-icons-outlined text-gray-400">
+                  person
+                </span>
+                <input
+                    type="text"
+                    name="patient_surname"
+                    placeholder="Patient surname"
+                    disabled={true}
+                    className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
+                    value={userAuthedDetails.user.user_surname}
+                />
 
-                {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
-                {/*  medical_information*/}
-                {/*</span>*/}
+                <span className="text-center material-icons-outlined text-gray-400">
+                  fingerprint
+                </span>
+                <input
+                    type="text"
+                    name="patient_idNumber"
+                    placeholder="Patient ID Number"
+                    disabled={true}
+                    className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
+                    value={userAuthedDetails.user.user_idNumber}
+                />
+
+                <span className="text-center material-icons-outlined text-gray-400">
+                  medical_information
+                </span>
                 <input
                     type="text"
                     name="patient_amka"
@@ -292,67 +304,67 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                     value={appointmentClicked ? appointmentClicked.appointmentPatientAMKA : patientAmka}
                     onChange={(e) => setPatientAmka(e.target.value)}
                 />
-                <span className="text-center material-icons-outlined text-gray-400">
-            check_circle
-          </span>
-                <Menu as="div" className="relative inline-block text-left">
-                  <div>
-                    <MenuButton
-                        className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                      {viewEnglish ? "Current State" : "Τρέχουσα κατάσταση"}
-                      <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400"/>
-                    </MenuButton>
-                  </div>
-                  <MenuItems
-                      transition
-                      className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                  >
-                    <div className="py-1">
-                      <MenuItem>
-                        <a
-                            href="#"
-                            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                            onClick={() => setStateSelected("Created")}
-                        >
-                          {viewEnglish ? "Created" : "Δημιουργημένο"}
-                          { stateSelected === "Created" ?
-                            <span className="material-icons-outlined text-gray-400">
-                              check
-                            </span> : ""
-                          }
-                        </a>
-                      </MenuItem>
-                      <MenuItem>
-                        <a
-                            href="#"
-                            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                            onClick={() => setStateSelected("Respected")}
-                        >
-                          {viewEnglish ? "Respected" : "Τηρημένο"}
-                          { stateSelected === "Respected" ?
-                              <span className="material-icons-outlined text-gray-400">
-                              check
-                            </span> : ""
-                          }
-                        </a>
-                      </MenuItem>
-                      <MenuItem>
-                        <a
-                            href="#"
-                            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                            onClick={() => setStateSelected("Completed")}
-                        >
-                          {viewEnglish ? "Completed" : "Ολοκληρωμένο"}
-                          { stateSelected === "Completed" ?
-                              <span className="material-icons-outlined text-gray-400">
-                              check
-                            </span> : ""
-                          }
-                        </a>
-                      </MenuItem>
-                    </div>
-                  </MenuItems>
-                </Menu>
+                {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
+                {/*  check_circle*/}
+                {/*</span>*/}
+                {/*<Menu as="div" className="relative inline-block text-left">*/}
+                {/*  <div>*/}
+                {/*    <MenuButton*/}
+                {/*        className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">*/}
+                {/*      {viewEnglish ? "Current State" : "Τρέχουσα κατάσταση"}*/}
+                {/*      <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400"/>*/}
+                {/*    </MenuButton>*/}
+                {/*  </div>*/}
+                {/*  <MenuItems*/}
+                {/*      transition*/}
+                {/*      className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"*/}
+                {/*  >*/}
+                {/*    <div className="py-1">*/}
+                {/*      <MenuItem>*/}
+                {/*        <a*/}
+                {/*            href="#"*/}
+                {/*            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"*/}
+                {/*            onClick={() => setStateSelected("Created")}*/}
+                {/*        >*/}
+                {/*          {viewEnglish ? "Created" : "Δημιουργημένο"}*/}
+                {/*          {stateSelected === "Created" ?*/}
+                {/*              <span className="material-icons-outlined text-gray-400">*/}
+                {/*              check*/}
+                {/*            </span> : ""*/}
+                {/*          }*/}
+                {/*        </a>*/}
+                {/*      </MenuItem>*/}
+                {/*      <MenuItem>*/}
+                {/*        <a*/}
+                {/*            href="#"*/}
+                {/*            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"*/}
+                {/*            onClick={() => setStateSelected("Respected")}*/}
+                {/*        >*/}
+                {/*          {viewEnglish ? "Respected" : "Τηρημένο"}*/}
+                {/*          {stateSelected === "Respected" ?*/}
+                {/*              <span className="material-icons-outlined text-gray-400">*/}
+                {/*              check*/}
+                {/*            </span> : ""*/}
+                {/*          }*/}
+                {/*        </a>*/}
+                {/*      </MenuItem>*/}
+                {/*      <MenuItem>*/}
+                {/*        <a*/}
+                {/*            href="#"*/}
+                {/*            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"*/}
+                {/*            onClick={() => setStateSelected("Completed")}*/}
+                {/*        >*/}
+                {/*          {viewEnglish ? "Completed" : "Ολοκληρωμένο"}*/}
+                {/*          {stateSelected === "Completed" ?*/}
+                {/*              <span className="material-icons-outlined text-gray-400">*/}
+                {/*              check*/}
+                {/*            </span> : ""*/}
+                {/*          }*/}
+                {/*        </a>*/}
+                {/*      </MenuItem>*/}
+                {/*    </div>*/}
+                {/*  </MenuItems>*/}
+                {/*</Menu>*/}
 
                 <span className="text-center material-icons-outlined text-gray-400">
             description
