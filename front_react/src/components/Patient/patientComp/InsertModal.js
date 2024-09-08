@@ -259,7 +259,6 @@ export default function InsertModal() {
         //setLoading(true); // Set loading to true when starting to fetch data
         const response = await UserService.getPatientAppointments(params);
         if (response.statusCode === 200) {
-          console.log("TST: ", response)
           setAppointments(response.appointmentList);
         }
       } catch (error) {

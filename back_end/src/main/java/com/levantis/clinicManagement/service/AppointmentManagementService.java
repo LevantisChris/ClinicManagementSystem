@@ -706,7 +706,7 @@ public class AppointmentManagementService {
             jwtUtils.extractUsername(jwtToken);
 
             User user = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
-                    .orElseThrow(() -> new RuntimeException("User (Doctor) Not found"));
+                    .orElseThrow(() -> new RuntimeException("User Not found"));
 
             if(user.getRole_str().equals("USER_DOCTOR")) {
                 /* Get the user that is doctor */
@@ -717,11 +717,15 @@ public class AppointmentManagementService {
                     appointments.add(i, temp.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
                 }
                 return appointments;
-            } else {
-                log.error("Not appropriate role: " + user.getRole_str());
-//                resp.setMessage("Not appropriate role: " + user.getRole_str());
-//                resp.setStatusCode(500);
-                return null;
+            } else if(user.getRole_str().equals("USER_PATIENT")){
+                /* Get the user that is patient */
+                Patient patient = user.getPatient();
+                /* Handle the JSON with all the dates */
+                for (int i = 0;i < request.size();i++) {
+                    List<Appointment> temp = appointmentRepository.findByAppointmentPatientAndAppointmentDate(patient, LocalDate.parse(request.get(i)));
+                    appointments.add(i, temp.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
+                }
+                return appointments;
             }
         } catch (Exception e) {
             log.error("Error searching appointments: {}", e.getMessage());
