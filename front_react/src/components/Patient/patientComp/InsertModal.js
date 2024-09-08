@@ -6,6 +6,8 @@ import UserService from "../../../services/UserService";
 import LoadingApp from "../../../Loading/LoadingApp";
 import SuccessApp from "../../Success/SuccessApp";
 import ErrorApp from "../../Error/ErrorApp";
+import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
+import {ChevronDownIcon} from "@heroicons/react/16/solid";
 
 /* The modal that helps the user pick time slots */
 
@@ -22,7 +24,8 @@ export default function InsertModal() {
     successMessage,
     setSuccessMessage,
     errorMessage,
-    setErrorMessage
+    setErrorMessage,
+      viewEnglish
   } = useContext(GlobalContext);
 
   const [isDragging, setIsDragging] = useState(false);
@@ -38,6 +41,8 @@ export default function InsertModal() {
   const [loading, setLoading] = useState(false)
 
   const [appointClicked, setAppointClicked] = useState(null)
+
+  const [availableDoctors, setAvailableDoctors] = useState([]);
 
   const am_str = "AM";
   const pm_str =  "PM";
@@ -225,6 +230,25 @@ export default function InsertModal() {
     setHours(generatedHours);
   }, []);
 
+  /* Get available doctors from the WH */
+  function getAvailableDoctors(whList) {
+    const availableDoctors_temp = new Set(); // A set to store doctor user_idNumbers
+    const doctorList = []; // The list of unique doctors
+    for (const wh of whList) {
+      const doctorId = wh.doctor.user.user_idNumber;
+      console.log("GIA: ", doctorId)
+      // Check if the doctor is not already in the set
+      if (!availableDoctors_temp.has(doctorId)) {
+        availableDoctors_temp.add(doctorId);
+        doctorList.push(wh.doctor);
+      }
+    }
+    setAvailableDoctors(doctorList) // Return the list of unique doctors
+  }
+
+
+
+
   React.useEffect(() => {
     const loadWorkingHours = async () => {
       //setLoading(true)
@@ -232,9 +256,10 @@ export default function InsertModal() {
       if(token) {
         try {
           const w_hours = await UserService.getWorkingHoursOfADoctor(token);
-          console.log("TEST: ", w_hours[0].whList)
           if(w_hours[0].statusCode !== 404) {
             setWorkingHours(w_hours[0].whList);
+            /* Now based on the wh retrieved get available doctors */
+            getAvailableDoctors(w_hours[0].whList);
             setLoading(false)
           }
         } catch (error) {
@@ -345,6 +370,37 @@ export default function InsertModal() {
                 <div
                     className={`grid grid-cols-1 gap-4 bg-white ${showDescriptionInsertModal ? "w-full sm:w-3/6" : ""}`}
                 >
+
+
+                  <Menu as="div" className="relative inline-block text-left">
+                    <div>
+                      <MenuButton
+                          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                        {viewEnglish ? "Select Doctor" : "Επιλέξτε Γιατρό"}
+                        <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400"/>
+                      </MenuButton>
+                    </div>
+                    <MenuItems
+                        transition
+                        className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                    >
+                      <div className="py-1">
+                        {availableDoctors.length !== 0 ? availableDoctors.map((doctor, index) => (
+                            <MenuItem key={index}>
+                              <a
+                                  href="#"
+                                  className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                              >
+                                {doctor.user.user_name}{" "}{doctor.user.user_surname}
+                              </a>
+                            </MenuItem>
+                        )) : ""}
+                      </div>
+                    </MenuItems>
+                  </Menu>
+
+
+
                   <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
