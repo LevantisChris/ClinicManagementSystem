@@ -40,6 +40,11 @@ export default function ContextWrapper(props) {
   const [selectedOptions, setSelectedOptions] = useState(
     []
   ); /* This is to remember the selected hours */
+
+    const [userAuthedDetails, setUserAuthedDetails]
+        = useState(null);
+
+
   const [showDescriptionInsertModal, setShowDescriptionInsertModal] =
     useState(false); /* This state is to know when to show the modal that the user will add the info for an event after the selection of the hours */
 
@@ -156,6 +161,9 @@ export default function ContextWrapper(props) {
             setSmallCalendarMonth,
             daySelected,
             setDaySelected,
+
+            userAuthedDetails,
+            setUserAuthedDetails,
 
             showEventModal,
             setShowEventModal,

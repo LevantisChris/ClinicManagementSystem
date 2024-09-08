@@ -8,6 +8,10 @@ const GlobalContext = React.createContext({
     daySelected: null,
     setDaySelected: (day) => {},
 
+    /* User Global values */
+    userAuthedDetails: null,
+    setUserAuthedDetails: () => {},
+
     showEventModal: false,
     setShowEventModal: () => {},
 

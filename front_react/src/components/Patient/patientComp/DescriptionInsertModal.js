@@ -15,6 +15,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
   const componentRef = useRef(null);
 
   const {
+    userAuthedDetails,
     daySelected,
     selectedOptions,
     clearList,
@@ -30,7 +31,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
   /* States to access the filed values */
   // const [patientName, setPatientName] = useState('');
   // const [patientSurname, setPatientSurname] = useState('');
-  const [patientAmka, setPatientAmka] = useState('');
+  const [patientAmka, setPatientAmka] = useState(userAuthedDetails.patient_AMKA);
   const [description, setDescription] = useState('');
   /* For loading screen and  */
   const [loading, setLoading] = useState(false)
@@ -286,7 +287,7 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                     type="text"
                     name="patient_amka"
                     placeholder="AMKA"
-                    disabled={!!appointmentClicked}
+                    disabled={true}
                     className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
                     value={appointmentClicked ? appointmentClicked.appointmentPatientAMKA : patientAmka}
                     onChange={(e) => setPatientAmka(e.target.value)}

@@ -47,7 +47,7 @@ const AuthApp = () => {
 
     const navigate = useNavigate();
 
-    const {userAuthed, setUserAuthed} = useContext(GlobalContext);
+    const {userAuthedDetails, setUserAuthedDetails} = useContext(GlobalContext);
 
 
     /* Set the role id based on the role str */
@@ -97,8 +97,8 @@ const AuthApp = () => {
                     localStorage.setItem('token', userData.token);
                     //localStorage.setItem('role', getRole(userData.token));
                     alert('User logged in successfully');
+                    setUserAuthedDetails(userData.patient) // to have the data in other components
                     /* Note: Here you don't take the user as a response, you only get the token. */
-                    console.log(userData)
                     roleNavigator(userData.roleName);
                 } else {
                     console.log(error.message)
@@ -130,6 +130,8 @@ const AuthApp = () => {
                 localStorage.setItem('token', userData.token);
                 //localStorage.setItem('role', getRole(userData.token));
 
+                setUserAuthedDetails(userData.patient) // to have the data in other components
+                //
                 alert('User registered successfully');
                 roleNavigator(userData.users.role_str);
             } catch (error) {

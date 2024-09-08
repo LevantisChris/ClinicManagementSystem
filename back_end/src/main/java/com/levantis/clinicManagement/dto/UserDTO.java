@@ -2,6 +2,8 @@ package com.levantis.clinicManagement.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.levantis.clinicManagement.entity.Doctor;
+import com.levantis.clinicManagement.entity.Patient;
 import com.levantis.clinicManagement.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,4 +41,5 @@ public class UserDTO {
     //
     private User users;
     private List<User> userList;
+    private Patient patient;
 }

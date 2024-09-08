@@ -32,7 +32,7 @@ export default function InsertModal() {
 
   /* The working hours that are already defined (if there are any, might be null) */
   const [workingHours, setWorkingHours] = useState([]);
-  /* Thea appointments for the logged in doctor, for the day he/she select */
+  /* Thea appointments for the logged in doctor, for the day he/she selects */
   const [appointments, setAppointments] = useState([]);
 
   const [loading, setLoading] = useState(false)
@@ -183,15 +183,11 @@ export default function InsertModal() {
   };
 
   function handleHourClick(hourClicked) {
-    console.log("The user click the hour: ", hourClicked)
     /* Now we have to check whether the hour he clicks in is about an appointment */
     const appoint = checkDateSimilarity_APP(hourClicked);
     if(appoint) {
-      console.log("YESS IS INSIDE: ", appoint)
       setAppointClicked(appoint)
       setShowDescriptionInsertModal(true)
-    } else {
-      console.log("NO IS NOT INSIDE ANYTHING")
     }
   }
 

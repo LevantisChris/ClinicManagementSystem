@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -78,6 +79,8 @@ public class UserManagementService {
             registerRoleUser(user, registrationRequest);
 
             if(userResult.getUser_id() > 0) {
+                if(Objects.equals(user.getRole().getRole_description(), "USER_PATIENT"))
+                    resp.setPatient(user.getPatient());
                 resp.setUsers(userResult);
                 resp.setMessage("User registered successfully");
                 resp.setStatusCode(200);
@@ -138,7 +141,9 @@ public class UserManagementService {
 
             resp.setRoleId(user.getRole().getRole_id());
             resp.setRoleName(user.getRole().getRole_description());
-
+            resp.setUsers(user);
+            if(Objects.equals(user.getRole().getRole_description(), "USER_PATIENT"))
+                resp.setPatient(user.getPatient());
             resp.setRefreshToken(refreshToken);
             resp.setExpirationTime("24Hrs");
             resp.setMessage("User logged in successfully");
