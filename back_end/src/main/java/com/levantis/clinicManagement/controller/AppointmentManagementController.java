@@ -30,7 +30,7 @@ public class AppointmentManagementController {
 
     @GetMapping("/appoint/get-wh")
     public ResponseEntity<List<WorkingHoursDTO>> getWorkingHours() {
-        return ResponseEntity.ok(appointmentManagementService.getWorkingHoursOfADoctor());
+        return ResponseEntity.ok(appointmentManagementService.getWorkingHours());
     }
 
     @DeleteMapping("/appoint/delete-wh")

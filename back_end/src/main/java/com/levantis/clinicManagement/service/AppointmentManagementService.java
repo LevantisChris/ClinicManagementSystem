@@ -91,7 +91,7 @@ public class AppointmentManagementService {
         return resp;
     }
 
-    public List<WorkingHoursDTO> getWorkingHoursOfADoctor() {
+    public List<WorkingHoursDTO> getWorkingHours() {
         WorkingHoursDTO resp = new WorkingHoursDTO();
         try {
 
@@ -102,33 +102,52 @@ public class AppointmentManagementService {
                 resp.setStatusCode(500);
                 return List.of(resp);
             }
-            User user = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
-                    .orElseThrow(() -> new RuntimeException("User (Doctor) Not found"));
+            if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) {
+                User user = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
+                        .orElseThrow(() -> new RuntimeException("User (Doctor) Not found"));
+                Doctor doctor = user.getDoctor();
+                List<WorkingHours> workingHoursList = workingHoursRepository.findByDoctor(doctor);
+                if (workingHoursList == null || workingHoursList.isEmpty()) {
+                    log.warn("No working hours found for doctorId: " + doctor.getDoctor_id());
+                    resp.setMessage("No working hours found for the specified doctor.");
+                    resp.setStatusCode(404);
+                    return List.of(resp);
+                } else {
+                    log.info("Doctor ID extract: " + doctor.getDoctor_id());
+                    return workingHoursList.stream().map(workingHours -> {
+                        WorkingHoursDTO dto = new WorkingHoursDTO();
+                        //dto.setDoctorId(workingHours.getDoctor().getDoctor_id());
+                        dto.setDoctor(doctor);
+                        dto.setWorkingHoursId(workingHours.getId());
+                        dto.setWorkingHoursDate(workingHours.getDate());
+                        dto.setStartTime(workingHours.getStartTime());
+                        dto.setEndTime(workingHours.getEndTime());
+                        dto.setStatusCode(200);
+                        dto.setMessage("Working hours retrieved successfully.");
+                        return dto;
+                    }).collect(Collectors.toList());
+                }
 
-            Doctor doctor = user.getDoctor();
+            } else if(jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+                List<WorkingHours> WH_LIST = new ArrayList<>();
 
-            List<WorkingHours> workingHoursList = workingHoursRepository.findByDoctor(doctor);
-
-            if (workingHoursList.isEmpty()) {
-                log.warn("No working hours found for doctorId: " + doctor.getDoctor_id());
-                resp.setMessage("No working hours found for the specified doctor.");
-                resp.setStatusCode(404);
-                return List.of(resp);
-            } else {
-                log.info("Doctor ID extract: " + doctor.getDoctor_id());
-                return workingHoursList.stream().map(workingHours -> {
-                    WorkingHoursDTO dto = new WorkingHoursDTO();
-                    dto.setDoctorId(workingHours.getDoctor().getDoctor_id());
-                    dto.setWorkingHoursId(workingHours.getId());
-                    dto.setWorkingHoursDate(workingHours.getDate());
-                    dto.setStartTime(workingHours.getStartTime());
-                    dto.setEndTime(workingHours.getEndTime());
-                    dto.setStatusCode(200);
-                    dto.setMessage("Working hours retrieved successfully.");
-                    return dto;
-                }).collect(Collectors.toList());
+                List<Doctor> doctorList = doctorRepository.findAll();
+                for(Doctor doc : doctorList) {
+                    List<WorkingHours> workingHoursList = workingHoursRepository.findByDoctor(doc);
+                    WH_LIST.addAll(workingHoursList);
+                }
+                if (WH_LIST.isEmpty()) {
+                    resp.setMessage("No working hours found for the specified doctor.");
+                    resp.setStatusCode(404);
+                    return List.of(resp);
+                } else {
+                    log.info("All WH extracted");
+                    resp.setStatusCode(200);
+                    resp.setMessage("All Working hours retrieved successfully.");
+                    resp.setWhList(WH_LIST);
+                    return List.of(resp);
+                }
             }
-
         } catch (Exception e) {
             log.error("Error in getting the working hours: " + e.getMessage());
             e.printStackTrace();
@@ -136,6 +155,7 @@ public class AppointmentManagementService {
             resp.setError(e.getMessage());
             return List.of(resp);
         }
+        return List.of(resp);
     }
 
     /* The user can delete an existing Working Hour statement.

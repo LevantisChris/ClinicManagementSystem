@@ -236,8 +236,9 @@ export default function InsertModal() {
       if(token) {
         try {
           const w_hours = await UserService.getWorkingHoursOfADoctor(token);
+          console.log("TEST: ", w_hours[0].whList)
           if(w_hours[0].statusCode !== 404) {
-            setWorkingHours(w_hours);
+            setWorkingHours(w_hours[0].whList);
             setLoading(false)
           }
         } catch (error) {
@@ -275,7 +276,7 @@ export default function InsertModal() {
     if (workingHours != null) {
       const formattedDate = daySelected.format("YYYY-MM-DD")  // Local date formatting
       for (const workingHour of workingHours) {
-        if (isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime) && formattedDate === workingHour.workingHoursDate) {
+        if (isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime) && formattedDate === workingHour.date) {
           return [workingHour.startTime, workingHour.endTime];
         }
       }
