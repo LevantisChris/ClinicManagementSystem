@@ -432,7 +432,8 @@ public class AppointmentManagementService {
 
     /* Here a user can request an appointment given the ID of that.
     *  In case the request comes from a Patient the request must be verified,
-    *  to see if the appointment belongs to him. Doctor and Secretary can see everything.
+    *  to see if the appointment belongs to him. In the doctor's return, only the ones belong to him
+    *  In the secretary's return everything.
     *  We can take the role from the token.*/
     public AppointmentDTO displayAppointmentById(AppointmentDTO registrationRequest) {
         AppointmentDTO resp = new AppointmentDTO();
@@ -489,6 +490,7 @@ public class AppointmentManagementService {
                     resp.setStatusCode(500);
                 }
             } else if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) { // the role is doctor, return if it belongs to him/her
+                log.info("IN THE DOCTOR");
                 if(Objects.equals(appointment.getAppointmentDoctor().getUser().getEmail()
                         , jwtUtils.extractUsername(jwtToken))) {
                     /* Info about the appointment */
@@ -523,6 +525,29 @@ public class AppointmentManagementService {
                             +  " the role is: " + jwtUtils.extractRole(jwtToken) + ".");
                     resp.setStatusCode(500);
                 }
+            } else if(jwtUtils.extractRole(jwtToken).equals("USER_SECRETARY")) {
+                log.info("IN THE SECRETARY");
+                /* The secretary can see everything */
+                resp.setAppointmentId(appointment.getAppointmentId());
+                resp.setAppointmentDate(appointment.getAppointmentDate());
+                resp.setAppointmentStartTime(appointment.getAppointmentStartTime());
+                resp.setAppointmentEndTime(appointment.getAppointmentEndTime());
+                resp.setAppointmentJustification(appointment.getAppointmentJustification());
+                resp.setAppointmentStateId(appointment.getAppointmentState().getAppointmentStateId());
+                resp.setMessage("Appointment successfully found.");
+
+                /* Include also the doctor information */
+                resp.setAppointmentDoctorId(appointment.getAppointmentDoctor().getDoctor_id());
+                resp.setAppointmentDoctorName(appointment.getAppointmentDoctor().getUser().getUser_name());
+                resp.setAppointmentDoctorSurname(appointment.getAppointmentDoctor().getUser().getUser_surname());
+                resp.setAppointmentDoctorEmail(appointment.getAppointmentDoctor().getUser().getEmail());
+                resp.setAppointmentDoctorSpeciality(appointment.getAppointmentDoctor().getDoctorSpeciality().getSpecialityDescription());
+
+                /* Include more info about the patient */
+                resp.setAppointmentPatientAMKA(appointment.getAppointmentPatient().getPatient_AMKA());
+                resp.setAppointmentPatient(appointment.getAppointmentPatient()); // add the patient object
+
+                resp.setStatusCode(200);
             }
         } catch (Exception e) {
             log.error("Error in displaying appointment: {}", e.getMessage());

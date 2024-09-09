@@ -5,7 +5,6 @@ import logo from '../../../assets/health.png';
 import user_32IMG from '../../../assets/icons8-user-50.png';
 import GlobalContext from "../../../context/GlobalContext";
 import dayjs from "dayjs";
-import ActiveHoursModal from "./ActiveHoursModal";
 import UserService from "../../../services/UserService";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 export default function CalendarHeader() {
     const {monthIndex,
         setMonthIndex,
-        showActiveHoursModal,
         setShowActiveHoursModal,
         showSearchAppointments,
         showRegisterPatient,
@@ -47,16 +45,6 @@ export default function CalendarHeader() {
 
     function toggleMenu() {
         setMenuOpen(!menuOpen);
-    }
-
-    /* If the Modal for active hours is not alrady shown then set showActiveHoursModal to true. */
-    function showActiveHoursModalHandler() {
-        setMenuOpen(false)
-        setShowActiveHoursModal(true);
-    }
-
-    function closeActiveHoursModal() {
-        setShowActiveHoursModal(false);
     }
 
     /* The date object starts from 0 */
@@ -161,10 +149,6 @@ export default function CalendarHeader() {
                         </div>
                         {menuOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1">
-                                <a className="block px-4 cursor-default py-2 text-gray-800 hover:bg-green-200 rounded"
-                                   onClick={showActiveHoursModalHandler}>
-                                    {viewEnglish ? "Active hours" : "Ενεργές ώρες"}
-                                </a>
                                 <a
                                     className="block px-4 cursor-default py-2 text-gray-800 hover:bg-gray-200"
                                     onClick={() => changeLanguage()}
@@ -186,7 +170,7 @@ export default function CalendarHeader() {
                     </div>
                 </div>
             </header>
-            {showActiveHoursModal && <ActiveHoursModal onClose={closeActiveHoursModal}/>}
+            {/*{showActiveHoursModal && <ActiveHoursModal onClose={closeActiveHoursModal}/>}*/}
     </>
     );
 }

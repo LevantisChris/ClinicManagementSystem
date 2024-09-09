@@ -140,8 +140,8 @@ export default function SearchAppointments() {
 
     async function handleViewAppointment(appointmentId) {
         const response = await UserService.displayAppointmentBasedOnId(appointmentId)
+        console.log(response)
         if (response.statusCode === 200) {
-            console.log(response)
             setAppointmentToView(response)
             setViewDisplayAppointmentComponent(true)
             //setLoading(false)
