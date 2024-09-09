@@ -288,7 +288,8 @@ export default function DisplayInfoPatient({patient}) {
                                     <div>
                                         <button
                                             className="bg-blue-400 p-3 sm:p-4 text-black-400 hover:bg-blue-600 rounded-xl transition duration-500 ease-in-out"
-                                            onClick={handleUpdateButtonClicked}>
+                                            onClick={handleUpdateButtonClicked}
+                                        >
                                             {viewEnglish ? "Update patient" : "Ενημέρωση ασθενούς"}
                                         </button>
                                     </div>

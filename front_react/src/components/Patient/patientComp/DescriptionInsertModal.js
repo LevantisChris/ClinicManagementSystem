@@ -1,13 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import GlobalContext from "../../../context/GlobalContext";
 import {animate , motion} from 'framer-motion'
 import UserService from "../../../services/UserService";
-import {data} from "autoprefixer";
 import LoadingApp from "../../../Loading/LoadingApp";
 import SuccessApp from "../../Success/SuccessApp";
 import ErrorApp from "../../Error/ErrorApp";
-import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
-import {ChevronDownIcon} from "@heroicons/react/16/solid";
 /*-*/
 
 export default function DescriptionInsertModal({appointmentClicked, doctorAppointmentClicked}) {

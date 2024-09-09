@@ -48,6 +48,9 @@ const GlobalContext = React.createContext({
     patientHistoryToSee: null,
     setPatientHistoryToSee: () => {},
 
+    showMyInfoModal: false,
+    setShowMyInfoModal: () => {},
+
     viewEnglish: true,
     setViewEnglish: () => {},
 

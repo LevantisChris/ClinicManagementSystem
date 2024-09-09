@@ -70,7 +70,6 @@ function PatientApp() {
             }
         };
         fetchUserData()
-        console.log(currentMonth)
     }, [monthIndex])
 
     /* We need to fetch the appointments for the current month (the user is viewing).
