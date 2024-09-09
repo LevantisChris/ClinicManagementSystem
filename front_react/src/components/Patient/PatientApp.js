@@ -43,7 +43,8 @@ function PatientApp() {
         showDisplayAllHistory,
         setShowDisplayAllHistory,
         showRegisterPatientHistoryMassively,
-        setShowRegisterPatientHistoryMassively
+        setShowRegisterPatientHistoryMassively,
+        setUserAuthedDetails
     } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -60,6 +61,7 @@ function PatientApp() {
                         surname: userData.users.user_surname,
                         role: userData.users.role_str,
                     });
+                    setUserAuthedDetails(userData.patient)
                 } catch (error) {
                     console.error('Failed to fetch user data:', error);
                 }

@@ -43,8 +43,6 @@ public class UserManagementController {
     public ResponseEntity<UserDTO> getUserDetails(@RequestHeader("Authorization") String token) {
         String jwtToken = token.substring(7);
         String username = jwtUtils.extractUsername(jwtToken);
-        System.out.println("TESTTT --> " + username);
-
         if (username != null) {
             return ResponseEntity.ok(userManagementService.getMyInfo(username));
         }

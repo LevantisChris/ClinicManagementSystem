@@ -293,6 +293,9 @@ public class UserManagementService {
             Optional<User> userOptional = userRepository.findByEmail(email);
             if (userOptional.isPresent()) {
                 UserDTO.setUsers(userOptional.get());
+                if(userOptional.get().getRole_str().equals("USER_PATIENT")) {
+                    UserDTO.setPatient(userOptional.get().getPatient());
+                }
                 UserDTO.setStatusCode(200);
                 UserDTO.setMessage("successful");
             } else {

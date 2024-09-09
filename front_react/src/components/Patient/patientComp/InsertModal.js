@@ -35,6 +35,7 @@ export default function InsertModal() {
 
   /* The working hours that are already defined (if there are any, might be null) */
   const [workingHours, setWorkingHours] = useState([]);
+  const [doctroWorkingHours, setDoctorWorkingHours] = useState([]);
   /* Thea appointments for the logged in doctor, for the day he/she selects */
   const [appointments, setAppointments] = useState([]);
 
@@ -43,6 +44,8 @@ export default function InsertModal() {
   const [appointClicked, setAppointClicked] = useState(null)
 
   const [availableDoctors, setAvailableDoctors] = useState([]);
+  const [whDoctorView, setWhDoctorView]
+      = useState([null, null]);
 
   const am_str = "AM";
   const pm_str =  "PM";
@@ -236,7 +239,6 @@ export default function InsertModal() {
     const doctorList = []; // The list of unique doctors
     for (const wh of whList) {
       const doctorId = wh.doctor.user.user_idNumber;
-      console.log("GIA: ", doctorId)
       // Check if the doctor is not already in the set
       if (!availableDoctors_temp.has(doctorId)) {
         availableDoctors_temp.add(doctorId);
@@ -245,8 +247,6 @@ export default function InsertModal() {
     }
     setAvailableDoctors(doctorList) // Return the list of unique doctors
   }
-
-
 
 
   React.useEffect(() => {
@@ -296,7 +296,7 @@ export default function InsertModal() {
   function checkDateSimilarity_WH(calendarDate, calendarTime) {
     if (workingHours != null) {
       const formattedDate = daySelected.format("YYYY-MM-DD")  // Local date formatting
-      for (const workingHour of workingHours) {
+      for (const workingHour of doctroWorkingHours) {
         if (isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime) && formattedDate === workingHour.date) {
           return [workingHour.startTime, workingHour.endTime];
         }
@@ -330,6 +330,21 @@ export default function InsertModal() {
     const time2Date = new Date(`${baseDate}T${time2}`);
     // Check if time is greater than or equal to time1 and less than or equal to time2
     return timeDate >= time1Date && timeDate <= time2Date;
+  }
+
+  function updateWHView(param) {
+    const tempList = [];
+    for(const wh of workingHours) {
+        if(param[0] === wh.doctor.user.user_name && param[1] === wh.doctor.user.user_surname) {
+          tempList.push(wh)
+        }
+    }
+    setDoctorWorkingHours(tempList)
+  }
+
+  function setDoctorWH(doctorName, doctorSurname) {
+    setWhDoctorView([doctorName, doctorSurname])
+    updateWHView([doctorName, doctorSurname])
   }
 
   return (
@@ -376,7 +391,7 @@ export default function InsertModal() {
                     <div>
                       <MenuButton
                           className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                        {viewEnglish ? "Select Doctor" : "Επιλέξτε Γιατρό"}
+                        {(viewEnglish ? "Select Doctor" : "Επιλέξτε Γιατρό")}
                         <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400"/>
                       </MenuButton>
                     </div>
@@ -386,12 +401,17 @@ export default function InsertModal() {
                     >
                       <div className="py-1">
                         {availableDoctors.length !== 0 ? availableDoctors.map((doctor, index) => (
-                            <MenuItem key={index}>
+                            <MenuItem key={doctor.user.user_name + " " + doctor.user.user_surname}>
                               <a
-                                  href="#"
                                   className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                                  onClick={() => setDoctorWH(doctor.user.user_name, doctor.user.user_surname)}
                               >
                                 {doctor.user.user_name}{" "}{doctor.user.user_surname}
+                                { whDoctorView[0] === doctor.user.user_name && whDoctorView[1] === doctor.user.user_surname ?
+                                    <span className="material-icons-outlined text-gray-400">
+                                      check
+                                    </span> : ""
+                                }
                               </a>
                             </MenuItem>
                         )) : ""}
