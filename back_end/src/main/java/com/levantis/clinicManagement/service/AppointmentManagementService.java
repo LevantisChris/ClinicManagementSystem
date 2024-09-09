@@ -13,6 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -128,7 +129,7 @@ public class AppointmentManagementService {
                     }).collect(Collectors.toList());
                 }
 
-            } else if(jwtUtils.extractRole(jwtToken).equals("USER_PATIENT")) {
+            } else if(jwtUtils.extractRole(jwtToken).equals("USER_PATIENT") || jwtUtils.extractRole(jwtToken).equals("USER_SECRETARY")) {
                 List<WorkingHours> WH_LIST = new ArrayList<>();
 
                 List<Doctor> doctorList = doctorRepository.findAll();
@@ -156,6 +157,11 @@ public class AppointmentManagementService {
             return List.of(resp);
         }
         return List.of(resp);
+    }
+
+    public static boolean isAppointmentWithinWorkingHours(LocalTime appointmentStart, LocalTime appointmentEnd, LocalTime whStart, LocalTime whEnd) {
+        return (appointmentStart.equals(whStart) || appointmentStart.isAfter(whStart))
+                && (appointmentEnd.equals(whEnd) || appointmentEnd.isBefore(whEnd));
     }
 
     /* The user can delete an existing Working Hour statement.
@@ -829,7 +835,7 @@ public class AppointmentManagementService {
                 return null;
             }
 
-            if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR") || jwtUtils.extractRole(jwtToken).equals("USER_SECRETARY")) {
+            if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) {
                 Patient patient = patientRepository.findById(request.getAppointmentPatient().getPatient_id())
                         .orElseThrow(() -> new RuntimeException("Patient with ID: " + request.getAppointmentPatient().getPatient_id() + " cannot be found."));
                 List<Appointment> patientAppointments = appointmentRepository.findByPatientAMKA(patient.getPatient_AMKA());
@@ -851,6 +857,36 @@ public class AppointmentManagementService {
                                 : "No appointments found for user (patient) " + user.getEmail());
                 resp.setStatusCode(200);
                 resp.setAppointmentList(patientAppointments.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
+            }
+        } catch (Exception e) {
+            log.error("Error searching appointments: {}", e.getMessage());
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
+    /* Nothing will be included in the request, the only thing will be the token, because only a secretary can request this function */
+    public AppointmentDTO getAllAppointments() {
+        AppointmentDTO resp = new AppointmentDTO();
+        try {
+            String jwtToken = getToken();
+            if (jwtToken == null) {
+                log.error("Empty/null token");
+                resp.setMessage("Empty/null token.");
+                resp.setStatusCode(500);
+                return null;
+            }
+            if(jwtUtils.extractRole(jwtToken).equals("USER_SECRETARY")) {
+                List<Appointment> patientAppointments = appointmentRepository.findAll();
+                resp.setMessage("All appointments retrieved successfully for user with role: " + jwtUtils.extractRole(jwtToken) + " and email: " + jwtUtils.extractUsername(jwtToken));
+                resp.setStatusCode(200);
+                resp.setAppointmentList(patientAppointments.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
+            } else {
+                log.error("Not a Secretary");
+                resp.setMessage("Not a Secretary.");
+                resp.setStatusCode(404);
+                return resp;
             }
         } catch (Exception e) {
             log.error("Error searching appointments: {}", e.getMessage());

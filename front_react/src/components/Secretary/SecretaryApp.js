@@ -13,10 +13,6 @@ import LoadingApp from "../../Loading/LoadingApp";
 import RegisterPatient from "./secretaryComp/RegisterPatient";
 import SearchPatients from "./secretaryComp/SearchPatients";
 import RegisterPatientsMassively from "./secretaryComp/RegisterPatientsMassively";
-import CreateHistoryReg from "./secretaryComp/CreateHistoryReg";
-import ConfigureHistoryReg from "./secretaryComp/ConfigureHistoryReg";
-import {DisplayAllHistory} from "./secretaryComp/DisplayAllHistory";
-import CreatePatientsHistoryMassively from "./secretaryComp/CreatePatientsHistoryMassively";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());

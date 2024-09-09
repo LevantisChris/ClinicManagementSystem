@@ -93,13 +93,18 @@ public class AppointmentManagementController {
     /* Get the appointments of a user (Doctor or Secretary and Patient)
     *  For the patient we use the token, for the other two the request (patient ID) */
     @GetMapping("/appoint/getPatientAppointments")
-    public ResponseEntity<AppointmentDTO> getAllAppointments(@RequestParam Integer patientId) {
+    public ResponseEntity<AppointmentDTO> getPatientAppointments(@RequestParam Integer patientId) {
         Patient patient = new Patient();
         patient.setPatient_id(patientId);
         //
         AppointmentDTO appointmentDTO = new AppointmentDTO();
         appointmentDTO.setAppointmentPatient(patient);
         return ResponseEntity.ok(appointmentManagementService.getPatientAppointments(appointmentDTO));
+    }
+
+    @GetMapping("/appoint/getAllAppointments")
+    public ResponseEntity<AppointmentDTO> getAllAppointments() {
+        return ResponseEntity.ok(appointmentManagementService.getAllAppointments());
     }
     /*------------------------------------------------------------------------------------------------------------------*/
 

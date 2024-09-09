@@ -6,6 +6,8 @@ import UserService from "../../../services/UserService";
 import LoadingApp from "../../../Loading/LoadingApp";
 import SuccessApp from "../../Success/SuccessApp";
 import ErrorApp from "../../Error/ErrorApp";
+import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
+import {ChevronDownIcon} from "@heroicons/react/16/solid";
 
 /* The modal that helps the user pick time slots */
 
@@ -22,7 +24,8 @@ export default function InsertModal() {
     successMessage,
     setSuccessMessage,
     errorMessage,
-    setErrorMessage
+    setErrorMessage,
+    viewEnglish
   } = useContext(GlobalContext);
 
   const [isDragging, setIsDragging] = useState(false);
@@ -32,12 +35,17 @@ export default function InsertModal() {
 
   /* The working hours that are already defined (if there are any, might be null) */
   const [workingHours, setWorkingHours] = useState([]);
-  /* Thea appointments for the logged in doctor, for the day he/she select */
+  const [doctroWorkingHours, setDoctorWorkingHours] = useState([]);
+  /* Thea appointments for the logged in doctor, for the day he/she selects */
   const [appointments, setAppointments] = useState([]);
 
   const [loading, setLoading] = useState(false)
 
   const [appointClicked, setAppointClicked] = useState(null)
+
+  const [availableDoctors, setAvailableDoctors] = useState([]);
+  const [whDoctorView, setWhDoctorView]
+      = useState([null, null, null]); // name, surname, email
 
   const am_str = "AM";
   const pm_str =  "PM";
@@ -229,6 +237,21 @@ export default function InsertModal() {
     setHours(generatedHours);
   }, []);
 
+  /* Get available doctors from the WH */
+  function getAvailableDoctors(whList) {
+    const availableDoctors_temp = new Set(); // A set to store doctor user_idNumbers
+    const doctorList = []; // The list of unique doctors
+    for (const wh of whList) {
+      const doctorId = wh.doctor.user.user_idNumber;
+      // Check if the doctor is not already in the set
+      if (!availableDoctors_temp.has(doctorId)) {
+        availableDoctors_temp.add(doctorId);
+        doctorList.push(wh.doctor);
+      }
+    }
+    setAvailableDoctors(doctorList) // Return the list of unique doctors
+  }
+
   React.useEffect(() => {
     const loadWorkingHours = async () => {
       //setLoading(true)
@@ -237,7 +260,9 @@ export default function InsertModal() {
         try {
           const w_hours = await UserService.getWorkingHoursOfADoctor(token);
           if(w_hours[0].statusCode !== 404) {
-            setWorkingHours(w_hours);
+            setWorkingHours(w_hours[0].whList);
+            /* Now based on the wh retrieved get available doctors */
+            getAvailableDoctors(w_hours[0].whList);
             setLoading(false)
           }
         } catch (error) {
@@ -251,12 +276,9 @@ export default function InsertModal() {
 
   React.useEffect(() => {
     const loadAppointments = async () => {
-      const params = {
-        appointmentDate: daySelected.format("YYYY-MM-DD")
-      };
       try {
         //setLoading(true); // Set loading to true when starting to fetch data
-        const appointments = await UserService.getAllForADayAppointments(params);
+        const appointments = await UserService.getSecretaryAppointments();
         if (appointments && appointments.statusCode !== 404) {
           setAppointments(appointments.appointmentList);
         }
@@ -274,8 +296,8 @@ export default function InsertModal() {
   function checkDateSimilarity_WH(calendarDate, calendarTime) {
     if (workingHours != null) {
       const formattedDate = daySelected.format("YYYY-MM-DD")  // Local date formatting
-      for (const workingHour of workingHours) {
-        if (isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime) && formattedDate === workingHour.workingHoursDate) {
+      for (const workingHour of doctroWorkingHours) {
+        if (isTimeInRange(calendarTime, workingHour.startTime, workingHour.endTime) && formattedDate === workingHour.date) {
           return [workingHour.startTime, workingHour.endTime];
         }
       }
@@ -308,6 +330,21 @@ export default function InsertModal() {
     const time2Date = new Date(`${baseDate}T${time2}`);
     // Check if time is greater than or equal to time1 and less than or equal to time2
     return timeDate >= time1Date && timeDate <= time2Date;
+  }
+
+  function updateWHView(param) {
+    const tempList = [];
+    for(const wh of workingHours) {
+      if(param[0] === wh.doctor.user.user_name && param[1] === wh.doctor.user.user_surname) {
+        tempList.push(wh)
+      }
+    }
+    setDoctorWorkingHours(tempList)
+  }
+
+  function setDoctorWH(doctorName, doctorSurname, doctorEmail) {
+    setWhDoctorView([doctorName, doctorSurname, doctorEmail])
+    updateWHView([doctorName, doctorSurname])
   }
 
   return (
@@ -348,6 +385,42 @@ export default function InsertModal() {
                 <div
                     className={`grid grid-cols-1 gap-4 bg-white ${showDescriptionInsertModal ? "w-full sm:w-3/6" : ""}`}
                 >
+
+
+                  <Menu as="div" className="relative inline-block text-left">
+                    <div>
+                      <MenuButton
+                          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                        {(viewEnglish ? "Select Doctor" : "Επιλέξτε Γιατρό")}
+                        <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400"/>
+                      </MenuButton>
+                    </div>
+                    <MenuItems
+                        transition
+                        className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                    >
+                      <div className="py-1">
+                        {availableDoctors.length !== 0 ? availableDoctors.map((doctor, index) => (
+                            <MenuItem key={doctor.user.user_name + " " + doctor.user.user_surname}>
+                              <a
+                                  className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                                  onClick={() => setDoctorWH(doctor.user.user_name, doctor.user.user_surname, doctor.user.email)}
+                              >
+                                {doctor.user.user_name}{" "}{doctor.user.user_surname}
+                                { whDoctorView[0] === doctor.user.user_name && whDoctorView[1] === doctor.user.user_surname ?
+                                    <span className="material-icons-outlined text-gray-400">
+                                      check
+                                    </span> : ""
+                                }
+                              </a>
+                            </MenuItem>
+                        )) : ""}
+                      </div>
+                    </MenuItems>
+                  </Menu>
+
+
+
                   <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -418,9 +491,9 @@ export default function InsertModal() {
                                                 ${
                                   checkDateSimilarity_APP((hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00")
                                       ? "bg-amber-300" :
-                                      checkDateSimilarity_WH(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00") 
+                                      checkDateSimilarity_WH(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":15" + ":00")
                                           ? ((draggedId === "15-" + hour.id && isDragging) ||
-                                              selectedOptions.includes(`${hour.id}:15`)
+                                          selectedOptions.includes(`${hour.id}:15`)
                                               ? "bg-blue-200 transition duration-300 ease-in-outs"
                                               : "NOT")
                                           : "bg-slate-300"
@@ -447,11 +520,11 @@ export default function InsertModal() {
                                                         ${
                                   checkDateSimilarity_APP((hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00")
                                       ? "bg-amber-300" :
-                                      checkDateSimilarity_WH(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00") 
-                                      ? ((draggedId === "30-" + hour.id && isDragging) ||
-                                            selectedOptions.includes(`${hour.id}:30`)
-                                            ? "bg-blue-200"
-                                            : "NOT")
+                                      checkDateSimilarity_WH(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":30" + ":00")
+                                          ? ((draggedId === "30-" + hour.id && isDragging) ||
+                                          selectedOptions.includes(`${hour.id}:30`)
+                                              ? "bg-blue-200"
+                                              : "NOT")
                                           : "bg-slate-300"
                               }`
                               }
@@ -476,12 +549,12 @@ export default function InsertModal() {
                                                         ${
                                   checkDateSimilarity_APP((hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00")
                                       ? "bg-amber-300" :
-                                      checkDateSimilarity_WH(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00") 
+                                      checkDateSimilarity_WH(daySelected.toISOString().split('T')[0], (hour.id >= 0 && hour.id <= 10 ? "0" + hour.id : hour.id) + ":45" + ":00")
                                           ? ((draggedId === "45-" + hour.id && isDragging) ||
-                                              selectedOptions.includes(`${hour.id}:45`)
+                                          selectedOptions.includes(`${hour.id}:45`)
                                               ? "bg-blue-200 transition duration-00 ease-in-outs"
                                               : "NOT")
-                                      : "bg-slate-300"
+                                          : "bg-slate-300"
                               }`
                               }
                               onMouseDown={(e) => handleMouseDown(e, hour.id, 45)}
@@ -498,11 +571,11 @@ export default function InsertModal() {
                             {hour.hour}:45
                           </div>
                         </React.Fragment>
-                      ))
+                    ))
                     }
                   </motion.div>
                 </div>
-                {showDescriptionInsertModal && <DescriptionInsertModal appointmentClicked={appointClicked} />}
+                {showDescriptionInsertModal && <DescriptionInsertModal appointmentClicked={appointClicked} doctorAppointmentClicked={whDoctorView}/>}
               </div>
             </form>
         )}

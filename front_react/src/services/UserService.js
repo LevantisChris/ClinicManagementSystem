@@ -461,6 +461,22 @@ class UserService {
         }
     }
 
+    /* Only the secretary can get all the appointments */
+    static async getSecretaryAppointments() {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/appoint/getAllAppointments`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return err.response ? err.response.data : err;
+        }
+    }
+
 
 
     /* Check if its log in, role etc */
