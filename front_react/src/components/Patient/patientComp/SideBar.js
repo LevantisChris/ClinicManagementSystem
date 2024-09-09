@@ -170,7 +170,7 @@ export default function SideBar() {
                                             history
                                         </span>
                                         <span className="ml-2">
-                                            {viewEnglish ? "Manage Patient History": "Διαχείριση Ιστορικού Ασθενούς"}
+                                            {viewEnglish ? "My Patient History": "Προβολή του Ιστορικού μου"}
                                         </span>
                                     </div>
                                 </a>
@@ -183,58 +183,13 @@ export default function SideBar() {
                                                 </span>
                                             <a
                                                 className={
-                                                    !showCreateHistoryReg
-                                                        ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
-                                                        : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
-                                                }
-                                                onClick={() => (showCreateHistoryReg === false ? setShowCreateHistoryReg(true) : setShowCreateHistoryReg(false))}
-                                            >
-                                                {viewEnglish ? "Create history registration" : "Δημιουργία εγγραφής ιστορικού"}
-                                            </a>
-                                        </div>
-                                        <div className={"flex items-center ml-5"}>
-                                                <span className="material-icons-outlined text-sm">
-                                                    arrow_forward_ios
-                                                </span>
-                                            <a
-                                                className={
-                                                    !showRegisterPatientHistoryMassively
-                                                        ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
-                                                        : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
-                                                }
-                                                onClick={() => (showRegisterPatientHistoryMassively === false ? setShowRegisterPatientHistoryMassively(true) : setShowRegisterPatientHistoryMassively(false))}
-                                            >
-                                                {viewEnglish ? "Create history registrations massively" : "Δημιουργία εγγραφής ιστορικού μαζικά"}
-                                            </a>
-                                        </div>
-                                        <div className={"flex items-center ml-5"}>
-                                                <span className="material-icons-outlined text-sm">
-                                                    arrow_forward_ios
-                                                </span>
-                                            <a
-                                                className={
-                                                    !showConfigureHistoryReg
-                                                        ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
-                                                        : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
-                                                }
-                                                onClick={() => (showConfigureHistoryReg === false ? setShowConfigureHistoryReg(true) : setShowConfigureHistoryReg(false))}
-                                            >
-                                                {viewEnglish ? "Configure last patient registration" : "Επεξεργασία τελευταίας εγγραφής ασθενούς"}
-                                            </a>
-                                        </div>
-                                        <div className={"flex items-center ml-5"}>
-                                                <span className="material-icons-outlined text-sm">
-                                                    arrow_forward_ios
-                                                </span>
-                                            <a
-                                                className={
                                                     !showDisplayAllHistory
                                                         ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
                                                         : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
                                                 }
                                                 onClick={() => (showDisplayAllHistory === false ? setShowDisplayAllHistory(true) : setShowDisplayAllHistory(false))}
                                             >
-                                                {viewEnglish ? "Display & Search patient history" : "Προβολή & Αναζήτηση ιστορικό ασθενούς"}
+                                                {viewEnglish ? "Display & Search my history" : "Προβολή & Αναζήτηση του ιστορικό μου"}
                                             </a>
                                         </div>
                                     </div>
