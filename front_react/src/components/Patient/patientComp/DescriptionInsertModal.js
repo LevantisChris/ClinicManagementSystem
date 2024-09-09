@@ -351,13 +351,7 @@ export default function DescriptionInsertModal({appointmentClicked, doctorAppoin
 
                 {
                   appointmentClicked ?
-                      <button
-                          type="button"
-                          onClick={handleClickUpdate}
-                          className="bg-purple-500 w-2/4 hover:bg-blue-600 px-6 py-2 transition duration-500 ease-in-outs rounded text-white"
-                      >
-                        {viewEnglish ? "Update state" : "Ενημέρωση κατάστασης"}
-                      </button>
+                      ""
                       :
                       <button
                           type="button"
