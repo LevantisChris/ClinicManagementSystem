@@ -68,7 +68,7 @@ export default function SideBar() {
                                         <span className="material-icons-outlined">
                                             handshake
                                         </span>
-                                        <span className="ml-2">{viewEnglish ? "Manage Appointments" : "Διαχείριση ραντεβού"}</span>
+                                        <span className="ml-2">{viewEnglish ? "Manage My Appointments" : "Διαχείριση των ραντεβού μου"}</span>
                                     </div>
                                 </a>
 
@@ -86,78 +86,78 @@ export default function SideBar() {
                                                 }
 
                                                 onClick={() => (showSearchAppointments === false ? setShowSearchAppointments(true) : setShowSearchAppointments(false))}>
-                                                {viewEnglish ? "Search & View Appointments" : "Αναζήτηση & Προβολή Ραντεβού"}
+                                                {viewEnglish ? "Search & View my Appointments" : "Αναζήτηση & Προβολή των Ραντεβου μου"}
                                             </a>
                                         </div>
                                     </div>
                                 )}
                             </div>
-                            <div>
-                                <a
-                                    href="#"
-                                    onClick={() => handleCategoryClick('about')}
-                                    className="m-1 bg-gray-200 block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-400 hover:text-white"
-                                >
-                                    <div className="flex items-center">
-                                        <span className="material-icons-outlined">
-                                            personal_injury
-                                        </span>
-                                        <span className="ml-2">
-                                            {viewEnglish ? "Manage Patients" : "Διαχείριση Ασθενών"}
-                                        </span>
-                                    </div>
-                                </a>
-
-                                {activeCategory === 'about' && (
-                                    <div className="ml-4">
-                                        <div className={"flex items-center ml-5"}>
-                                                <span className="material-icons-outlined text-sm">
-                                                    arrow_forward_ios
-                                                </span>
-                                            <a
-                                                className={
-                                                    !showRegisterPatient
-                                                        ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
-                                                        : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
-                                                }
-                                                onClick={() => (showRegisterPatient === false ? setShowRegisterPatient(true) : setShowRegisterPatient(false))}
-                                            >
-                                                {viewEnglish ? "Register patients" : "Εισαγωγή ασθενών"}
-                                            </a>
-                                        </div>
-                                        <div className={"flex items-center ml-5"}>
-                                                <span className="material-icons-outlined text-sm">
-                                                    arrow_forward_ios
-                                                </span>
-                                            <a
-                                                className={
-                                                    !showSearchPatients
-                                                        ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
-                                                        : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
-                                                }
-                                                onClick={() => (showSearchPatients === false ? setShowSearchPatients(true) : setShowSearchPatients(false))}
-                                            >
-                                                {viewEnglish ? "Search patients" : "Αναζήτηση ασθενών"}
-                                            </a>
-                                        </div>
-                                        <div className={"flex items-center ml-5"}>
-                                                <span className="material-icons-outlined text-sm">
-                                                    arrow_forward_ios
-                                                </span>
-                                            <a
-                                                className={
-                                                    !showRegisterPatientMassively
-                                                        ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"
-                                                        : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"
-                                                }
-                                                onClick={() => (showRegisterPatientMassively === false ? setShowRegisterPatientMassively(true) : setShowRegisterPatientMassively(false))}
-                                            >
-                                                {viewEnglish ? "Register patients massively" : "Εισαγωγή ασθενών μαζικά"}
-                                            </a>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            {/*<div>*/}
+                            {/*    <a*/}
+                            {/*        href="#"*/}
+                            {/*        onClick={() => handleCategoryClick('about')}*/}
+                            {/*        className="m-1 bg-gray-200 block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-400 hover:text-white"*/}
+                            {/*    >*/}
+                            {/*        <div className="flex items-center">*/}
+                            {/*            <span className="material-icons-outlined">*/}
+                            {/*                personal_injury*/}
+                            {/*            </span>*/}
+                            {/*            <span className="ml-2">*/}
+                            {/*                {viewEnglish ? "Manage Patients" : "Διαχείριση Ασθενών"}*/}
+                            {/*            </span>*/}
+                            {/*        </div>*/}
+                            {/*    </a>*/}
+                            
+                            {/*    {activeCategory === 'about' && (*/}
+                            {/*        <div className="ml-4">*/}
+                            {/*            <div className={"flex items-center ml-5"}>*/}
+                            {/*                    <span className="material-icons-outlined text-sm">*/}
+                            {/*                        arrow_forward_ios*/}
+                            {/*                    </span>*/}
+                            {/*                <a*/}
+                            {/*                    className={*/}
+                            {/*                        !showRegisterPatient*/}
+                            {/*                            ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"*/}
+                            {/*                            : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"*/}
+                            {/*                    }*/}
+                            {/*                    onClick={() => (showRegisterPatient === false ? setShowRegisterPatient(true) : setShowRegisterPatient(false))}*/}
+                            {/*                >*/}
+                            {/*                    {viewEnglish ? "Register patients" : "Εισαγωγή ασθενών"}*/}
+                            {/*                </a>*/}
+                            {/*            </div>*/}
+                            {/*            <div className={"flex items-center ml-5"}>*/}
+                            {/*                    <span className="material-icons-outlined text-sm">*/}
+                            {/*                        arrow_forward_ios*/}
+                            {/*                    </span>*/}
+                            {/*                <a*/}
+                            {/*                    className={*/}
+                            {/*                        !showSearchPatients*/}
+                            {/*                            ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"*/}
+                            {/*                            : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"*/}
+                            {/*                    }*/}
+                            {/*                    onClick={() => (showSearchPatients === false ? setShowSearchPatients(true) : setShowSearchPatients(false))}*/}
+                            {/*                >*/}
+                            {/*                    {viewEnglish ? "Search patients" : "Αναζήτηση ασθενών"}*/}
+                            {/*                </a>*/}
+                            {/*            </div>*/}
+                            {/*            <div className={"flex items-center ml-5"}>*/}
+                            {/*                    <span className="material-icons-outlined text-sm">*/}
+                            {/*                        arrow_forward_ios*/}
+                            {/*                    </span>*/}
+                            {/*                <a*/}
+                            {/*                    className={*/}
+                            {/*                        !showRegisterPatientMassively*/}
+                            {/*                            ? "block py-2.5 px-4 text-sm rounded transition duration-200 hover:bg-blue-300 hover:text-white"*/}
+                            {/*                            : "block py-2.5 px-4 text-sm rounded transition duration-200 bg-blue-400 text-white"*/}
+                            {/*                    }*/}
+                            {/*                    onClick={() => (showRegisterPatientMassively === false ? setShowRegisterPatientMassively(true) : setShowRegisterPatientMassively(false))}*/}
+                            {/*                >*/}
+                            {/*                    {viewEnglish ? "Register patients massively" : "Εισαγωγή ασθενών μαζικά"}*/}
+                            {/*                </a>*/}
+                            {/*            </div>*/}
+                            {/*        </div>*/}
+                            {/*    )}*/}
+                            {/*</div>*/}
                             <div>
 
                                 <a
