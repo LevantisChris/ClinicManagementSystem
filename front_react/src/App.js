@@ -4,6 +4,7 @@ import DoctorApp from "./components/doctor/DoctorApp";
 import AuthApp  from "./components/Auth/AuthApp";
 import './App.css';
 import PatientApp from "./components/Patient/PatientApp";
+import SecretaryApp from "./components/Secretary/SecretaryApp";
 
 const App = () => {
     return (
@@ -24,6 +25,8 @@ const App = () => {
                            element={<DoctorApp/>}/>
                     <Route path={"/patient"}
                            element={<PatientApp/>}/>
+                    <Route path={"/secretary"}
+                           element={<SecretaryApp/>}/>
                     <Route path={"*"}
                            element={<Navigate to="/auth"/>}/>
 
