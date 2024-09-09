@@ -464,6 +464,18 @@ public class AppointmentManagementService {
                     resp.setAppointmentJustification(appointment.getAppointmentJustification());
                     resp.setAppointmentStateId(appointment.getAppointmentState().getAppointmentStateId());
                     resp.setMessage("Appointment successfully found.");
+
+                    /* Include also the doctor information */
+                    resp.setAppointmentDoctorId(appointment.getAppointmentDoctor().getDoctor_id());
+                    resp.setAppointmentDoctorName(appointment.getAppointmentDoctor().getUser().getUser_name());
+                    resp.setAppointmentDoctorSurname(appointment.getAppointmentDoctor().getUser().getUser_surname());
+                    resp.setAppointmentDoctorEmail(appointment.getAppointmentDoctor().getUser().getEmail());
+                    resp.setAppointmentDoctorSpeciality(appointment.getAppointmentDoctor().getDoctorSpeciality().getSpecialityDescription());
+
+                    /* Include more info about the patient */
+                    resp.setAppointmentPatientAMKA(appointment.getAppointmentPatient().getPatient_AMKA());
+                    resp.setAppointmentPatient(appointment.getAppointmentPatient()); // add the patient object
+
                     resp.setStatusCode(200);
                 } else {
                     log.error("Failed to display appointment with id: "
