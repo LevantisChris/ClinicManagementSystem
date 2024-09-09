@@ -198,6 +198,7 @@ public class AppointmentManagementService {
         return resp;
     }
 
+    /* If the user requesting is user patient, we will use the param doctorEmail else the token */
     public AppointmentDTO createAppointment(AppointmentDTO registrationRequest) {
         AppointmentDTO resp = new AppointmentDTO();
 
@@ -217,9 +218,14 @@ public class AppointmentManagementService {
             return resp;
         }
         try {
-
-            User user = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
-                    .orElseThrow(() -> new RuntimeException("User (Doctor) Not found"));
+            User user = null;
+            if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) {
+                user = userRepository.findByEmail(jwtUtils.extractUsername(jwtToken))
+                        .orElseThrow(() -> new RuntimeException("User (Doctor req) Not found"));
+            } else {
+                user = userRepository.findByEmail(registrationRequest.getAppointmentDoctorEmail())
+                        .orElseThrow(() -> new RuntimeException("User (Patient req) Not found"));
+            }
 
             Appointment appointment = new Appointment();
 

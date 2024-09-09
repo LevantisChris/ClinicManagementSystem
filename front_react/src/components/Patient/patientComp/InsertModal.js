@@ -45,7 +45,7 @@ export default function InsertModal() {
 
   const [availableDoctors, setAvailableDoctors] = useState([]);
   const [whDoctorView, setWhDoctorView]
-      = useState([null, null]);
+      = useState([null, null, null]); // name, surname, email
 
   const am_str = "AM";
   const pm_str =  "PM";
@@ -342,8 +342,8 @@ export default function InsertModal() {
     setDoctorWorkingHours(tempList)
   }
 
-  function setDoctorWH(doctorName, doctorSurname) {
-    setWhDoctorView([doctorName, doctorSurname])
+  function setDoctorWH(doctorName, doctorSurname, doctorEmail) {
+    setWhDoctorView([doctorName, doctorSurname, doctorEmail])
     updateWHView([doctorName, doctorSurname])
   }
 
@@ -404,7 +404,7 @@ export default function InsertModal() {
                             <MenuItem key={doctor.user.user_name + " " + doctor.user.user_surname}>
                               <a
                                   className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                                  onClick={() => setDoctorWH(doctor.user.user_name, doctor.user.user_surname)}
+                                  onClick={() => setDoctorWH(doctor.user.user_name, doctor.user.user_surname, doctor.user.email)}
                               >
                                 {doctor.user.user_name}{" "}{doctor.user.user_surname}
                                 { whDoctorView[0] === doctor.user.user_name && whDoctorView[1] === doctor.user.user_surname ?
@@ -575,7 +575,7 @@ export default function InsertModal() {
                     }
                   </motion.div>
                 </div>
-                {showDescriptionInsertModal && <DescriptionInsertModal appointmentClicked={appointClicked} />}
+                {showDescriptionInsertModal && <DescriptionInsertModal appointmentClicked={appointClicked} doctorAppointmentClicked={whDoctorView}/>}
               </div>
             </form>
         )}

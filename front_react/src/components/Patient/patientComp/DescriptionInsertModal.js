@@ -10,7 +10,7 @@ import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
 import {ChevronDownIcon} from "@heroicons/react/16/solid";
 /*-*/
 
-export default function DescriptionInsertModal({appointmentClicked}) {
+export default function DescriptionInsertModal({appointmentClicked, doctorAppointmentClicked}) {
 
   const componentRef = useRef(null);
 
@@ -95,7 +95,8 @@ export default function DescriptionInsertModal({appointmentClicked}) {
         appointmentStartTime: formattedStartTime + ":00",
         appointmentEndTime: formattedEndTime + ":00",
         appointmentJustification: description,
-        appointmentStateId: getStateId()
+        appointmentStateId: getStateId(),
+        appointmentDoctorEmail: doctorAppointmentClicked[2]
       };
         /* Send the request to the backend */
         const response = await UserService.createAppointment(formData)
@@ -304,71 +305,23 @@ export default function DescriptionInsertModal({appointmentClicked}) {
                     value={appointmentClicked ? appointmentClicked.appointmentPatientAMKA : patientAmka}
                     onChange={(e) => setPatientAmka(e.target.value)}
                 />
-                {/*      <span className="text-center material-icons-outlined text-gray-400">*/}
-                {/*  check_circle*/}
-                {/*</span>*/}
-                {/*<Menu as="div" className="relative inline-block text-left">*/}
-                {/*  <div>*/}
-                {/*    <MenuButton*/}
-                {/*        className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">*/}
-                {/*      {viewEnglish ? "Current State" : "Τρέχουσα κατάσταση"}*/}
-                {/*      <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400"/>*/}
-                {/*    </MenuButton>*/}
-                {/*  </div>*/}
-                {/*  <MenuItems*/}
-                {/*      transition*/}
-                {/*      className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"*/}
-                {/*  >*/}
-                {/*    <div className="py-1">*/}
-                {/*      <MenuItem>*/}
-                {/*        <a*/}
-                {/*            href="#"*/}
-                {/*            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"*/}
-                {/*            onClick={() => setStateSelected("Created")}*/}
-                {/*        >*/}
-                {/*          {viewEnglish ? "Created" : "Δημιουργημένο"}*/}
-                {/*          {stateSelected === "Created" ?*/}
-                {/*              <span className="material-icons-outlined text-gray-400">*/}
-                {/*              check*/}
-                {/*            </span> : ""*/}
-                {/*          }*/}
-                {/*        </a>*/}
-                {/*      </MenuItem>*/}
-                {/*      <MenuItem>*/}
-                {/*        <a*/}
-                {/*            href="#"*/}
-                {/*            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"*/}
-                {/*            onClick={() => setStateSelected("Respected")}*/}
-                {/*        >*/}
-                {/*          {viewEnglish ? "Respected" : "Τηρημένο"}*/}
-                {/*          {stateSelected === "Respected" ?*/}
-                {/*              <span className="material-icons-outlined text-gray-400">*/}
-                {/*              check*/}
-                {/*            </span> : ""*/}
-                {/*          }*/}
-                {/*        </a>*/}
-                {/*      </MenuItem>*/}
-                {/*      <MenuItem>*/}
-                {/*        <a*/}
-                {/*            href="#"*/}
-                {/*            className="flex items-center justify-between block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"*/}
-                {/*            onClick={() => setStateSelected("Completed")}*/}
-                {/*        >*/}
-                {/*          {viewEnglish ? "Completed" : "Ολοκληρωμένο"}*/}
-                {/*          {stateSelected === "Completed" ?*/}
-                {/*              <span className="material-icons-outlined text-gray-400">*/}
-                {/*              check*/}
-                {/*            </span> : ""*/}
-                {/*          }*/}
-                {/*        </a>*/}
-                {/*      </MenuItem>*/}
-                {/*    </div>*/}
-                {/*  </MenuItems>*/}
-                {/*</Menu>*/}
 
                 <span className="text-center material-icons-outlined text-gray-400">
-            description
-          </span>
+                  medical_information
+                </span>
+                <input
+                    type="text"
+                    name="doctro_email"
+                    placeholder="Doctor Email"
+                    disabled={true}
+                    className="pt-3 border-0 text-gray-600 pd-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
+                    value={appointmentClicked ? appointmentClicked.appointmentDoctorEmail : doctorAppointmentClicked[2]}
+                    onChange={(e) => setPatientAmka(e.target.value)}
+                />
+
+                <span className="text-center material-icons-outlined text-gray-400">
+                  description
+                </span>
                 <textarea
                     name="description"
                     placeholder={viewEnglish ? "Reason for the appointment" : "Λόγος ραντεβού"}
