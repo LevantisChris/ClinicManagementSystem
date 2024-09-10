@@ -775,6 +775,12 @@ public class AppointmentManagementService {
                     appointments.add(i, temp.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
                 }
                 return appointments;
+            } else if(user.getRole_str().equals("USER_SECRETARY")) { // we get all the appointments, the secretary can see everything
+                for (int i = 0;i < request.size();i++) {
+                    List<Appointment> temp = appointmentRepository.findByAppointmentDate(LocalDate.parse(request.get(i)));
+                    appointments.add(i, temp.stream().map(this::mapToAppointmentDTO).collect(Collectors.toList()));
+                }
+                return appointments;
             }
         } catch (Exception e) {
             log.error("Error searching appointments: {}", e.getMessage());
