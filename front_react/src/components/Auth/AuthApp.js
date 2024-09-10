@@ -128,8 +128,6 @@ const AuthApp = () => {
                         roleId: setUserRoleId()
                     });
                 localStorage.setItem('token', userData.token);
-                //localStorage.setItem('role', getRole(userData.token));
-
                 setUserAuthedDetails(userData.patient) // to have the data in other components
                 //
                 alert('User registered successfully');

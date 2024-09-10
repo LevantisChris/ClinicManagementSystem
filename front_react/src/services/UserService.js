@@ -1,5 +1,16 @@
 import axios from "axios";
 
+async function fetchUserRole(token) {
+    try {
+        const userData = await UserService.getUserDetails(token);
+        // Assuming userData is a user object, not an array of users
+        return userData.users.role_str; // Make sure the path is correct
+    } catch (error) {
+        console.error('Failed to fetch user data:', error);
+        return null; // Return null in case of an error
+    }
+}
+
 class UserService {
     static BASE_URL = "http://localhost:8080";
 
@@ -478,6 +489,23 @@ class UserService {
     }
 
 
+    static async checkRole(role) {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log("No token found");
+            return false;
+        }
+
+        try {
+            const role_str = await fetchUserRole(token);
+            console.log(`Checking role: ${role_str}`);
+            return role_str === role;
+        } catch (error) {
+            console.error('Failed to fetch user data:', error);
+            return false; // Returning false in case of error
+        }
+    }
+
 
     /* Check if its log in, role etc */
     static logout() {
@@ -485,25 +513,26 @@ class UserService {
     }
 
     static isAuthenticated() {
-        const token = localStorage.getItem("token");
-        console.log(token)
-        return !!token;
+        const token = localStorage.getItem('token');
+        if(token) {
+            console.log("Token is authenticated");
+            return true
+        } else {
+            console.log("Token is not authenticated");
+            return false;
+        }
     }
 
     static isDoctor() {
-        const role = localStorage.getItem("role");
-        console.log(role);
-        return role === 'USER_DOCTOR'
+        return this.checkRole('USER_DOCTOR');
     }
 
     static isPatient() {
-        const role = localStorage.getItem("role");
-        return role === 'USER_PATIENT'
+        return this.checkRole('USER_PATIENT');
     }
 
     static isSecretary() {
-        const role = localStorage.getItem("role");
-        return role === 'USER_SECRETARY'
+        return this.checkRole('USER_SECRETARY');
     }
 }
 

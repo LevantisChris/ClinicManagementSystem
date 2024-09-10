@@ -11,11 +11,6 @@ const App = () => {
         <BrowserRouter>
             <div className={""}>
                 <Routes>
-                    {/*<Route path={"/"}
-                           element={ UserService.isDoctor() && UserService.isAuthenticated() ? <DoctorApp/>
-                               : UserService.isPatient() && UserService.isAuthenticated() ? <PatientApp/>
-                                   : UserService.isSecretary() && UserService.isAuthenticated() ? <SecretaryApp/>
-                    */}
                     <Route path={"/"}
                            element={<AuthApp/>}/>
                     <Route path={"/auth"}
@@ -29,7 +24,6 @@ const App = () => {
                            element={<SecretaryApp/>}/>
                     <Route path={"*"}
                            element={<Navigate to="/auth"/>}/>
-
                 </Routes>
             </div>
         </BrowserRouter>

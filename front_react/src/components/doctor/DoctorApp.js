@@ -17,10 +17,12 @@ import CreateHistoryReg from "./doctorComp/CreateHistoryReg";
 import ConfigureHistoryReg from "./doctorComp/ConfigureHistoryReg";
 import {DisplayAllHistory} from "./doctorComp/DisplayAllHistory";
 import CreatePatientsHistoryMassively from "./doctorComp/CreatePatientsHistoryMassively";
+import {useNavigate} from "react-router-dom";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
     const [appointmentsMonth, setAppointmentsMonth] = useState(null)
+    const navigate = useNavigate();
     const {
         monthIndex,
         showEventModal,
@@ -50,6 +52,7 @@ function DoctorApp() {
         setCurrentMonth(getMonth(monthIndex));
 
         const fetchUserData = async () => {
+            console.log("DOCTOR DATA FETCED")
             const token = localStorage.getItem('token');
             if (token) {
                 try {
@@ -60,11 +63,20 @@ function DoctorApp() {
                         surname: userData.users.user_surname,
                         role: userData.users.role_str,
                     });
+                    if(userData.users.role_str !== "USER_DOCTOR") {
+                        console.log("NOT A DOCTOR")
+                        UserService.logout()
+                        navigate("/auth")
+                    }
                 } catch (error) {
                     console.error('Failed to fetch user data:', error);
+                    UserService.logout()
+                    navigate("/auth")
                 }
             } else {
                 console.log("No token found");
+                UserService.logout()
+                navigate("/auth")
             }
         };
         fetchUserData()

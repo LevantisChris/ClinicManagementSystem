@@ -13,10 +13,12 @@ import LoadingApp from "../../Loading/LoadingApp";
 import RegisterPatient from "./secretaryComp/RegisterPatient";
 import SearchPatients from "./secretaryComp/SearchPatients";
 import RegisterPatientsMassively from "./secretaryComp/RegisterPatientsMassively";
+import {useNavigate} from "react-router-dom";
 
 function DoctorApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
     const [appointmentsMonth, setAppointmentsMonth] = useState(null)
+    const navigate = useNavigate();
     const {
         monthIndex,
         showEventModal,
@@ -48,11 +50,20 @@ function DoctorApp() {
                         surname: userData.users.user_surname,
                         role: userData.users.role_str,
                     });
+                    if(userData.users.role_str !== "USER_SECRETARY") {
+                        console.log("NOT A SECRETARY");
+                        UserService.logout()
+                        navigate("/auth")
+                    }
                 } catch (error) {
                     console.error('Failed to fetch user data:', error);
+                    UserService.logout()
+                    navigate("/auth")
                 }
             } else {
                 console.log("No token found");
+                UserService.logout()
+                navigate("/auth")
             }
         };
         fetchUserData()

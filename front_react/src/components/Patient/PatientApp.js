@@ -5,7 +5,6 @@ import CalendarHeader from "./patientComp/CalendarHeader";
 import SideBar from "./patientComp/SideBar";
 import Month from "./patientComp/Month";
 import GlobalContext from "../../context/GlobalContext";
-import EventModal from "./patientComp/EventModal";
 import InsertModal from "./patientComp/InsertModal";
 import SearchAppointments from "./patientComp/SearchAppointments";
 import UserService from "../../services/UserService";
@@ -17,10 +16,12 @@ import CreateHistoryReg from "./patientComp/CreateHistoryReg";
 import ConfigureHistoryReg from "./patientComp/ConfigureHistoryReg";
 import {DisplayAllHistory} from "./patientComp/DisplayAllHistory";
 import CreatePatientsHistoryMassively from "./patientComp/CreatePatientsHistoryMassively";
+import {useNavigate} from "react-router-dom";
 
 function PatientApp() {
     const [currentMonth, setCurrentMonth] = useState(getMonth());
     const [appointmentsMonth, setAppointmentsMonth] = useState(null)
+    const navigate = useNavigate();
     const {
         monthIndex,
         showEventModal,
@@ -61,12 +62,21 @@ function PatientApp() {
                         surname: userData.users.user_surname,
                         role: userData.users.role_str,
                     });
+                    if(userData.users.role_str !== "USER_PATIENT") {
+                        console.log("NOT A PATIENT")
+                        UserService.logout()
+                        navigate("/auth")
+                    }
                     setUserAuthedDetails(userData.patient)
                 } catch (error) {
                     console.error('Failed to fetch user data:', error);
+                    UserService.logout()
+                    navigate("/auth")
                 }
             } else {
                 console.log("No token found");
+                UserService.logout()
+                navigate("/auth")
             }
         };
         fetchUserData()
