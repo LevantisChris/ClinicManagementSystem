@@ -841,7 +841,7 @@ public class AppointmentManagementService {
                 return null;
             }
 
-            if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR")) {
+            if(jwtUtils.extractRole(jwtToken).equals("USER_DOCTOR") || jwtUtils.extractRole(jwtToken).equals("USER_SECRETARY")) {
                 Patient patient = patientRepository.findById(request.getAppointmentPatient().getPatient_id())
                         .orElseThrow(() -> new RuntimeException("Patient with ID: " + request.getAppointmentPatient().getPatient_id() + " cannot be found."));
                 List<Appointment> patientAppointments = appointmentRepository.findByPatientAMKA(patient.getPatient_AMKA());
