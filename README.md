@@ -5,6 +5,7 @@ The application uses React.js for the front-end and Spring for the back-end logi
 The two servers communicate by exchanging HTTP requests. Additionally, 
 a relational MySQL database is used to store and retrieve application data, 
 which interacts with the Spring server. The system architecture is illustrated below.
+
 ![structure.png](./Screenshots/structure.png)
 
 ## Logic (Back-end)
