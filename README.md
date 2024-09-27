@@ -5,7 +5,7 @@ The application uses React.js for the front-end and Spring for the back-end logi
 The two servers communicate by exchanging HTTP requests. Additionally, 
 a relational MySQL database is used to store and retrieve application data, 
 which interacts with the Spring server. The system architecture is illustrated below.
-![structure.png](structure.png)
+![structure.png](./screenshots/structure.png)
 
 ## Logic (Back-end)
 The structure of the Spring Server is straightforward. 
@@ -71,7 +71,7 @@ We have three roles:
 
 ## App Look & Feel
 
-![doctorMainScreen.png](doctorMainScreen.png)
+![doctorMainScreen.png](./screenshots/doctorMainScreen.png)
 
 *Description: Doctor Main UI.*
 
